@@ -9,6 +9,7 @@ from lenstools.statistics import Ensemble
 from lenstools.pipeline import SimulationBatch
 
 import numpy as np
+import astropy.units as u
 from mpi4py import MPI
 
 from emcee.utils import MPIPool
@@ -17,7 +18,7 @@ from emcee.utils import MPIPool
 ##############This function reads in a ConvergenceMap and measures all the descriptors provided in index##################
 ##########################################################################################################################
 
-def convergence_measure_all(filename,index,mean_subtract):
+def convergence_measure_all(filename,index,mean_subtract,smoothing_scale=None):
 
 	"""
 	Measures all the statistical descriptors of a convergence map as indicated by the index instance
@@ -31,6 +32,10 @@ def convergence_measure_all(filename,index,mean_subtract):
 
 	if mean_subtract:
 		conv_map.data -= conv_map.mean()
+
+	#Smooth the map maybe
+	if smoothing_scale is not None:
+		conv_map.smooth(smoothing_scale,inplace=True)
 
 	#Allocate memory for observables
 	descriptors = index
@@ -69,8 +74,8 @@ def convergence_measure_all(filename,index,mean_subtract):
 ##############This function measures all the descriptors in a map set#####################################################
 ##########################################################################################################################
 
-def measure_from_set(filename,map_set,index,mean_subtract=False):
-	return map_set.execute(filename,callback=convergence_measure_all,index=index,mean_subtract=mean_subtract)
+def measure_from_set(filename,map_set,index,mean_subtract=False,smoothing_scale=None):
+	return map_set.execute(filename,callback=convergence_measure_all,index=index,mean_subtract=mean_subtract,smoothing_scale=smoothing_scale)
 
 
 #################################################################################
@@ -80,6 +85,7 @@ def measure_from_set(filename,map_set,index,mean_subtract=False):
 if __name__=="__main__":
 
 	logging.basicConfig(level=logging.INFO)
+	smoothing_scale = float(sys.argv[1]) * u.arcmin
 
 	#Initialize MPIPool
 	try:
@@ -108,7 +114,7 @@ if __name__=="__main__":
 	np.save("th_minkowski.npy",0.5*(v_mf[1:]+v_mf[:-1]))
 
 	#How much
-	num_realizations = 32
+	num_realizations = 1024
 
 	#Build the index
 	descriptor_list = list()
@@ -138,12 +144,12 @@ if __name__=="__main__":
 		ensemble_all = Ensemble.fromfilelist([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(num_realizations) ])
 
 		#Measure the descriptors spreading calculations on a MPIPool
-		ensemble_all.load(callback_loader=measure_from_set,pool=pool,map_set=map_set,index=idx)
+		ensemble_all.load(callback_loader=measure_from_set,pool=pool,map_set=map_set,index=idx,smoothing_scale=smoothing_scale)
 
 		#Split ensemble into individual descriptors
 		for n,ens in enumerate(ensemble_all.split(idx)):
 
-			savename = os.path.join(map_set.home_subdir,idx[n].name+".npy")
+			savename = os.path.join(map_set.home_subdir,idx[n].name+"_s{0}.npy".format(int(smoothing_scale.value)))
 			logging.info("Writing {0}".format(savename))
 			ens.save(savename)
 
