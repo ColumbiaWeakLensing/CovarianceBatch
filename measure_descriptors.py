@@ -35,6 +35,7 @@ def convergence_measure_all(filename,index,mean_subtract,smoothing_scale=None):
 
 	#Smooth the map maybe
 	if smoothing_scale is not None:
+		logging.info("Smoothing {0} on {1}".format(filename,smoothing_scale))
 		conv_map.smooth(smoothing_scale,inplace=True)
 
 	#Allocate memory for observables
