@@ -55,10 +55,10 @@ class Measurement(object):
 #####################Recurrent callbacks###########################
 ###################################################################
 
-def dP_over_P(ens,ell,bin_number):
+def dP_over_P(ens,ell,bin_number,**kwargs):
 
 	p = ens.mean()
-	dP = np.sqrt(ens.covariance().diagonal())
+	dP = np.sqrt(ens.covariance(**kwargs).diagonal())
 
 	return (dP/p)[bin_number] * np.sqrt(ell[bin_number]+0.5)
 
