@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import astropy.units as u
 
-available = [1,2,5,10,20,30,40,50,60,70,80,90,100,200]
+available = [1,2,5,10,20,30,40,50,60,70,80,90,100,150,200]
 
 def suffix(n):
 	if n==1:
