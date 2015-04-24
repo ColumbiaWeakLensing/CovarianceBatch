@@ -36,7 +36,7 @@ def convergence_measure_all(filename,index,mean_subtract,smoothing_scale=None):
 	#Smooth the map maybe
 	if smoothing_scale is not None:
 		logging.info("Smoothing {0} on {1}".format(filename,smoothing_scale))
-		conv_map.smooth(smoothing_scale,inplace=True)
+		conv_map.smooth(smoothing_scale,kind="gaussianFFT",inplace=True)
 
 	#Allocate memory for observables
 	descriptors = index
@@ -120,10 +120,10 @@ if __name__=="__main__":
 	#Build the index
 	descriptor_list = list()
 	descriptor_list.append(PowerSpectrum(l_edges))
-	descriptor_list.append(Moments())
-	descriptor_list.append(Peaks(v_pk))
-	descriptor_list.append(MinkowskiAll(v_mf))
-	descriptor_list.append(PDF(v_mf))
+	#descriptor_list.append(Moments())
+	#descriptor_list.append(Peaks(v_pk))
+	#descriptor_list.append(MinkowskiAll(v_mf))
+	#descriptor_list.append(PDF(v_mf))
 
 	idx = Indexer.stack(descriptor_list)
 
@@ -150,7 +150,7 @@ if __name__=="__main__":
 		#Split ensemble into individual descriptors
 		for n,ens in enumerate(ensemble_all.split(idx)):
 
-			savename = os.path.join(map_set.home_subdir,idx[n].name+"_s{0}.npy".format(int(smoothing_scale.value)))
+			savename = os.path.join(map_set.home_subdir,idx[n].name+"_fft_s{0}.npy".format(int(smoothing_scale.value)))
 			logging.info("Writing {0}".format(savename))
 			ens.save(savename)
 
