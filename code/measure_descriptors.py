@@ -110,9 +110,9 @@ if __name__=="__main__":
 	v_pk = np.linspace(-0.04,0.12,50)
 	v_mf = np.linspace(-0.04,0.12,50)
 
-	np.save("ell.npy",0.5*(l_edges[1:]+l_edges[:-1]))
-	np.save("th_peaks.npy",0.5*(v_pk[1:]+v_pk[:-1]))
-	np.save("th_minkowski.npy",0.5*(v_mf[1:]+v_mf[:-1]))
+	np.save(os.path.join("..",model_id,"ell.npy"),0.5*(l_edges[1:]+l_edges[:-1]))
+	np.save(os.path.join("..",model_id,"th_peaks.npy"),0.5*(v_pk[1:]+v_pk[:-1]))
+	np.save(os.path.join("..",model_id,"th_minkowski.npy"),0.5*(v_mf[1:]+v_mf[:-1]))
 
 	#How much
 	num_realizations = 1024
