@@ -39,11 +39,13 @@ def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0
 	#Cumulate the desired property from all the files
 	statistic = list()
 	for halo_file in halo_filenames:
+		print("[+] Reading {0}...".format(halo_file))
 		data_in_file = reader(halo_file)
 		data_subset = callback(data_in_file)
 		statistic.append(data_subset)
 
 	#hstack all
+	print("[+] Merging...")
 	statistic = np.hstack(statistic)
 
 	#Additional post--processing
