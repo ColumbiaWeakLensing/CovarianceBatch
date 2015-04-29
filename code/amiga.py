@@ -15,7 +15,16 @@ def read_mass(d):
 def scale_mass(r,m):
 	return m*u.Msun/r.cosmology.h
 
+#######################################################################
+###################General loader######################################
+####################################################################### 
+
 def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240",reader=read_amiga_txt,callback=read_mass,post_callback=scale_mass):
+
+	"""
+	Read a statistic from the halo finder
+
+	"""
 	
 	#Simulation batch is the current one
 	batch = SimulationBatch.current()
@@ -42,3 +51,31 @@ def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0
 
 	#Done, return
 	return statistic
+
+#######################################################################
+###################Convenience#########################################
+#######################################################################
+
+def read_redshift(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240"):
+
+	"""
+	Read the redshift from the filename
+
+	"""
+
+	#Simulation batch is the current one
+	batch = SimulationBatch.current()
+
+	#Get the particular IC
+	ic = batch.getModel(model).getCollection(collection).getRealization(n)
+
+	#Construct the filename that contains the halo statistics
+	halo_root_filename = os.path.join(ic.path("amiga"),"snap{0}".format(snapshot_number))
+	halo_filenames = glob.glob(halo_root_filename+"*AHF_halos")
+
+	#Read the redshift from the first filename
+	return float(os.path.basename(halo_filenames[0]).split(".")[-2].strip("z"))
+
+
+
+
