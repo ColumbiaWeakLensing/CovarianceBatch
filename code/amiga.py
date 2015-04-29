@@ -74,7 +74,12 @@ def read_redshift(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.8
 	halo_filenames = glob.glob(halo_root_filename+"*AHF_halos")
 
 	#Read the redshift from the first filename
-	return float(os.path.basename(halo_filenames[0]).split(".")[-2].strip("z"))
+	parts = os.path.basename(halo_filenames[0]).split(".")
+	z_int = parts[-3].strip("z")
+	z_float = parts[-2]
+
+	#Return
+	return float("{0}.{1}".format(z_int,z_float))
 
 
 
