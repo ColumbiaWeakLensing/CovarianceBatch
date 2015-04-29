@@ -1,25 +1,14 @@
 import os,glob
 
 from lenstools.pipeline.simulation import SimulationBatch
-from lenstools import Ensemble
 
 import numpy as np
-import astropy.units as u
-
-def read_amiga_txt(f):
-	return np.loadtxt(f,unpack=True)
-
-def read_mass(d):
-	return d[3]
-
-def scale_mass(r,m):
-	return m*u.Msun/r.cosmology.h
 
 #######################################################################
 ###################General loader######################################
 ####################################################################### 
 
-def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240",reader=read_amiga_txt,callback=read_mass,post_callback=scale_mass):
+def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240",reader=None,select=None,post_process=None):
 
 	"""
 	Read a statistic from the halo finder
@@ -41,7 +30,7 @@ def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0
 	for halo_file in halo_filenames:
 		print("[+] Reading {0}...".format(halo_file))
 		data_in_file = reader(halo_file)
-		data_subset = callback(data_in_file)
+		data_subset = select(data_in_file)
 		statistic.append(data_subset)
 
 	#hstack all
@@ -49,7 +38,7 @@ def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0
 	statistic = np.hstack(statistic)
 
 	#Additional post--processing
-	statistic = post_callback(ic,statistic)
+	statistic = post_process(ic,statistic)
 
 	#Done, return
 	return statistic
