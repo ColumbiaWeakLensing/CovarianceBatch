@@ -106,13 +106,9 @@ if __name__=="__main__":
 	redshift = 2.0
 
 	#What to measure
-	l_edges = np.linspace(100.0,1.0e4,50)
+	l_edges = np.logspace(2.0,np.log10(6.0e3),16)
 	v_pk = np.linspace(-0.04,0.12,50)
 	v_mf = np.linspace(-0.04,0.12,50)
-
-	np.save(os.path.join("..",model_id,"ell.npy"),0.5*(l_edges[1:]+l_edges[:-1]))
-	np.save(os.path.join("..",model_id,"th_peaks.npy"),0.5*(v_pk[1:]+v_pk[:-1]))
-	np.save(os.path.join("..",model_id,"th_minkowski.npy"),0.5*(v_mf[1:]+v_mf[:-1]))
 
 	#How much
 	num_realizations = 1024
@@ -135,6 +131,11 @@ if __name__=="__main__":
 	model = batch.getModel(model_id)
 	collection = model.getCollection(box_size=240.0*model.Mpc_over_h,nside=512)
 
+	#Save for reference
+	np.save(os.path.join(collection.home_subdir,"ell.npy"),0.5*(l_edges[1:]+l_edges[:-1]))
+	np.save(os.path.join(collection.home_subdir,"th_peaks.npy"),0.5*(v_pk[1:]+v_pk[:-1]))
+	np.save(os.path.join(collection.home_subdir,"th_minkowski.npy"),0.5*(v_mf[1:]+v_mf[:-1]))
+
 	#Perform the measurements for all the map sets
 	for map_set in collection.mapsets:
 
@@ -150,7 +151,7 @@ if __name__=="__main__":
 		#Split ensemble into individual descriptors
 		for n,ens in enumerate(ensemble_all.split(idx)):
 
-			savename = os.path.join(map_set.home_subdir,idx[n].name+"_fft_s{0}.npy".format(int(smoothing_scale.value)))
+			savename = os.path.join(map_set.home_subdir,idx[n].name+"_s{0}.npy".format(int(smoothing_scale.value)))
 			logging.info("Writing {0}".format(savename))
 			ens.save(savename)
 
