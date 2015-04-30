@@ -24,10 +24,7 @@ def read_mass(d):
 #########Compute the mass function####################
 ######################################################
 
-def mass_function(r,m):
-	
-	#Binning
-	bins = np.logspace(10.0,15.0,51)
+def mass_function(r,m,bins):
 
 	#Make the histogram
 	h,b = np.histogram(m,bins=bins)
@@ -47,9 +44,12 @@ def main():
 	"collection" : "512b240",
 	"reader" : read_amiga_txt,
 	"select" : read_mass, 
-	"post_process" : mass_function 
+	"post_process" : mass_function,
+	"bins" : np.logspace(11.0,14.0,51)
 	
 	}
+
+	bins = kwargs["bins"]
 
 	#Useful handler
 	collection = SimulationBatch.current().getModel(kwargs["model"]).getCollection(kwargs["collection"])
@@ -65,7 +65,6 @@ def main():
 	ens.load(read_halo_stats,**kwargs)
 
 	#Binning
-	bins = np.logspace(10.0,15.0,51)
 	savename = os.path.join(collection.home_subdir,"mass.npy")
 	print("[+] Saving mass bins to {0}".format(savename))
 	np.save(savename,0.5*(bins[1:]+bins[:-1]))

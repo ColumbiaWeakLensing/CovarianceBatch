@@ -8,10 +8,10 @@ import numpy as np
 ###################General loader######################################
 ####################################################################### 
 
-def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240",reader=None,select=None,post_process=None):
+def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0.800",collection="512b240",reader=None,select=None,post_process=None,**kwargs):
 
 	"""
-	Read a statistic from the halo finder
+	Read a statistic from the halo finder, kwargs are passed to the post_process method
 
 	"""
 	
@@ -38,7 +38,7 @@ def read_halo_stats(n,snapshot_number,model="Om0.260_Ol0.740_w-1.000_ns0.960_si0
 	statistic = np.hstack(statistic)
 
 	#Additional post--processing
-	statistic = post_process(ic,statistic)
+	statistic = post_process(ic,statistic,**kwargs)
 
 	#Done, return
 	return statistic
