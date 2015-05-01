@@ -107,8 +107,8 @@ if __name__=="__main__":
 
 	#What to measure
 	l_edges = np.logspace(2.0,np.log10(6.0e3),16)
-	v_pk = np.linspace(-0.04,0.12,50)
-	v_mf = np.linspace(-0.04,0.12,50)
+	v_pk = np.linspace(-0.07,0.5,50)
+	v_mf = np.linspace(-0.07,0.5,50)
 
 	#How much
 	num_realizations = 1024
@@ -116,10 +116,10 @@ if __name__=="__main__":
 	#Build the index
 	descriptor_list = list()
 	descriptor_list.append(PowerSpectrum(l_edges))
-	#descriptor_list.append(Moments())
-	#descriptor_list.append(Peaks(v_pk))
-	#descriptor_list.append(MinkowskiAll(v_mf))
-	#descriptor_list.append(PDF(v_mf))
+	descriptor_list.append(Moments())
+	descriptor_list.append(Peaks(v_pk))
+	descriptor_list.append(MinkowskiAll(v_mf))
+	descriptor_list.append(PDF(v_mf))
 
 	idx = Indexer.stack(descriptor_list)
 
