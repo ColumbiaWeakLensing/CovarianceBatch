@@ -64,3 +64,10 @@ def dP_over_P(ens,ell,num_ell,bin_number,**kwargs):
 
 def fullCovariance(ens):
 	return ens.covariance()
+
+def covarianceEigenvalues(ens,**kwargs):
+
+	covariance = ens.covariance(**kwargs)
+	e,v = np.linalg.eigh(covariance)
+
+	return np.sort(e)
