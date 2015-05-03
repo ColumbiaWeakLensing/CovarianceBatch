@@ -35,7 +35,7 @@ class Measurement(object):
 			self.data = np.zeros((len(self.available),) + shape)
 		
 		for i,n in enumerate(self.available):
-			ensemble_filename = os.path.join("Om0.260_Ol0.740_w-1.000_ns0.960_si0.800","512b240","Maps"+suffix(n),self.descriptor+"_s{0}.npy".format(int(self.smoothing_scale.to(u.arcmin).value)))
+			ensemble_filename = os.path.join("..","Om0.260_Ol0.740_w-1.000_ns0.960_si0.800","512b240","Maps"+suffix(n),self.descriptor+"_s{0}.npy".format(int(self.smoothing_scale.to(u.arcmin).value)))
 			ens = Ensemble.read(ensemble_filename)
 			self.data[i] = callback(ens,**kwargs)
 
@@ -55,12 +55,12 @@ class Measurement(object):
 #####################Recurrent callbacks###########################
 ###################################################################
 
-def dP_over_P(ens,ell,bin_number,**kwargs):
+def dP_over_P(ens,ell,num_ell,bin_number,**kwargs):
 
 	p = ens.mean()
 	dP = np.sqrt(ens.covariance(**kwargs).diagonal())
 
-	return (dP/p)[bin_number] * np.sqrt(ell[bin_number]+0.5)
+	return ((dP/p)[bin_number]**2) * num_ell[bin_number]
 
 def fullCovariance(ens):
 	return ens.covariance()
