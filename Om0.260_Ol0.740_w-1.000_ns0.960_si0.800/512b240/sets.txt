@@ -13,3 +13,5 @@ Maps90
 Maps100
 Maps200
 Maps150
+10000Maps1sim
+MillionMapsPower
