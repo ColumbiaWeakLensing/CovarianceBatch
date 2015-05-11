@@ -1,4 +1,8 @@
 #!/usr/bin/env python-mpi
+from __future__ import division
+
+from operator import add
+from functools import reduce
 
 import sys,os
 import logging
@@ -110,8 +114,10 @@ if __name__=="__main__":
 	v_pk = np.linspace(-0.07,0.5,50)
 	v_mf = np.linspace(-0.07,0.5,50)
 
-	#How much
+	#How many realizations
 	num_realizations = 1024
+	chunks = 16
+	realizations_per_chunk = num_realizations // chunks
 
 	#Build the index
 	descriptor_list = list()
@@ -137,16 +143,21 @@ if __name__=="__main__":
 	np.save(os.path.join(collection.home_subdir,"th_minkowski.npy"),0.5*(v_mf[1:]+v_mf[:-1]))
 
 	#Perform the measurements for all the map sets
-	for map_set in collection.mapsets:
+	for map_set in [collection.mapsets[-2]]:
 
 		#Log to user
 		logging.info("Processing map set {0}".format(map_set.settings.directory_name))
 
 		#Construct an ensemble for each map set
-		ensemble_all = Ensemble.fromfilelist([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(num_realizations) ])
+		ensemble_all = list()
 
 		#Measure the descriptors spreading calculations on a MPIPool
-		ensemble_all.load(callback_loader=measure_from_set,pool=pool,map_set=map_set,index=idx,smoothing_scale=smoothing_scale)
+		for c in range(chunks):
+			ensemble_all.append(Ensemble.fromfilelist([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(realizations_per_chunk*c,realizations_per_chunk*(c+1)) ]))
+			ensemble_all[-1].load(callback_loader=measure_from_set,pool=pool,map_set=map_set,index=idx,smoothing_scale=smoothing_scale)
+
+		#Merge all the chunks
+		ensemble_all = reduce(add,ensemble_all)
 
 		#Split ensemble into individual descriptors
 		for n,ens in enumerate(ensemble_all.split(idx)):

@@ -307,9 +307,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	#Save the local processor Ensemble to disk
 	if pool is not None:
-		savename = os.path.join(map_batch.home_subdir,"power_spectrum_rank{0:03d}.npy".format(pool.rank))
+		savename = os.path.join(map_batch.home_subdir,"{0}_rank{1:03d}.npy".format(settings.ensemble_root,pool.rank))
 	else:
-		savename = os.path.join(map_batch.home_subdir,"power_spectrum.npy")
+		savename = os.path.join(map_batch.home_subdir,"{0}.npy".format(settings.ensemble_root))
 
 	logdriver.info("Saving power spectrum Ensemble to {0}".format(savename))
 	ps_ensemble.save(savename)
@@ -337,6 +337,9 @@ class PowerSpectrumSettings(MapSettings):
 		#Read the options from the ini file
 		options = config.ConfigParser()
 		options.read([config_file])
+
+		#Read in the name of the ensemble
+		settings.ensemble_root = options.get(cls._section,"ensemble_root")
 
 		#Read in the multipoles
 		settings._read_multipoles(options,cls._section)
