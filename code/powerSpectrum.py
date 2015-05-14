@@ -9,6 +9,7 @@ import resource
 from distutils import config
 
 from lenstools.utils import MPIWhirlPool
+from lenstools.simulations.logs import logdriver
 
 from lenstools import ConvergenceMap
 from lenstools import Ensemble
@@ -20,17 +21,6 @@ from lenstools.pipeline.settings import MapSettings
 import numpy as np
 import astropy.units as u
 
-################################################
-###########Loggers##############################
-################################################
-
-console = logging.StreamHandler(sys.stdout)
-formatter = logging.Formatter("%(asctime)s:%(name)-12s:%(levelname)-4s: %(message)s",datefmt='%m-%d %H:%M')
-console.setFormatter(formatter)
-
-logdriver = logging.getLogger("lenstools.driver")
-logdriver.addHandler(console)
-logdriver.propagate = False
 
 #Orchestra director of the execution
 def powerSpectrumExecution():
@@ -189,7 +179,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 	begin = time.time()
 
 	#Allocate space for the power spectrum Ensemble
-	ps_ensemble = Ensemble.fromdata(np.zeros(realizations_per_task,settings.l_edges.shape[0]-1))
+	ps_ensemble = Ensemble.fromdata(np.zeros((realizations_per_task,settings.l_edges.shape[0]-1)))
 
 	#We need one of these for cycles for each map random realization
 	for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
