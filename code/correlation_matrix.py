@@ -90,7 +90,7 @@ if __name__=="__main__":
 
 	#Complete the matrix
 	correlation_matrix += correlation_matrix.T
-	correlation_matrix[np.diagonal_indices(num_realizations)] = 1.0
+	correlation_matrix[np.diag_indices(num_realizations)] = 1.0
 
 	#Save the correlation matrix
 	savename = os.path.join(map_set.home_subdir,label+".npy")
