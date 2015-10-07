@@ -12,7 +12,7 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO)
 
 #Number of simulations to test
-nsim = [1,2,5,10,20,30,40,50,60,70,80,90,100,150,200]
+nsim = [200]
 
 #Load the dummy data
 data = pd.read_pickle("../data/dummy_data_power.pkl")
@@ -25,11 +25,8 @@ for configuration in ["coarse","fine"]:
 
 #Parameters to score (coarse and finely sampled)
 parameters = dict()
-parameters["coarse"] = Ensemble.meshgrid({"Om":np.linspace(0.2,0.5,100),"w":np.linspace(-1.2,-0.8,100)})
-parameters["coarse"]["sigma8"] = 0.8
-parameters["fine"] = Ensemble.meshgrid({"Om":np.linspace(0.256,0.2635,100),"w":np.linspace(-1.08,-0.92,100)})
-parameters["fine"]["sigma8"] = 0.8
-
+parameters["fine"] = Ensemble.meshgrid({"Om":np.linspace(0.256,0.2635,100),"sigma8":np.linspace(0.795,0.81,100)})
+parameters["fine"]["w"] = -1.0
 
 #Specifications for chi2database
 specs = dict()
@@ -56,4 +53,4 @@ for configuration in ["coarse","fine"]:
 		specs[configuration][feature_name]["data_covariance"] = ensemble_nsim.cov() / 1600
 
 	#Score the parameters on each of the feature types
-	chi2database("../data/scores_power_LSST.sqlite",parameters[configuration],specs[configuration],table_name=configuration+"_Om_w")
+	chi2database("../data/scores_power_accuracy.sqlite",parameters["fine"],specs[configuration],table_name="Om_sigma8")
