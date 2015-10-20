@@ -62,7 +62,7 @@ for configuration in ["coarse","fine"]:
 		#Compute the fisher contour for reference
 		fisher = specs[configuration][feature_name]["emulator"].approximate_linear(fiducial_parameters,derivative_precision=0.01)
 		fisher.pop(('parameters','sigma8'))
-		fisher_ellipse = fisher.iloc[:3].ellipse(specs[configuration][feature_name]["data_covariance"],observed_feature=specs[configuration][feature_name]["data"],parameters=["Om","w"],fill=False,linestyle="dashed",edgecolor=colors[nc])
+		fisher_ellipse = fisher.iloc[:3].confidence_ellipse(specs[configuration][feature_name]["data_covariance"],observed_feature=specs[configuration][feature_name]["data"],parameters=["Om","w"],fill=False,linestyle="dashed",edgecolor=colors[nc])
 		with open("../data/ellipse_{0}_Om-w_{1}sim.pkl".format(configuration,n),"w") as fp:
 			pkl.dump(fisher_ellipse,fp)
 
