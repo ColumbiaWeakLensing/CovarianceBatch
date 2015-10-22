@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+from __future__ import division
 
 from lenstools.statistics.database import Database
 from lenstools.statistics.ensemble import Series,Ensemble
 from lenstools.statistics.constraints import Emulator
 
 import numpy as np
+from scipy.stats import linregress
 
 ###############################
 ###Bootstrap fisher ellipses###
@@ -18,6 +20,32 @@ def bootstrap_fisher(ensemble,fisher,true_covariance,extra_items):
 		pvar[key] = extra_items[key]
 	
 	return pvar.to_frame().T
+
+##########################################
+###Fit for the effective number of bins###
+##########################################
+
+def fit_nbins(variance_ensemble):
+
+	#Compute variance expectation values
+	vmean = variance_ensemble.groupby(["nreal","nsim"]).mean().reset_index()
+	vmean["1/nreal"] = vmean.eval("1.0/nreal")
+
+	#Linear regression of the variance vs 1/nreal
+	fit_results = dict()
+	for key in ["Om","w","sigma8","nsim"]:
+		fit_results[key] = list()
+
+	groupnsim = vmean.groupby("nsim")
+	for g in groupnsim.groups:
+		fit_results["nsim"].append(int(g))
+		vmean_group = groupnsim.get_group(g)
+		for p in ["Om","w","sigma8"]:
+			a,b,r_value,p_value,err = linregress(vmean_group["1/nreal"].values,vmean_group[p].values)
+			fit_results[p].append(a/b)
+
+	#Return to user
+	return Ensemble.from_dict(fit_results)
 
 
 ###########################
