@@ -25,24 +25,26 @@ def bootstrap_fisher(ensemble,fisher,true_covariance,extra_items):
 ###Fit for the effective number of bins###
 ##########################################
 
-def fit_nbins(variance_ensemble):
+def fit_nbins(variance_ensemble,parameter="w"):
+
+	vmean = variance_ensemble
 
 	#Compute variance expectation values
-	vmean = variance_ensemble.groupby(["nreal","nsim"]).mean().reset_index()
 	vmean["1/nreal"] = vmean.eval("1.0/nreal")
 
 	#Linear regression of the variance vs 1/nreal
 	fit_results = dict()
-	for key in ["Om","w","sigma8","nsim"]:
-		fit_results[key] = list()
+	fit_results["nb"] = list()
+	fit_results["s0"] = list()
+	fit_results["nsim"] = list()
 
 	groupnsim = vmean.groupby("nsim")
 	for g in groupnsim.groups:
 		fit_results["nsim"].append(int(g))
 		vmean_group = groupnsim.get_group(g)
-		for p in ["Om","w","sigma8"]:
-			a,b,r_value,p_value,err = linregress(vmean_group["1/nreal"].values,vmean_group[p].values)
-			fit_results[p].append(a/b)
+		a,b,r_value,p_value,err = linregress(vmean_group["1/nreal"].values,vmean_group[parameter].values)
+		fit_results["nb"].append(a/b)
+		fit_results["s0"].append(b)
 
 	#Return to user
 	return Ensemble.from_dict(fit_results)
@@ -55,8 +57,8 @@ def fit_nbins(variance_ensemble):
 def main():
 
 	#Number of simulations to test
-	nsim = [1,100]
-	nreal = np.arange(50,650,10)
+	nsim = [1,2,5,10,20,30,40,50,60,70,80,90,100,150,200]
+	nreal = np.arange(100,1100,100)
 	resample = 100
 
 	#Load the emulators
@@ -74,7 +76,7 @@ def main():
 	true_covariance = Ensemble(np.load("../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/Maps200/power_spectrum_s0.npy"),columns=feature_columns["fine"]).cov()
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
-	with Database("../data/variance_scaling.sqlite") as db:
+	with Database("../data/variance_scaling_expected.sqlite") as db:
 	
 		for configuration in ["fine"]:
 			for n in nsim:
@@ -89,7 +91,8 @@ def main():
 				for nr in nreal:
 					print("[+] Bootstraping configuration={0}, nsim={1}, nreal={2} with {3} resamples".format(configuration,n,nr,resample))
 					variance_ensemble = ensemble_nsim.bootstrap(bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr,"configuration":configuration})
-					db.insert(variance_ensemble,table_name="variance")
+					variance_ensemble.pop("configuration")
+					db.insert(Ensemble(variance_ensemble.mean()).T,table_name="variance")
 
 
 if __name__=="__main__":
