@@ -21,6 +21,16 @@ def bootstrap_fisher(ensemble,fisher,true_covariance,extra_items):
 	
 	return pvar.to_frame().T
 
+def bootstrap_fisher_diagonal(ensemble,fisher,true_covariance,extra_items):
+
+	cov = Ensemble(np.diag(ensemble.var().values),index=true_covariance.index,columns=true_covariance.columns)
+	pcov = fisher.parameter_covariance(cov,observed_features_covariance=true_covariance)
+	pvar = Series(pcov.values.diagonal(),index=pcov.index)
+	for key in extra_items.keys():
+		pvar[key] = extra_items[key]
+	
+	return pvar.to_frame().T
+
 ##########################################
 ###Fit for the effective number of bins###
 ##########################################
@@ -74,9 +84,10 @@ def main():
 
 	#This is the reference covariance matrix
 	true_covariance = Ensemble(np.load("../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/Maps200/power_spectrum_s0.npy"),columns=feature_columns["fine"]).cov()
+	diagonal_covariance = Ensemble(np.diag(true_covariance.values.diagonal()),index=true_covariance.index,columns=true_covariance.columns)
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
-	with Database("../data/variance_scaling_expected.sqlite") as db:
+	with Database("../data/variance_scaling_expected_diagonal.sqlite") as db:
 	
 		for configuration in ["fine"]:
 			for n in nsim:
@@ -90,7 +101,7 @@ def main():
 				#Bootstrap ensemble_sim and compute the parameter variance for each resample
 				for nr in nreal:
 					print("[+] Bootstraping configuration={0}, nsim={1}, nreal={2} with {3} resamples".format(configuration,n,nr,resample))
-					variance_ensemble = ensemble_nsim.bootstrap(bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr,"configuration":configuration})
+					variance_ensemble = ensemble_nsim.bootstrap(bootstrap_fisher_diagonal,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher,true_covariance=diagonal_covariance,extra_items={"nsim":n,"nreal":nr,"configuration":configuration})
 					variance_ensemble.pop("configuration")
 					db.insert(Ensemble(variance_ensemble.mean()).T,table_name="variance")
 
