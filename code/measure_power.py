@@ -1,9 +1,6 @@
 #!/usr/bin/env python-mpi
 from __future__ import division
 
-from operator import add
-from functools import reduce
-
 import sys,os
 import logging
 
@@ -23,13 +20,17 @@ from emcee.utils import MPIPool
 
 def convergence_power(fname,map_set,l_edges,smoothing_scale=0.0*u.arcmin):
 	
-	conv = ConvergenceMap.load(map_set.path(fname))
+	try:
+		conv = ConvergenceMap.load(map_set.path(fname))
 	
-	if smoothing_scale>0:
-		conv = conv.smooth(smoothing_scale,kind="gaussianFFT")
+		if smoothing_scale>0:
+			conv = conv.smooth(smoothing_scale,kind="gaussianFFT")
 
-	l,Pl = conv.powerSpectrum(l_edges)
-	return Pl
+		l,Pl = conv.powerSpectrum(l_edges)
+		return Pl
+
+	except IOError:
+		return None
 
 #################################################################################
 ##############Main execution#####################################################
@@ -92,7 +93,7 @@ if __name__=="__main__":
 		ensemble_all = Ensemble.concat(ensemble_all,axis=0,ignore_index=True)
 
 		#Save to disk
-		savename = os.path.join(map_set.home_subdir,"power_spectrum_s{0}_nb{1}.npy".format(int(smoothing_scale.value),ensemble_all.shape[1]))
+		savename = os.path.join(map_set.home_subdir,"power_spectrum_s{0}_nb{1}.npy".format(0,ensemble_all.shape[1]))
 		logging.info("Writing {0}".format(savename))
 		np.save(savename,ensemble_all.values)
 
