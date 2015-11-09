@@ -22,6 +22,9 @@ def convergence_power(fname,map_set,l_edges,smoothing_scale=0.0*u.arcmin):
 	
 	try:
 		conv = ConvergenceMap.load(map_set.path(fname))
+
+		if "0001r" in fname:
+			np.save(os.path.join(map_set.home_subdir,"num_ell_nb{0}.npy".format(len(l_edges)-1)),conv.countModes(l_edges))
 	
 		if smoothing_scale>0:
 			conv = conv.smooth(smoothing_scale,kind="gaussianFFT")
@@ -58,7 +61,8 @@ if __name__=="__main__":
 	redshift = 2.0
 
 	#What to measure
-	l_edges = np.logspace(2.0,np.log10(6.0e3),16)
+	#l_edges = np.logspace(2.0,np.log10(6.0e3),16)
+	l_edges = np.arange(100,6000,150)
 
 	#How many realizations
 	num_realizations = 1024
