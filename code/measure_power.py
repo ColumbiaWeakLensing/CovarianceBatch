@@ -23,7 +23,7 @@ from emcee.utils import MPIPool
 
 def convergence_power(fname,map_set,l_edges,smoothing_scale=0.0*u.arcmin):
 	
-	conv = ConvergenceMap.load(os.path.join(map_set.storage_subdir,fname))
+	conv = ConvergenceMap.load(map_set.path(fname))
 	
 	if smoothing_scale>0:
 		conv = conv.smooth(smoothing_scale,kind="gaussianFFT")
@@ -76,7 +76,7 @@ if __name__=="__main__":
 	np.save(os.path.join(collection.home_subdir,"ell_nb{0}.npy".format(len(l_edges)-1)),0.5*(l_edges[1:]+l_edges[:-1]))
 
 	#Perform the measurements for all the map sets
-	for map_set in [collection.mapsets[-2]]:
+	for map_set in collection.mapsets[:-2]:
 
 		#Log to user
 		logging.info("Processing map set {0}".format(map_set.settings.directory_name))
