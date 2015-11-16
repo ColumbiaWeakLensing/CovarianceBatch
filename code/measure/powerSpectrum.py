@@ -12,7 +12,6 @@ from lenstools.utils import MPIWhirlPool
 from lenstools.simulations.logs import logdriver
 
 from lenstools import ConvergenceMap
-from lenstools import Ensemble
 
 from lenstools.simulations.raytracing import RayTracer
 from lenstools.pipeline.simulation import SimulationBatch
@@ -179,7 +178,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 	begin = time.time()
 
 	#Allocate space for the power spectrum Ensemble
-	ps_ensemble = Ensemble.fromdata(np.zeros((realizations_per_task,settings.l_edges.shape[0]-1)))
+	ps_ensemble = np.zeros((realizations_per_task,settings.l_edges.shape[0]-1))
 
 	#We need one of these for cycles for each map random realization
 	for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
@@ -280,7 +279,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 				np.save(savename,ell)
 
 			#Add the measured power spectrum to the Ensemble
-			ps_ensemble.data[rloc] = P_ell
+			ps_ensemble[rloc] = P_ell
 
 		else:
 			logdriver.error("You need to enable the 'convergence' option!")
@@ -302,7 +301,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 		savename = os.path.join(map_batch.home_subdir,"{0}.npy".format(settings.ensemble_root))
 
 	logdriver.info("Saving power spectrum Ensemble to {0}".format(savename))
-	ps_ensemble.save(savename)
+	np.save(savename,ps_ensemble)
 
 	if (pool is None) or (pool.is_master()):	
 		now = time.time()
