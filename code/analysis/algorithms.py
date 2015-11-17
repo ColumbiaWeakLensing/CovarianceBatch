@@ -30,19 +30,19 @@ def bootstrap_fisher_diagonal(ensemble,fisher,true_covariance,extra_items):
 ###Bootstrap full likelihood###
 ###############################
 
-def bootstrap_area(ensemble,emulator,parameter_grid,test_data,extra_items,pool):
+def bootstrap_area(ensemble,emulator,parameter_grid,fisher,true_covariance,test_data,extra_items,grid_mpi_pool):
 
-	scores = emulator.score(parameter_grid,test_data,features_covariance=ensemble.cov(),pool=pool)
+	scores = emulator.score(parameter_grid,test_data,features_covariance=ensemble.cov(),pool=grid_mpi_pool)
 	scores["likelihood"] = scores.eval("exp(-0.5*{0})".format(emulator.feature_names[0]))
 	contour = ContourPlot.from_scores(scores,parameters=["Om","sigma8"],feature_names="likelihood")
 	contour.getLikelihoodValues([0.684],precision=0.01)
 	area = contour.confidenceArea()
 
-	parea = Series([area.keys[0],area.values[0]],index=["p_value","area"])
+	parea = Series([area.keys()[0],area.values()[0]],index=["p_value","area"])
 	for key in extra_items:
 		parea[key] = extra_items[key]
 
-	return pvar.to_frame().T
+	return parea.to_frame().T
 
 ##########################################
 ###Fit for the effective number of bins###
