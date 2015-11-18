@@ -67,6 +67,13 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 		for na,subax in enumerate(ax.reshape(4)):
 			subax.hist(ens[nell[na]].values,histtype="step",bins=50,normed=True,label=r"$N_s={0}$".format(ns),color=colors[nc])
 
+	#Plot the result for the BIG ensemble generated with 1 simulation and 128000 realizations
+	ens = Ensemble(np.load("features/MillionMapsPower/power_spectrum_s0.npy"))
+
+	#Fill each sub plot
+	for na,subax in enumerate(ax.reshape(4)):
+		subax.hist(ens[nell[na]].values,histtype="step",bins=50,normed=True,color=colors[0],linewidth=3)
+
 	#Labels
 	for na,subax in enumerate(ax.reshape(4)):
 		subax.set_xlabel(r"$P^{\kappa\kappa}_l$",fontsize=fontsize)
@@ -86,23 +93,47 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_expected.sqlite",parameter
 	#Plot panel
 	fig,ax = plt.subplots()
 
+	####################################################################################################################################
+
 	#Open the database and look for different nsim
 	with Database("data/"+db_filename) as db:
 		v = db.query("SELECT nsim,nreal,{0} FROM variance WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
 
-	#Plot the variance scalings
+	#Fit with the Dodelson scaling and overlay the fit
+	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
+	v = Ensemble.merge(v,vfit,on="nsim")
+	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
+	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
+
 	for nc,ns in enumerate(nsim):
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter,color=colors[nc],ax=ax,label=r"$N_s={0}$".format(ns))
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",color=colors[nc],ax=ax,label=r"$N_s={0}$".format(ns))
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",color=colors[nc],ax=ax,legend=False)
+
+	####################################################################################################################################
+	###############Same thing for the BIG simulation set################################################################################
+	####################################################################################################################################
+
+	#Open the database and look for different nsim
+	with Database("data/variance_scaling_power_largeNr.sqlite") as db:
+		v = db.query("SELECT nsim,nreal,{0} FROM variance_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
 
 	#Fit with the Dodelson scaling and overlay the fit
 	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
 	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_fit"] = v.eval("s0*(1+nb/nreal)")
+	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
+	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
 
-	for nc,ns in enumerate(nsim):
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",color=colors[nc],ax=ax,legend=False)
+	for ns in [1]:
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=3,color=colors[0],ax=ax,legend=False)
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=3,color=colors[0],ax=ax,legend=False)
+
+	####################################################################################################################################
+
+	#Axes scale
+	ax.set_xscale("log")
+	ax.set_yscale("log")
 
 	#Labels
 	ax.set_xlabel(r"$N_r$",fontsize=fontsize)
