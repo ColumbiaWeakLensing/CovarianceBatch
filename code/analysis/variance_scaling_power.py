@@ -36,12 +36,12 @@ def main():
 	fiducial_parameters = Series(np.array([0.26,-1.0,0.8]),index=["Om","w","sigma8"])
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
-	with Database("../../data/variance_scaling_power_expected.sqlite") as db:
+	with Database("../../data/variance_scaling_nb_expected.sqlite") as db:
 	
 		for s in scales:
 
 			#Log
-			table_name = "variance_" + s
+			table_name = "power_logb_" + s
 			print("[+] Populating table {0}...".format(table_name))
 
 			#Approximate the emulator linearly around the fiducial model
@@ -64,7 +64,7 @@ def main():
 					gc.collect()
 
 					print("[+] Bootstraping scale={0}, Nb={1}, nsim={2}, nreal={3} with {4} resamples".format(s,ensemble_nsim.shape[1],n,nr,resample))
-					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr})
+					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr,"bins":ensemble_nsim.shape[1]})
 					db.insert(Ensemble(variance_ensemble.mean()).T,table_name=table_name)
 
 
