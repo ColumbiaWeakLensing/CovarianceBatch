@@ -48,6 +48,7 @@ def bootstrap_area(ensemble,emulator,parameter_grid,fisher,true_covariance,test_
 ###Fit for the effective number of bins###
 ##########################################
 
+#Fit a single table
 def fit_nbins(variance_ensemble,parameter="w"):
 
 	vmean = variance_ensemble
@@ -71,3 +72,19 @@ def fit_nbins(variance_ensemble,parameter="w"):
 
 	#Return to user
 	return Ensemble.from_dict(fit_results)
+
+#Fit all tables
+def fit_nbins_all(db,parameter="w"):
+
+	nb_all = list()
+
+	#Fit all tables
+	for tbl in db.tables:
+		v = db.read_table(tbl)
+		nb = fit_nbins(v,parameter)
+		nb["feature"] = tbl
+		nb_all.append(nb)
+
+	#Return to user
+	return Ensemble.concat(nb_all,axis=0,ignore_index=True)
+

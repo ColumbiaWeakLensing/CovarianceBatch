@@ -33,6 +33,7 @@ def main():
 	scales = {
 	"large" : filter(lambda s:int(s.strip("l")) in range(15),emulator[emulator.feature_names[0]].columns),
 	"small" : filter(lambda s:int(s.strip("l")) in range(15,30),emulator[emulator.feature_names[0]].columns),
+	"large+small" : filter(lambda s:int(s.strip("l")) in range(30),emulator[emulator.feature_names[0]].columns),
 	}
 
 	#Fiducial cosmology
@@ -85,6 +86,8 @@ def main():
 	"low" : filter(lambda s:int(s) in range(15),emulator[emulator.feature_names[0]].columns),
 	"intermediate" : filter(lambda s:int(s) in range(15,30),emulator[emulator.feature_names[0]].columns),
 	"high" : filter(lambda s:int(s) in range(30,45),emulator[emulator.feature_names[0]].columns),
+	"low+intermediate" : filter(lambda s:int(s) in range(30),emulator[emulator.feature_names[0]].columns),
+	"intermediate+high" : filter(lambda s:int(s) in range(15,45),emulator[emulator.feature_names[0]].columns),
 	}
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
