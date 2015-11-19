@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import argparse
+import sys,argparse
+sys.modules["mpi4py"] = None
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -86,7 +87,7 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_expected.sqlite",parameter="w",nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=18):
+def scaling_nr(cmd_args,db_filename="variance_scaling_power_expected.sqlite",parameter="w",nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=18):
 
 	assert len(colors)>=len(nsim)
 
@@ -97,7 +98,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_expected.sqlite",parameter
 
 	#Open the database and look for different nsim
 	with Database("data/"+db_filename) as db:
-		v = db.query("SELECT nsim,nreal,{0} FROM variance WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
+		v = db.query("SELECT nsim,nreal,{0} FROM variance_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
 
 	#Fit with the Dodelson scaling and overlay the fit
 	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
@@ -116,7 +117,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_expected.sqlite",parameter
 
 	#Open the database and look for different nsim
 	with Database("data/variance_scaling_power_largeNr.sqlite") as db:
-		v = db.query("SELECT nsim,nreal,{0} FROM variance_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
+		v = db.query("SELECT nsim,nreal,{0} FROM variance_all".format(parameter))
 
 	#Fit with the Dodelson scaling and overlay the fit
 	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
@@ -126,8 +127,8 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_expected.sqlite",parameter
 	nsim_group = v.groupby("nsim")
 
 	for ns in [1]:
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=3,color=colors[0],ax=ax,legend=False)
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=3,color=colors[0],ax=ax,legend=False)
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=2,color=colors[0],ax=ax,legend=False)
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=2,color=colors[0],ax=ax,legend=False)
 
 	####################################################################################################################################
 
