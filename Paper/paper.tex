@@ -92,7 +92,7 @@ The fact that the ensemble of $N_r$ mocks is not completely independent if $N_s$
 
 \subsection{Parameter inference}
 %
-Let $\bbh{d}$ be the measured feature of dimension $N_b$, $\bb{d}(\bb{p})$ be the simulated feature at a point $\bb{p}$ in parameter space and $\bb{C}$ be the $N_b\times N_b$ feature covariance matrix. For the purpose of this work $\bb{p}$ is the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is the convergence power spectrum $P^{\kappa\kappa}$, which is measured at $N_b=15$ log--spaced bands between $l\in[100,6000]$. While $d_M(\bb{p})$ can usually be predicted reasonably accurately by already existing emulators (see \citep{coyote2,Nicaea} for example), the matter is more complicated for covariance matrices. Measuring $\bb{C}$ from simulations involves generating a series of mock realizations $\bbh{d}_r$ with $r=1...N_r$ and estimating the sample covariance $\bbh{C}$
+Let $\bbh{d}$ be the measured feature of dimension $N_b$, $\bb{d}(\bb{p})$ be the simulated feature at a point $\bb{p}$ in parameter space (which has a dimension $N_p$) and $\bb{C}$ be the $N_b\times N_b$ feature covariance matrix. For the purpose of this work $\bb{p}$ is the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is the convergence power spectrum $P^{\kappa\kappa}$, which is measured at $N_b=15$ log--spaced bands between $l\in[100,6000]$. While $d_M(\bb{p})$ can usually be predicted reasonably accurately by already existing emulators (see \citep{coyote2,Nicaea} for example), the matter is more complicated for covariance matrices. Measuring $\bb{C}$ from simulations involves generating a series of mock realizations $\bbh{d}_r$ with $r=1...N_r$ and estimating the sample covariance $\bbh{C}$
 
 \begin{equation}
 \bb{\bar{d}} = \frac{1}{N_r}\sum_{r=1}^{N_r} \bbh{d}_r
@@ -130,42 +130,39 @@ From which we can build the estimators for the parameters expectation value $\bb
 \bbh{T} = (\bb{d}_0'^T\bbh{C}^{-1}\bb{d}_0')^{-1}\bb{d}_0'^T\bbh{C}^{-1}
 \end{equation}
 %
-Where, for simplicity we assumed $\langle\bbh{d}\rangle=\bb{d}_0$, so that $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$. Since the feature we consider is the shear-shear power spectrum, its derivatives $\bb{d}_0'$ with respect to the cosmological parameters can be evaluated by existing analytical codes. For this purpose we use the analytical code NICAEA (see \citep{Nicaea}). The noise in the covariance estimator (\ref{covest}) propagates all the way to the posterior (\ref{posteriorbayes}), the parameter estimate (\ref{estimatormean}) and its variance (\ref{estimatorcovariance}), through the transformation matrix $\bbh{T}$. \citep{DodelsonSchneider13} found that the variance $\h{\sigma}^2_\bb{p}=\mathrm{diag}(\bbh{\Sigma}_\bb{p})$ of each parameter $p$ that is estimated from (\ref{estimatorcovariance}) increases on average with $1/N_r$
-\begin{equation}
-\label{dodelsonscaling}
-\langle\h{\sigma}_\bb{p}^2\rangle = \sigma_p^2\left(1+\frac{D}{N_r}\right)
-\end{equation} 
-%
-where $\sigma^2_p$ is the true parameter variance and $D$ is what we call \textit{effective dimensionality} of the feature space. \citep{DodelsonSchneider13} found $D=N_b$ when every entry in the covariance matrix is subject to noise. In this work we argue that the feature ensemble from which the covariance estimator $\bbh{C}^{-1}$ is measured depends not only on the number of shear mock realizations $N_r$, but in principle also on the number of independent $N$--body simulations $N_s$, on which the randomization procedure we describe in \S~\ref{shearsim}. We propose a modification to the scaling relation (\ref{dodelsonscaling}) that takes the varying $N_s$ into account. 
+Where, for simplicity we assumed $\langle\bbh{d}\rangle=\bb{d}_0$, so that $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$. The noise in the covariance estimator (\ref{covest}) propagates all the way to the posterior (\ref{posteriorbayes}), the parameter estimate (\ref{estimatormean}) and its variance (\ref{estimatorcovariance}), through the transformation matrix $\bbh{T}$. Following \citep{Taylor12} we can say that, if the feature vector $\bbh{d}$ from which $\bbh{C}$ is estimated is drawn from a multivariate Gaussian distribution, the expectation values of the fluctuations of its inverse $\bbh{\Psi}$ can be computed analytically as:
 
 \begin{equation}
-\label{ourscaling}
-\langle\h{\sigma}_p^2\rangle = \sigma^2_p(N_s,D)\left(1+\frac{D}{N_r}\right)
+\langle\delta\h{\Psi}_{ij}\delta\h{\Psi}_{kl}\rangle = A\Psi_{ij}\Psi_{kl} + B(\Psi_{ik}\Psi_{jl} + \Psi_{il}\Psi_{jk})
+\end{equation}
+%
+where $A,B$ are constants that depend on $N_r,N_b$. \citep{DodelsonSchneider13} calculated the effect of the $\bbh{\Psi}$ fluctuations on the parameter constraints and found that the parameter variance estimator (\ref{estimatorcovariance}) is biased
+
+\begin{equation}
+\label{dodelsonscaling}
+\langle\bbh{\Sigma}_\bb{p}\rangle = \left[1+B(N_b-N_p)\right]\bb{\Sigma}_\bb{p}
 \end{equation} 
 %
-The reason for this can be found in that, if $N_s$ is not big enough, the different shear realizations cannot be all independent, and hence the true variance $\sigma^2_p$ cannot be recovered in the limit $N_r\rightarrow\infty$. In particular there could be some residual error in the expectation value of (\ref{estimatorcovariance}) even if $N_r$ is big. In the next paragraph we outline our main findings. 
+With the $\bbh{d}$ Gaussianity assumption, the coefficient $B$ can be calculated exactly as \citep{DodelsonSchneider13,Taylor12}:
+\begin{equation}
+B = \frac{N_r-N_b-2}{(N_r-N_b-1)(N_r-N_b-4)}
+\end{equation}
+%
+In the limit $N_r\gg N_b$ this leads to a degradation of order $(N_b-N_p)/N_r$ for the variance of each estimated parameter $\sigma^2_p$. We test the scaling relation
+\begin{equation}
+\label{ourscaling}
+\langle\h{\sigma}_p^2\rangle = \sigma^2_p(N_s)\left(1+\frac{D}{N_r}\right)
+\end{equation}
+%
+on our simulations. We call $D$ the \textit{effective dimensionality} of the feature space which, under Gaussianity assumptions, is equal to $N_b-N_p$. The expectation values $\h{\sigma}^2_p$ (equations (\ref{estimatorcovariance}),(\ref{ourscaling})) have been computed averaging over 100 independent resamples of the shear ensembles. For the true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use the estimated covariance from the $N_s=200$ ensemble. 
+The true parameter variance $\sigma^2_p(N_s)$ in principle depends on the number of independent $N$--body simulations $N_s$, which appears in the randomization procedure we describe in \S~\ref{shearsim}. The reason for this can be found in that, if $N_s$ is not big enough, the different shear realizations cannot be all independent, and hence the true variance $\sigma^2_p(N_s\rightarrow\infty)$ cannot be recovered in the limit $N_r\rightarrow\infty$. In particular there could be some residual error in the expectation value of (\ref{estimatorcovariance}) even if $N_r$ is big. In the next paragraph we outline our main findings.
+ 
 
 %%%%%%%%%%%%%%%%%%% RESULTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Results}
 
-\begin{figure*}
-\includegraphics[scale=0.4]{Figures/ps_pdf.eps}
-\caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple).}
-\label{ps_pdf}
-\end{figure*}
-
-\begin{figure}
-\includegraphics[scale=0.3]{Figures/ps_variance.eps}
-\caption{Variance of the $\kappa$ power spectrum as a function of the multipole $l$, in units of the expected gaussian variance from equation (\ref{gaussianvar}). The variance is measured from different shear ensembles with $N_s=$1 (black), 2 (blue), 5 (green), 10 (red), 50 (purple), 100 (orange). }
-\label{ps_var}
-\end{figure}
-
-\begin{figure}
-\includegraphics[scale=0.3]{Figures/scaling_nr.eps}
-\caption{Expectation value of the variance on $w$, $\langle\h{\sigma}^2_w\rangle$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{dodelsonscaling}). }
-\label{wvar_nr}
-\end{figure}
+If the feature we consider is the shear-shear power spectrum, its derivatives $\bb{d}_0'$ with respect to the cosmological parameters can be evaluated by existing analytical codes. For this purpose we use the analytical code NICAEA (see \citep{Nicaea}).
 
 \begin{table}
 \begin{center}
@@ -195,6 +192,24 @@ The reason for this can be found in that, if $N_s$ is not big enough, the differ
 \label{dimtable}
 \end{table}
 
+\begin{figure*}
+\includegraphics[scale=0.4]{Figures/ps_pdf.eps}
+\caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple).}
+\label{ps_pdf}
+\end{figure*}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/ps_variance.eps}
+\caption{Variance of the $\kappa$ power spectrum as a function of the multipole $l$, in units of the expected gaussian variance from equation (\ref{gaussianvar}). The variance is measured from different shear ensembles with $N_s=$1 (black), 2 (blue), 5 (green), 10 (red), 50 (purple), 100 (orange). }
+\label{ps_var}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/scaling_nr.eps}
+\caption{Expectation value of the variance on $w$, $\langle\h{\sigma}^2_w\rangle$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{dodelsonscaling}). }
+\label{wvar_nr}
+\end{figure}
+
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/scaling_ns.eps}
 \caption{Expectation value of the variance on $w$, $\langle\h{\sigma}^2_w\rangle$, varying the mock ensemble used to compute the covariance estimator (\ref{covest}). We factored out the $(1+D/N_r)$ dependence, showing only the dependence of $\sigma_0^2$ on $D$. Different choices of $N_r=$100 (black), 300 (blue), 500 (green), 700 (red), 900 (purple) are shown for comparison.}
@@ -207,7 +222,7 @@ In this section we outline the main results of this work. We show the qualitativ
 \mathrm{Var}(P^{\kappa\kappa}(l)) = \frac{P^{\kappa\kappa,2}(l)}{N(l)}
 \end{equation}
 %
-where $N(l)$ is the number of modes used to estimate the power spectrum at $l$, which depends on the mock size $\theta_{box}$ and on the width of the $N_b$ multipole bands. Figure \ref{wvar_nr} and Table \ref{dimtable} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ and compare it with the known result obtained in \citep{DodelsonSchneider13}. Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint. The expectation values $\h{\sigma}^2_w$ (equations (\ref{estimatorcovariance}),(\ref{ourscaling})) have been computed averaging over 100 independent resamples of the $P^{\kappa\kappa}$ ensembles. For the true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use the estimated covariance from the $N_s=200$ ensemble. 
+where $N(l)$ is the number of modes used to estimate the power spectrum at $l$, which depends on the mock size $\theta_{box}$ and on the width of the $N_b$ multipole bands. Figure \ref{wvar_nr} and Table \ref{dimtable} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ and compare it with the known result obtained in \citep{DodelsonSchneider13}. Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint. 
 
 
 %%%%%%%%%%%%%%%%%% DISCUSSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
