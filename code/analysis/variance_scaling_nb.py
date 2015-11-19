@@ -53,7 +53,7 @@ def main():
 			fisher_scale = emulator.approximate_linear(fiducial_parameters,derivative_precision=0.01).features({emulator.feature_names[0]:scales[s]})
 
 			#This is the reference covariance matrix
-			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/Maps200/power_spectrum_s0_nb39.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
+			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/GrandEnsemble/power_spectrum_s0_nb39.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
 			true_covariance_ensemble.add_name(emulator.feature_names[0])
 			true_covariance = true_covariance_ensemble.cov()
 			diagonal_covariance = Ensemble(np.diag(true_covariance.values.diagonal()),index=true_covariance.index,columns=true_covariance.columns)
@@ -105,7 +105,7 @@ def main():
 			fisher_scale = emulator.features({emulator.feature_names[0]:scales[s]})
 
 			#This is the reference covariance matrix
-			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/Maps200/peaks_s0.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
+			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/GrandEnsemble/peaks_s0.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
 			true_covariance_ensemble.add_name(emulator.feature_names[0])
 			true_covariance = true_covariance_ensemble.cov()
 			diagonal_covariance = Ensemble(np.diag(true_covariance.values.diagonal()),index=true_covariance.index,columns=true_covariance.columns)
