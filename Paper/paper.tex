@@ -11,6 +11,7 @@
 \usepackage{color}
 \usepackage{pbox}
 \usepackage{booktabs}
+\usepackage[dvipsnames]{xcolor}
 
 \hypersetup{
 	colorlinks=false,
@@ -50,7 +51,7 @@
 \label{firstpage}
 
 \begin{abstract}
-Constraining cosmology using Weak Gravitational Lensing consists in comparing measured features with simulated ones. An accurate estimate of the feature covariance matrix is essential to obtain accurate parameter confidence intervals. When this covariance matrix $\bb{C}$ is measured from simulations, an important question to ask is how big the simulation set should be for an accurate estimation of $\bb{C}$. We construct different mock ensembles with $N_r$ realizations of the same shear field, based on $N_s<N_r$ independent $N$--body simulations. Using the shear--shear power spectrum as a summary statistic, we find that the scaling of the forecasted error bar for $w$ shows the expected behavior with $N_r$ (see \citep{DodelsonSchneider13}). The same quantity shows a mild dependence on $N_s$ and on the effective dimensionality of the feature space.     
+Constraining cosmology using Weak Gravitational Lensing consists in comparing measured features with simulated ones. An accurate estimate of the feature covariance matrix is essential to obtain accurate parameter confidence intervals. When this covariance matrix $\bb{C}$ is measured from simulations, an important question to ask is how big the simulation set should be for an accurate estimation of $\bb{C}$. We construct different mock ensembles with $N_r$ realizations of the same shear field, based on $N_s<N_r$ independent $N$--body simulations. Using the shear--shear power spectrum as a summary statistic, we find that a single $N$--body simulation can be recycled $O(10^6)$ times to produce an ensemble of $N_r=10^5$ shear realizations that are mutually independent. We also find that, for a range of summary statistics that include shear--shear power spectra measured at different scales and converge peak counts, parameter constraints degrade faster than the $O(N_b)$ Gaussian prediction by \citep{DodelsonSchneider13}, where $N_b$ is the length of the feature vector.       
 \end{abstract}
 
 
@@ -162,36 +163,6 @@ The true parameter variance $\sigma^2_p(N_s)$ in principle depends on the number
 
 \section{Results}
 
-If the feature we consider is the shear-shear power spectrum, its derivatives $\bb{d}_0'$ with respect to the cosmological parameters can be evaluated by existing analytical codes. For this purpose we use the analytical code NICAEA (see \citep{Nicaea}).
-
-\begin{table}
-\begin{center}
-\begin{tabular}{r|rr}
-\toprule
- $N_s$ &  $D$(diagonal) &  $D$(full) \\ \hline
-\midrule
-    1 &   2.8 &  12.3 \\
-    2 &   2.1 &  14.4 \\
-    5 &   2.6 &  16.4 \\
-   10 &   3.1 &  14.6 \\
-   20 &   2.4 &  15.8 \\
-   30 &   2.5 &  15.4 \\
-   40 &   2.7 &  15.7 \\
-   50 &   2.5 &  13.6 \\
-   60 &   2.7 &  13.3 \\
-   70 &   2.4 &  15.0 \\
-   80 &   2.4 &  15.6 \\
-   90 &   2.6 &  14.1 \\
-  100 &   2.2 &  14.1 \\
-  150 &   2.3 &  13.9 \\
-  200 &   2.6 &  18.2 \\
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Effective dimensionality of the power spectrum feature space $D$ computed fitting the measured $w$ variance with the scaling relation (\ref{dodelsonscaling}). We show both cases in which we consider the full covariance matrix and the case in which we artificially zero out all the off diagonal elements.}
-\label{dimtable}
-\end{table}
-
 \begin{figure*}
 \includegraphics[scale=0.4]{Figures/ps_pdf.eps}
 \caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple).}
@@ -216,14 +187,46 @@ If the feature we consider is the shear-shear power spectrum, its derivatives $\
 \label{wvar_ns}
 \end{figure}
 
-In this section we outline the main results of this work. We show the qualitative behavior of the $P^{\kappa\kappa}$ probability distribution function (PDF) in ensembles built with different $N_s$. We also show how the forecasts on the Dark Energy equation of state, $w$, depend on $N_s$ and $N_r$. Figure \ref{ps_pdf} shows the power spectrum PDF at four selected multipoles, while Figure \ref{ps_var} shows the variance in each multipole. This result is compared to the one that we would obtain assuming that the convergence is a Gaussian random field
+\begin{table*}
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Feature} &  \textbf{Specifications} & $N_b$ &  \textbf{Symbol} & \textbf{Color} \\ \hline \hline
+\midrule
+Power Spectrum, log binning  & $l \in [100,800] $ & 8 & $\times$ & black  \\ 
+Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\times$ & black  \\ 
+Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & $\times$ & black  \\
+Power Spectrum, linear binning  & $l \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
+Power Spectrum, linear binning  & $l \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
+Power Spectrum, linear binning  & $l \in [100,4500] $ & 30 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ 
+Power Spectrum, linear binning  & $l \in [100,6000] $ & 39 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ \hline
+Low peaks  & $\kappa_0 \in [-0.06,0.09] $ & 15 & \textcolor{OliveGreen}{$+$} & \textcolor{OliveGreen}{green}  \\ 
+Intermediate peaks  & $\kappa_0 \in [0.1,0.27] $ & 15 & \textcolor{OliveGreen}{$\bigstar$} & \textcolor{OliveGreen}{green}  \\ 
+High peaks  & $\kappa_0 \in [0.28,0.45] $ & 15 & \textcolor{OliveGreen}{$\diamond$} & \textcolor{OliveGreen}{green}  \\
+Low+Intermediate peaks  & $\kappa_0 \in [-0.06,0.27] $ & 30 & \textcolor{OliveGreen}{$\times$} & \textcolor{OliveGreen}{green}  \\
+Intermediate+High peaks  & $\kappa_0 \in [0.1,0.45] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\
+All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{OliveGreen}{$\blacksquare$} & \textcolor{OliveGreen}{green}  \\ \hline
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Effective dimensionality of the power spectrum feature space $D$ computed fitting the measured $w$ variance with the scaling relation (\ref{dodelsonscaling}). We show both cases in which we consider the full covariance matrix and the case in which we artificially zero out all the off diagonal elements.}
+\label{dimtable}
+\end{table*}
+
+\begin{figure}
+\includegraphics[scale=0.35]{Figures/effective_nb.eps}
+\caption{}
+\label{effectivenb}
+\end{figure} 
+
+
+If the feature we consider is the shear-shear power spectrum, its derivatives $\bb{d}_0'$ with respect to the cosmological parameters can be evaluated by existing analytical codes. For this purpose we use the analytical code NICAEA (see \citep{Nicaea}). In this section we outline the main results of this work. We show the qualitative behavior of the $P^{\kappa\kappa}$ probability distribution function (PDF) in ensembles built with different $N_s$. We also show how the forecasts on the Dark Energy equation of state, $w$, depend on $N_s$ and $N_r$. Figure \ref{ps_pdf} shows the power spectrum PDF at four selected multipoles, while Figure \ref{ps_var} shows the variance in each multipole. This result is compared to the one that we would obtain assuming that the convergence is a Gaussian random field
 \begin{equation}
 \label{gaussianvar}
 \mathrm{Var}(P^{\kappa\kappa}(l)) = \frac{P^{\kappa\kappa,2}(l)}{N(l)}
 \end{equation}
 %
-where $N(l)$ is the number of modes used to estimate the power spectrum at $l$, which depends on the mock size $\theta_{box}$ and on the width of the $N_b$ multipole bands. Figure \ref{wvar_nr} and Table \ref{dimtable} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ and compare it with the known result obtained in \citep{DodelsonSchneider13}. Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint. 
-
+where $N(l)$ is the number of modes used to estimate the power spectrum at $l$, which depends on the mock size $\theta_{box}$ and on the width of the $N_b$ multipole bands. Figure \ref{wvar_nr} and Table \ref{dimtable} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ and compare it with the known result obtained in \citep{DodelsonSchneider13}. Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint.
 
 %%%%%%%%%%%%%%%%%% DISCUSSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

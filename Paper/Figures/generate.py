@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from lenstools.statistics.ensemble import Ensemble
 from lenstools.statistics.database import Database
 
-import variance_scaling
+import algorithms
 
 #Options
 parser = argparse.ArgumentParser()
@@ -17,7 +17,7 @@ parser.add_argument("-t","--type",dest="type",default="png",help="format of the 
 parser.add_argument("fig",nargs="*")
 
 #Power spectrum variance
-def ps_variance(cmd_args,nsim=[1,2,5,10,50,100],colors=["black","blue","green","red","purple","orange"],fontsize=18):
+def ps_variance(cmd_args,nsim=[1,2,5,10,50,100],colors=["black","blue","green","red","purple","orange"],fontsize=22):
 
 	assert len(colors)>=len(nsim)
 
@@ -49,7 +49,7 @@ def ps_variance(cmd_args,nsim=[1,2,5,10,50,100],colors=["black","blue","green","
 	fig.savefig("ps_variance."+cmd_args.type)
 
 #Power spectrum pdf
-def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=18):
+def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=22):
 
 	assert len(colors)>=len(nsim)
 	assert len(nell)==4
@@ -87,7 +87,7 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_power_expected.sqlite",parameter="w",nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=18):
+def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=22):
 
 	assert len(colors)>=len(nsim)
 
@@ -98,10 +98,10 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_power_expected.sqlite",par
 
 	#Open the database and look for different nsim
 	with Database("data/"+db_filename) as db:
-		v = db.query("SELECT nsim,nreal,{0} FROM variance_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
+		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
 
 	#Fit with the Dodelson scaling and overlay the fit
-	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
+	vfit = algorithms.fit_nbins(v,parameter=parameter)
 	v = Ensemble.merge(v,vfit,on="nsim")
 	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
 	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
@@ -117,18 +117,18 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_power_expected.sqlite",par
 
 	#Open the database and look for different nsim
 	with Database("data/variance_scaling_power_largeNr.sqlite") as db:
-		v = db.query("SELECT nsim,nreal,{0} FROM variance_all".format(parameter))
+		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all".format(parameter))
 
 	#Fit with the Dodelson scaling and overlay the fit
-	vfit = variance_scaling.fit_nbins(v,parameter=parameter)
+	vfit = algorithms.fit_nbins(v,parameter=parameter)
 	v = Ensemble.merge(v,vfit,on="nsim")
 	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
 	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
 
 	for ns in [1]:
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=2,color=colors[0],ax=ax,legend=False)
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=2,color=colors[0],ax=ax,legend=False)
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=1.5,color=colors[0],ax=ax,legend=False)
+		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=1.5,color=colors[0],ax=ax,legend=False)
 
 	####################################################################################################################################
 
@@ -145,39 +145,130 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_power_expected.sqlite",par
 
 
 #Scaling of the variance with Ns
-def scaling_ns(cmd_args,db_filenames=["variance_scaling_expected.sqlite","variance_scaling_expected_diagonal.sqlite"],parameter="w",nreal=range(100,1000,200),colors=["black","blue","green","red","purple"],linestyles=["-","--"],fontsize=18):
+def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_all","peaks_all"],colors=["black","red","green"],parameter="w",fontsize=22):
 
-	assert len(colors)>=len(nreal)
+	assert len(colors)==len(features)
 
 	#Plot panel
 	fig,ax = plt.subplots()
 
-	for ndb,db_filename in enumerate(db_filenames):
+	#Load the database and fit for the effective dimensionality of each feature space
+	with Database("data/"+db_filename) as db:
+		nb_fit = algorithms.fit_nbins_all(db,parameter)
 
-		if ndb>0:
-			legend=False
-		else:
-			legend = True
-	
-		#Open the database and look for different nsim
-		with Database("data/"+db_filename) as db:
-			v = db.read_table("variance")
-
-		#Fit with the Dodelson scaling
-		vfit = variance_scaling.fit_nbins(v,parameter=parameter)
-		v = Ensemble.merge(v,vfit,on="nsim")
-		v[parameter+"_ns"] = v.eval(parameter+"/(1+(nb/nreal))")
-		nreal_group = v.groupby("nreal")
-
-		for nc,nr in enumerate(nreal):
-			nreal_group.get_group(nr).plot(x="nsim",y=parameter+"_ns",color=colors[nc],ax=ax,label=r"$N_r={0}$".format(nr),linestyle=linestyles[ndb],legend=legend)
+	#Plot the variance coefficient for each feature
+	for nc,f in enumerate(features):
+		nb_fit_feature = nb_fit.query("feature=='{0}'".format(f)).sort_values("nsim")
+		nb_fit_feature["relative"] = nb_fit_feature["s0"] / nb_fit_feature["s0"].iloc[0] 
+		nb_fit_feature.plot(x="nsim",y="relative",ax=ax,color=colors[nc],legend=False)
 
 	#Labels
 	ax.set_xlabel(r"$N_s$",fontsize=fontsize)
-	ax.set_ylabel(r"$\sigma_0^2(N_s)$",fontsize=fontsize)
+	ax.set_ylabel(r"$\sigma_0^2(N_s)/\sigma_0^2(1)$",fontsize=fontsize)
 
 	#Save
 	fig.savefig("scaling_ns."+cmd_args.type)
+
+#Scaling of the effective dimensionality with Nb
+def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",fontsize=22):
+
+	#Plot panel
+	fig,ax = plt.subplots()
+
+	##############################
+	#Plot styles for each feature#
+	##############################
+
+	#Markers
+	markers = {
+	"power_logb_large" : "x",
+	"power_logb_small" : "x",
+	"power_logb_all" : "x",
+	"power_large" : "+",
+	"power_small" : "x",
+	"power_large+small" : "o",
+	"power_all" : "o",
+	"peaks_low" : "+",
+	"peaks_intermediate" : "*",
+	"peaks_high" : "d",
+	"peaks_low+intermediate" : "x",
+	"peaks_intermediate+high" : "o",
+	"peaks_all" : "s",
+	} 
+
+	#Colors
+	colors = {
+	"power_logb_large" : "black",
+	"power_logb_small" : "black",
+	"power_logb_all" : "black",
+	"power_large" : "red",
+	"power_small" : "red",
+	"power_large+small" : "red",
+	"power_all" : "red",
+	"peaks_low" : "green",
+	"peaks_intermediate" : "green",
+	"peaks_high" : "green",
+	"peaks_low+intermediate" : "green",
+	"peaks_intermediate+high" : "green",
+	"peaks_all" : "green",
+	} 
+
+	#Labels
+	labels = {
+	"power_logb_large" : "Power spectrum log binning",
+	"power_logb_small" : None,
+	"power_logb_all" : None,
+	"power_large" : None,
+	"power_small" : None,
+	"power_large+small" : None,
+	"power_all" : "Power spectrum linear binning",
+	"peaks_low" : "Peak counts",
+	"peaks_intermediate" : None,
+	"peaks_high" : None,
+	"peaks_low+intermediate" : None,
+	"peaks_intermediate+high" : None,
+	"peaks_all" : None,
+	} 
+
+	#Offsets
+	offsets = {
+	"power_logb_large" : 0,
+	"power_logb_small" : 0,
+	"power_logb_all" : 0,
+	"power_large" : -0.5,
+	"power_small" : -1,
+	"power_large+small" : 0,
+	"power_all" : 0,
+	"peaks_low" : 0.5,
+	"peaks_intermediate" : 1,
+	"peaks_high" : 1.5,
+	"peaks_low+intermediate" : 0.5,
+	"peaks_intermediate+high" : 1,
+	"peaks_all" : 0,
+	} 
+	
+	#################################################################################################################
+
+	#Load the database and fit for the effective dimensionality of each feature space
+	with Database("data/"+db_filename) as db:
+		features = db.tables
+		nb_fit = algorithms.fit_nbins_all(db,parameter)
+
+	#Calculate the relative dimensionality
+	nb_fit["relative"] = nb_fit.eval("nb/(bins-3)")
+
+	#Scatter each feature
+	for f in features:
+		nb_fit_feature = nb_fit.query("feature=='{0}'".format(f))
+		ax.scatter(nb_fit_feature["bins"]+offsets[f],nb_fit_feature["relative"],color=colors[f],marker=markers[f],s=10+(100-10)*(nb_fit_feature["nsim"]-1)/(200-1),label=labels[f])
+
+	#Axis labels
+	ax.set_xlabel(r"$N_b$",fontsize=fontsize)
+	ax.set_ylabel(r"$D/(N_b-N_p)$",fontsize=fontsize)
+	ax.legend(loc="upper left",prop={"size":15})
+
+	#Save the figure
+	fig.savefig("effective_nb."+cmd_args.type)
 
 		
 ###########################################################################################################################################
@@ -188,6 +279,7 @@ method["1"] = ps_pdf
 method["2"] = ps_variance
 method["3"] = scaling_nr
 method["4"] = scaling_ns
+method["5"] = effective_nb
 
 #Main
 def main():
