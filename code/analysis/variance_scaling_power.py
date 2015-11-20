@@ -17,8 +17,8 @@ import algorithms
 def main():
 
 	#Number of simulations to test
-	nsim = [1,2,5,10,20,30,40,50,60,70,80,90,100,150,200]
-	nreal = np.arange(100,1100,100)
+	nsim = [1]
+	nreal = [100,500,1000] + range(2000,101000,1000)
 	resample = 100
 
 	#Load the emulator
@@ -36,7 +36,7 @@ def main():
 	fiducial_parameters = Series(np.array([0.26,-1.0,0.8]),index=["Om","w","sigma8"])
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
-	with Database("../../data/variance_scaling_nb_expected.sqlite") as db:
+	with Database("../../data/variance_scaling_power_largeNr.sqlite") as db:
 	
 		for s in scales:
 
@@ -55,7 +55,7 @@ def main():
 			for n in nsim:
 		
 				#Load the power spectrum Ensemble from the relevant map set
-				ensemble_nsim = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/Maps{0}/power_spectrum_s0.npy".format(n)),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
+				ensemble_nsim = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/MillionMapsPower/power_spectrum_s0.npy".format(n)),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
 				ensemble_nsim.add_name("power_spectrum")
 
 				#Bootstrap ensemble_sim and compute the parameter variance for each resample
