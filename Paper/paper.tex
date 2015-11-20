@@ -84,12 +84,12 @@ In this paragraph we describe how we constructed our shear field ensembles. Back
 \item Repeat this procedure for each lens redshift $z_l$  
 \end{itemize}  
 %
-This randomization procedure allows us to produce an arbitrary number $N_r$ of mock shear realizations $\pmb{\gamma}_r(\pmb{\theta})$, which however will not be all independent if $N_s$ is not large enough. Using a set of 200 independent $N$--body simulations, we construct different ensembles with different choices of $N_s\in[1,200]$, each made of 1000 mock shear realizations. From each of these mocks we reconstruct the convergence $\kappa_r(\pmb{\theta})$ and measure its angular power spectrum $P^{\kappa\kappa}_r(l)$ defined as
+This randomization procedure allows us to produce an arbitrary number $N_r$ of mock shear realizations $\pmb{\gamma}_r(\pmb{\theta})$, which however will not be all independent if $N_s$ is not large enough. Using a set of 200 independent $N$--body simulations, we construct different ensembles with different choices of $N_s\in[1,200]$, each made of 1000 mock shear realizations. We also build an additional ensemble with $N_s=1$ and $10^5$ mocks. From each of these mocks we reconstruct the convergence $\kappa_r(\pmb{\theta})$ and measure its angular power spectrum $P^{\kappa\kappa}_r(l)$ defined as
 \begin{equation}
 \langle\tilde{\kappa}_r(\bb{l})\tilde{\kappa}_r(\bb{l}')\rangle = (2\pi)^2\delta_D(\bb{l}+\bb{l}')P^{\kappa\kappa}_r(l)
 \end{equation}
 %
-The fact that the ensemble of $N_r$ mocks is not completely independent if $N_s$ is not large enough can have an effect on the covariance estimator of $P^{\kappa\kappa}$. 
+As an additional summary statistic, we consider the counts of local $\kappa$ maxima of a certain height $\kappa_0$, $n_r(\kappa_0)$ (from now on \textit{peak counts}), with varying $\kappa_0$. The fact that the ensemble of $N_r$ mocks is not completely independent if $N_s$ is not large enough can have an effect on the covariance estimators of $P^{\kappa\kappa},n(\kappa_0)$. 
 
 \subsection{Parameter inference}
 %
@@ -137,7 +137,7 @@ Where, for simplicity we assumed $\langle\bbh{d}\rangle=\bb{d}_0$, so that $\lan
 \langle\delta\h{\Psi}_{ij}\delta\h{\Psi}_{kl}\rangle = A\Psi_{ij}\Psi_{kl} + B(\Psi_{ik}\Psi_{jl} + \Psi_{il}\Psi_{jk})
 \end{equation}
 %
-where $A,B$ are constants that depend on $N_r,N_b$. \citep{DodelsonSchneider13} calculated the effect of the $\bbh{\Psi}$ fluctuations on the parameter constraints and found that the parameter variance estimator (\ref{estimatorcovariance}) is biased
+where $A,B$ are constants that depend on $N_r,N_b$ and have the asymptotic behavior $A\propto1/N_r^2,B\propto1/N_r$. \citep{DodelsonSchneider13} calculated the effect of the $\bbh{\Psi}$ fluctuations on the parameter constraints and found that the parameter variance estimator (\ref{estimatorcovariance}) is biased
 
 \begin{equation}
 \label{dodelsonscaling}
@@ -149,13 +149,13 @@ With the $\bbh{d}$ Gaussianity assumption, the coefficient $B$ can be calculated
 B = \frac{N_r-N_b-2}{(N_r-N_b-1)(N_r-N_b-4)}
 \end{equation}
 %
-In the limit $N_r\gg N_b$ this leads to a degradation of order $(N_b-N_p)/N_r$ for the variance of each estimated parameter $\sigma^2_p$. We test the scaling relation
+In the limit $N_r\gg N_b$ this leads to a degradation of order $(N_b-N_p)/N_r$ for the variance of each estimated parameter $\sigma^2_p=\Sigma_{pp}$. We test the scaling relation
 \begin{equation}
 \label{ourscaling}
 \langle\h{\sigma}_p^2\rangle = \sigma^2_p(N_s)\left(1+\frac{D}{N_r}\right)
 \end{equation}
 %
-on our simulations. We call $D$ the \textit{effective dimensionality} of the feature space which, under Gaussianity assumptions, is equal to $N_b-N_p$. The expectation values $\h{\sigma}^2_p$ (equations (\ref{estimatorcovariance}),(\ref{ourscaling})) have been computed averaging over 100 independent resamples of the shear ensembles. For the true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use the estimated covariance from the $N_s=200$ ensemble. 
+on our simulations. We call $D$ the \textit{effective dimensionality} of the feature space which, under Gaussianity assumptions, is equal to $N_b-N_p$. We compute the expectation values of $\h{\sigma}^2_p$ (equations (\ref{estimatorcovariance}),(\ref{ourscaling})) averaging over 100 random resamplings of our shear ensembles. For the true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use the estimated covariance from a grand ensemble built with the union of all the ensembles with different $N_s$. 
 The true parameter variance $\sigma^2_p(N_s)$ in principle depends on the number of independent $N$--body simulations $N_s$, which appears in the randomization procedure we describe in \S~\ref{shearsim}. The reason for this can be found in that, if $N_s$ is not big enough, the different shear realizations cannot be all independent, and hence the true variance $\sigma^2_p(N_s\rightarrow\infty)$ cannot be recovered in the limit $N_r\rightarrow\infty$. In particular there could be some residual error in the expectation value of (\ref{estimatorcovariance}) even if $N_r$ is big. In the next paragraph we outline our main findings.
  
 
