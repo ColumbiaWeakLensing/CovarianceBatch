@@ -152,6 +152,23 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 	#Plot panel
 	fig,ax = plt.subplots()
 
+	#Labels
+	labels = {
+	"power_logb_large" : None,
+	"power_logb_small" : None,
+	"power_logb_all" : "Power spectrum log binning",
+	"power_large" : None,
+	"power_small" : None,
+	"power_large+small" : None,
+	"power_all" : "Power spectrum linear binning",
+	"peaks_low" : None,
+	"peaks_intermediate" : None,
+	"peaks_high" : None,
+	"peaks_low+intermediate" : None,
+	"peaks_intermediate+high" : None,
+	"peaks_all" : "Peak counts",
+	} 
+
 	#Load the database and fit for the effective dimensionality of each feature space
 	with Database("data/"+db_filename) as db:
 		nb_fit = algorithms.fit_nbins_all(db,parameter)
@@ -159,18 +176,19 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 	#Plot the variance coefficient for each feature
 	for nc,f in enumerate(features):
 		nb_fit_feature = nb_fit.query("feature=='{0}'".format(f)).sort_values("nsim")
-		nb_fit_feature["relative"] = nb_fit_feature["s0"] / nb_fit_feature["s0"].iloc[0] 
-		nb_fit_feature.plot(x="nsim",y="relative",ax=ax,color=colors[nc],legend=False)
+		nb_fit_feature["relative"] = nb_fit_feature["s0"] / nb_fit_feature["s0"].mean() 
+		nb_fit_feature.plot(x="nsim",y="relative",ax=ax,color=colors[nc],label=labels[f],legend=False)
 
 	#Labels
 	ax.set_xlabel(r"$N_s$",fontsize=fontsize)
-	ax.set_ylabel(r"$\sigma_0^2(N_s)/\sigma_0^2(1)$",fontsize=fontsize)
+	ax.set_ylabel(r"$\sigma_0^2(N_s)/\sigma_{0,mean}^2$",fontsize=fontsize)
+	ax.legend()
 
 	#Save
 	fig.savefig("scaling_ns."+cmd_args.type)
 
 #Scaling of the effective dimensionality with Nb
-def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",fontsize=22):
+def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",correct=False,evaluate="nb/(bins-3)",ylabel=r"$D/(N_b-N_p)$",fontsize=22,figname="effective_nb"):
 
 	#Plot panel
 	fig,ax = plt.subplots()
@@ -252,10 +270,10 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 	#Load the database and fit for the effective dimensionality of each feature space
 	with Database("data/"+db_filename) as db:
 		features = db.tables
-		nb_fit = algorithms.fit_nbins_all(db,parameter)
+		nb_fit = algorithms.fit_nbins_all(db,parameter,correct=correct)
 
 	#Calculate the relative dimensionality
-	nb_fit["relative"] = nb_fit.eval("nb/(bins-3)")
+	nb_fit["relative"] = nb_fit.eval(evaluate)
 
 	#Scatter each feature
 	for f in features:
@@ -264,11 +282,18 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 
 	#Axis labels
 	ax.set_xlabel(r"$N_b$",fontsize=fontsize)
-	ax.set_ylabel(r"$D/(N_b-N_p)$",fontsize=fontsize)
+	ax.set_ylabel(ylabel,fontsize=fontsize)
 	ax.legend(loc="upper left",prop={"size":15})
 
 	#Save the figure
-	fig.savefig("effective_nb."+cmd_args.type)
+	fig.savefig(".".join([figname,cmd_args.type]))
+
+
+def effective_nb_fake_uncorrected(cmd_args):
+	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=False,evaluate="nb/(3-bins)",ylabel=r"$D/(N_p-N_b)$",fontsize=22,figname="effective_nb_fake_uncorrected")
+
+def effective_nb_fake_corrected(cmd_args):
+	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=True,evaluate="nb/4",ylabel=r"$D/(1+N_p)$",fontsize=22,figname="effective_nb_fake_corrected")
 
 		
 ###########################################################################################################################################
@@ -279,7 +304,9 @@ method["1"] = ps_pdf
 method["2"] = ps_variance
 method["3"] = scaling_nr
 method["4"] = scaling_ns
-method["5"] = effective_nb
+method["5a"] = effective_nb
+method["5b"] = effective_nb_fake_uncorrected
+method["5c"] = effective_nb_fake_corrected
 
 #Main
 def main():
