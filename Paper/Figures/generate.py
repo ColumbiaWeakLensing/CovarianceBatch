@@ -188,7 +188,7 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 	fig.savefig("scaling_ns."+cmd_args.type)
 
 #Scaling of the effective dimensionality with Nb
-def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",correct=False,evaluate="nb/(bins-3)",ylabel=r"$D/(N_b-N_p)$",fontsize=22,figname="effective_nb"):
+def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",correct=False,evaluate=lambda nb:nb-3,th_label=r"$N_b-N_p$",fontsize=22,figname="effective_nb"):
 
 	#Plot panel
 	fig,ax = plt.subplots()
@@ -272,17 +272,19 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 		features = db.tables
 		nb_fit = algorithms.fit_nbins_all(db,parameter,correct=correct)
 
-	#Calculate the relative dimensionality
-	nb_fit["relative"] = nb_fit.eval(evaluate)
-
 	#Scatter each feature
 	for f in features:
 		nb_fit_feature = nb_fit.query("feature=='{0}'".format(f))
-		ax.scatter(nb_fit_feature["bins"]+offsets[f],nb_fit_feature["relative"],color=colors[f],marker=markers[f],s=10+(100-10)*(nb_fit_feature["nsim"]-1)/(200-1),label=labels[f])
+		ax.scatter(nb_fit_feature["bins"]+offsets[f],nb_fit_feature["nb"],color=colors[f],marker=markers[f],s=10+(100-10)*(nb_fit_feature["nsim"]-1)/(200-1),label=labels[f])
+
+	#Plot the theory prediction
+	bins = np.arange(1,51)
+	ax.plot(bins,evaluate(bins),color="black",linewidth=2,label=th_label)
 
 	#Axis labels
+	ax.set_xlim(0,53)
 	ax.set_xlabel(r"$N_b$",fontsize=fontsize)
-	ax.set_ylabel(ylabel,fontsize=fontsize)
+	ax.set_ylabel(r"$D$",fontsize=fontsize)
 	ax.legend(loc="upper left",prop={"size":15})
 
 	#Save the figure
@@ -290,10 +292,10 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 
 
 def effective_nb_fake_uncorrected(cmd_args):
-	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=False,evaluate="nb/(3-bins)",ylabel=r"$D/(N_p-N_b)$",fontsize=22,figname="effective_nb_fake_uncorrected")
+	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=False,evaluate=lambda nb:3-nb,th_label=r"$N_p-N_b$",fontsize=22,figname="effective_nb_fake_uncorrected")
 
 def effective_nb_fake_corrected(cmd_args):
-	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=True,evaluate="nb/4",ylabel=r"$D/(1+N_p)$",fontsize=22,figname="effective_nb_fake_corrected")
+	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=True,evaluate=lambda nb:np.ones_like(nb)*4,th_label=r"$1+N_p$",fontsize=22,figname="effective_nb_fake_corrected")
 
 		
 ###########################################################################################################################################
