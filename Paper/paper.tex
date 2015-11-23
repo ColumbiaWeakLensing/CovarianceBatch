@@ -145,9 +145,8 @@ All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{OliveGreen}{$\blacks
 
 \begin{figure*}
 \includegraphics[scale=0.3]{Figures/effective_nb.eps}
-\includegraphics[scale=0.3]{Figures/effective_nb_fake_uncorrected.eps}
-\includegraphics[scale=0.3]{Figures/effective_nb_fake_corrected.eps}
-\caption{Effective dimesionality of the feature space, $D$, as a function of the number of bands $N_b$, for the features outlined in Table \ref{featuretable}. The solid black lines show the theory predictions from equations (\ref{dodelsonscaling}) in the left panel, equation (\ref{mockscalinguncorrected}) in the right panel and equation (\ref{mockscalingcorrected}) in the bottom panel.}
+\includegraphics[scale=0.3]{Figures/effective_nb_gaussian.eps}
+\caption{Effective dimesionality of the feature space, $D$, as a function of the number of bands $N_b$, for the features outlined in Table \ref{featuretable}.}
 \label{effectivenb}
 \end{figure*}
 
@@ -315,7 +314,7 @@ If we use the precision estimator $\bbh{\Psi}=\bb{\Psi}+\delta\bbh{\Psi}$ and do
 \begin{equation}
 \begin{matrix}
 & \langle\delta\bbh{\Psi}\rangle = \frac{1+N_b}{N_r-N_b-2}\bb{\Psi} \\ \\
-& \langle\delta\h{\Psi}_{ij}\delta\h{\Psi}_{kl}\rangle = \frac{A([N_r-1)^2+(1+N_b)^2]\Psi_{ij}\Psi_{kl} + B(N_r-1)^2(\Psi_{ik}\Psi_{kl}+\Psi_{il}\Psi_{jk})}{(N_r-N_b-2)^2}
+& \langle\delta\h{\Psi}_{ij}\delta\h{\Psi}_{kl}\rangle = \frac{A([(N_r-1)^2+(1+N_b)^2]\Psi_{ij}\Psi_{kl} + B(N_r-1)^2(\Psi_{ik}\Psi_{kl}+\Psi_{il}\Psi_{jk})}{(N_r-N_b-2)^2}
 \end{matrix}
 \end{equation}
 %
