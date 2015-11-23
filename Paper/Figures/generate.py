@@ -291,11 +291,8 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 	fig.savefig(".".join([figname,cmd_args.type]))
 
 
-def effective_nb_fake_uncorrected(cmd_args):
-	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=False,evaluate=lambda nb:3-nb,th_label=r"$N_p-N_b$",fontsize=22,figname="effective_nb_fake_uncorrected")
-
-def effective_nb_fake_corrected(cmd_args):
-	effective_nb(cmd_args,db_filename="variance_scaling_nb_fake.sqlite",parameter="w",correct=True,evaluate=lambda nb:np.ones_like(nb)*4,th_label=r"$1+N_p$",fontsize=22,figname="effective_nb_fake_corrected")
+def effective_nb_gaussian(cmd_args):
+	effective_nb(cmd_args,db_filename="variance_scaling_gaussian_expected.sqlite",parameter="w",correct=False,evaluate=lambda nb:nb-3,th_label=r"$N_b-N_p$",fontsize=22,figname="effective_nb_gaussian")
 
 		
 ###########################################################################################################################################
@@ -307,8 +304,7 @@ method["2"] = ps_variance
 method["3"] = scaling_nr
 method["4"] = scaling_ns
 method["5a"] = effective_nb
-method["5b"] = effective_nb_fake_uncorrected
-method["5c"] = effective_nb_fake_corrected
+method["5b"] = effective_nb_gaussian
 
 #Main
 def main():
