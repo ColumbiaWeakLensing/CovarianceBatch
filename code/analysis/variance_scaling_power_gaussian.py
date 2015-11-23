@@ -4,7 +4,7 @@ import gc
 
 from lenstools.statistics.database import Database
 from lenstools.statistics.ensemble import Series,Ensemble
-from lenstools.statistics.constraints import FisherAnalysis,Emulator
+from lenstools.statistics.constraints import Emulator
 
 import numpy as np
 
@@ -80,7 +80,7 @@ def main():
 	###########################################################
 
 	#Load the emulator
-	emulator = FisherAnalysis.read("../../data/emulators/emulator_power_fine.pkl")
+	emulator = Emulator.read("../../data/emulators/emulator_power_fine.pkl")
 	num_ell = np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/ell.npy")
 	feature_columns = emulator[emulator.feature_names].columns
 
@@ -107,7 +107,7 @@ def main():
 			print("[+] Populating table {0}...".format(table_name))
 
 			#Approximate the emulator linearly around the fiducial model
-			fisher_scale = emulator.features({emulator.feature_names[0]:scales[s]})
+			fisher_scale = emulator.approximate_linear(fiducial_parameters,derivative_precision=0.01).features({emulator.feature_names[0]:scales[s]})
 			true_covariance_scale = true_covariance[sub_feature_names].loc[sub_feature_names]
 
 			for n in nsim:
