@@ -45,7 +45,7 @@ def main():
 	with Database("../../data/variance_scaling_gaussian_expected.sqlite") as db:
 
 		#This is the true covariance matrix
-		true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=emulator.columns,columns=emulator.columns)
+		true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=feature_columns,columns=feature_columns)
 	
 		for s in scales:
 
@@ -95,7 +95,7 @@ def main():
 	with Database("../../data/variance_scaling_gaussian_expected.sqlite") as db:
 
 		#This is the true covariance matrix
-		true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=emulator.columns,columns=emulator.columns)
+		true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=feature_columns,columns=feature_columns)
 	
 		for s in scales:
 
