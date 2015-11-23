@@ -49,17 +49,21 @@ def main():
 	
 		for s in scales:
 
+			#Cut the number of bins
+			sub_feature_names = [(emulator.feature_names[0],fb) for fb in scales[s]]
+
 			#Log
 			table_name = "power_" + s
 			print("[+] Populating table {0}...".format(table_name))
 
 			#Approximate the emulator linearly around the fiducial model
 			fisher_scale = emulator.approximate_linear(fiducial_parameters,derivative_precision=0.01).features({emulator.feature_names[0]:scales[s]})
+			true_covariance_scale = true_covariance[sub_feature_names].loc[sub_feature_names]
 
 			for n in nsim:
 		
 				#Mock the power spectrum Ensemble drawing from a multivariate Gaussian
-				ensemble_nsim = Ensemble.sample_gaussian(true_covariance,realizations=1000,mean=emulator.predict(fiducial_parameters))
+				ensemble_nsim = Ensemble.sample_gaussian(true_covariance_scale,realizations=1000,mean=emulator.predict(fiducial_parameters)[sub_feature_names])
 
 				#Bootstrap ensemble_sim and compute the parameter variance for each resample
 				for nr in nreal:
@@ -67,7 +71,7 @@ def main():
 					gc.collect()
 
 					print("[+] Bootstraping scale={0}, Nb={1}, nsim={2}, nreal={3} with {4} resamples".format(s,ensemble_nsim.shape[1],n,nr,resample))
-					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher_scale,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr,"bins":ensemble_nsim.shape[1]})
+					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher_scale,true_covariance=true_covariance_scale,extra_items={"nsim":n,"nreal":nr,"bins":ensemble_nsim.shape[1]})
 					db.insert(Ensemble(variance_ensemble.mean()).T,table_name=table_name)
 
 
@@ -89,8 +93,14 @@ def main():
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
 	with Database("../../data/variance_scaling_gaussian_expected.sqlite") as db:
+
+		#This is the true covariance matrix
+		true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=emulator.columns,columns=emulator.columns)
 	
 		for s in scales:
+
+			#Cut the number of bins
+			sub_feature_names = [(emulator.feature_names[0],fb) for fb in scales[s]]
 
 			#Log
 			table_name = "power_logb_" + s
@@ -98,14 +108,12 @@ def main():
 
 			#Approximate the emulator linearly around the fiducial model
 			fisher_scale = emulator.features({emulator.feature_names[0]:scales[s]})
-
-			#This is the true covariance matrix
-			true_covariance = Ensemble(np.diag((emulator.predict(fiducial_parameters).values**2)/num_ell),index=emulator.columns,columns=emulator.columns)
+			true_covariance_scale = true_covariance[sub_feature_names].loc[sub_feature_names]
 
 			for n in nsim:
 		
 				#Mock the power spectrum Ensemble drawing from a multivariate Gaussian
-				ensemble_nsim = Ensemble.sample_gaussian(true_covariance,realizations=1000,mean=emulator.predict(fiducial_parameters))
+				ensemble_nsim = Ensemble.sample_gaussian(true_covariance_scale,realizations=1000,mean=emulator.predict(fiducial_parameters)[sub_feature_names])
 
 				#Bootstrap ensemble_sim and compute the parameter variance for each resample
 				for nr in nreal:
@@ -113,7 +121,7 @@ def main():
 					gc.collect()
 
 					print("[+] Bootstraping scale={0}, Nb={1}, nsim={2}, nreal={3} with {4} resamples".format(s,ensemble_nsim.shape[1],n,nr,resample))
-					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher_scale,true_covariance=true_covariance,extra_items={"nsim":n,"nreal":nr,"bins":ensemble_nsim.shape[1]})
+					variance_ensemble = ensemble_nsim.bootstrap(algorithms.bootstrap_fisher,bootstrap_size=nr,resample=resample,assemble=lambda l:Ensemble.concat(l,ignore_index=True),fisher=fisher_scale,true_covariance=true_covariance_scale,extra_items={"nsim":n,"nreal":nr,"bins":ensemble_nsim.shape[1]})
 					db.insert(Ensemble(variance_ensemble.mean()).T,table_name=table_name)
 
 
