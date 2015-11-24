@@ -180,6 +180,7 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 		nb_fit_feature.plot(x="nsim",y="relative",ax=ax,color=colors[nc],label=labels[f],legend=False)
 
 	#Labels
+	ax.set_xlim(-10,210)
 	ax.set_xlabel(r"$N_s$",fontsize=fontsize)
 	ax.set_ylabel(r"$\sigma_0^2(N_s)/\sigma_{0,mean}^2$",fontsize=fontsize)
 	ax.legend()
