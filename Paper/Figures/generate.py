@@ -16,6 +16,83 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-t","--type",dest="type",default="png",help="format of the figure to save")
 parser.add_argument("fig",nargs="*")
 
+###################################################################################################
+
+##############################
+#Plot styles for each feature#
+##############################
+
+#Markers
+markers = {
+"power_logb_large" : "x",
+"power_logb_small" : "x",
+"power_logb_all" : "x",
+"power_large" : "+",
+"power_small" : "x",
+"power_large+small" : "o",
+"power_all" : "o",
+"peaks_low" : "+",
+"peaks_intermediate" : "*",
+"peaks_high" : "d",
+"peaks_low+intermediate" : "x",
+"peaks_intermediate+high" : "o",
+"peaks_all" : "s",
+} 
+
+#Colors
+colors = {
+"power_logb_large" : "black",
+"power_logb_small" : "black",
+"power_logb_all" : "black",
+"power_large" : "red",
+"power_small" : "red",
+"power_large+small" : "red",
+"power_all" : "red",
+"peaks_low" : "green",
+"peaks_intermediate" : "green",
+"peaks_high" : "green",
+"peaks_low+intermediate" : "green",
+"peaks_intermediate+high" : "green",
+"peaks_all" : "green",
+} 
+
+#Labels
+labels = {
+"power_logb_large" : "Power spectrum log binning",
+"power_logb_small" : None,
+"power_logb_all" : None,
+"power_large" : None,
+"power_small" : None,
+"power_large+small" : None,
+"power_all" : "Power spectrum linear binning",
+"peaks_low" : "Peak counts",
+"peaks_intermediate" : None,
+"peaks_high" : None,
+"peaks_low+intermediate" : None,
+"peaks_intermediate+high" : None,
+"peaks_all" : None,
+} 
+
+#Offsets
+offsets = {
+"power_logb_large" : 0,
+"power_logb_small" : 0,
+"power_logb_all" : 0,
+"power_large" : -0.5,
+"power_small" : -1,
+"power_large+small" : 0,
+"power_all" : 0,
+"peaks_low" : 0.5,
+"peaks_intermediate" : 1,
+"peaks_high" : 1.5,
+"peaks_low+intermediate" : 0.5,
+"peaks_intermediate+high" : 1,
+"peaks_all" : 0,
+}
+
+
+###################################################################################################
+
 #Power spectrum variance
 def ps_variance(cmd_args,nsim=[1,2,5,10,50,100],colors=["black","blue","green","red","purple","orange"],fontsize=22):
 
@@ -145,7 +222,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 
 
 #Scaling of the variance with Ns
-def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_all","peaks_all"],colors=["black","red","green"],parameter="w",fontsize=22):
+def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_all","peaks_all"],fit_kind="quadratic",nreal_min=500,colors=["black","red","green"],parameter="w",fontsize=22):
 
 	assert len(colors)==len(features)
 
@@ -171,7 +248,7 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 
 	#Load the database and fit for the effective dimensionality of each feature space
 	with Database("data/"+db_filename) as db:
-		nb_fit = algorithms.fit_nbins_all(db,parameter)
+		nb_fit = algorithms.fit_nbins_all(db,parameter=parameter,kind=fit_kind,nreal_min=nreal_min)
 
 	#Plot the variance coefficient for each feature
 	for nc,f in enumerate(features):
@@ -188,99 +265,27 @@ def scaling_ns(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 	#Save
 	fig.savefig("scaling_ns."+cmd_args.type)
 
+############################################################################################################################
+
 #Scaling of the effective dimensionality with Nb
-def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",correct=False,evaluate=lambda nb:nb-3,th_label=r"$N_b-N_p$",fontsize=22,figname="effective_nb"):
+def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",fontsize=22,figname="effective_nb"):
 
 	#Plot panel
-	fig,ax = plt.subplots()
-
-	##############################
-	#Plot styles for each feature#
-	##############################
-
-	#Markers
-	markers = {
-	"power_logb_large" : "x",
-	"power_logb_small" : "x",
-	"power_logb_all" : "x",
-	"power_large" : "+",
-	"power_small" : "x",
-	"power_large+small" : "o",
-	"power_all" : "o",
-	"peaks_low" : "+",
-	"peaks_intermediate" : "*",
-	"peaks_high" : "d",
-	"peaks_low+intermediate" : "x",
-	"peaks_intermediate+high" : "o",
-	"peaks_all" : "s",
-	} 
-
-	#Colors
-	colors = {
-	"power_logb_large" : "black",
-	"power_logb_small" : "black",
-	"power_logb_all" : "black",
-	"power_large" : "red",
-	"power_small" : "red",
-	"power_large+small" : "red",
-	"power_all" : "red",
-	"peaks_low" : "green",
-	"peaks_intermediate" : "green",
-	"peaks_high" : "green",
-	"peaks_low+intermediate" : "green",
-	"peaks_intermediate+high" : "green",
-	"peaks_all" : "green",
-	} 
-
-	#Labels
-	labels = {
-	"power_logb_large" : "Power spectrum log binning",
-	"power_logb_small" : None,
-	"power_logb_all" : None,
-	"power_large" : None,
-	"power_small" : None,
-	"power_large+small" : None,
-	"power_all" : "Power spectrum linear binning",
-	"peaks_low" : "Peak counts",
-	"peaks_intermediate" : None,
-	"peaks_high" : None,
-	"peaks_low+intermediate" : None,
-	"peaks_intermediate+high" : None,
-	"peaks_all" : None,
-	} 
-
-	#Offsets
-	offsets = {
-	"power_logb_large" : 0,
-	"power_logb_small" : 0,
-	"power_logb_all" : 0,
-	"power_large" : -0.5,
-	"power_small" : -1,
-	"power_large+small" : 0,
-	"power_all" : 0,
-	"peaks_low" : 0.5,
-	"peaks_intermediate" : 1,
-	"peaks_high" : 1.5,
-	"peaks_low+intermediate" : 0.5,
-	"peaks_intermediate+high" : 1,
-	"peaks_all" : 0,
-	} 
+	fig,ax = plt.subplots() 
 	
 	#################################################################################################################
 
 	#Load the database and fit for the effective dimensionality of each feature space
 	with Database("data/"+db_filename) as db:
 		features = db.tables
-		nb_fit = algorithms.fit_nbins_all(db,parameter,correct=correct)
+		nb_fit = algorithms.fit_nbins_all(db,parameter=parameter,kind="quadratic",nreal_min=500)
 
-	#Scatter each feature
-	for f in features:
-		nb_fit_feature = nb_fit.query("feature=='{0}'".format(f))
-		ax.scatter(nb_fit_feature["bins"]+offsets[f],nb_fit_feature["nb"],color=colors[f],marker=markers[f],s=10+(100-10)*(nb_fit_feature["nsim"]-1)/(200-1),label=labels[f])
+	#Scatter Nb,D
+	ax.scatter(nb_fit["bins"],nb_fit["D"],color="blue",marker=".")
 
-	#Plot the theory prediction
+	#Plot the Nb,D theory prediction
 	bins = np.arange(1,51)
-	ax.plot(bins,evaluate(bins),color="black",linewidth=2,label=th_label)
+	ax.plot(bins,bins-3,color="blue",linewidth=2,label=r"$D=N_b-N_p$")
 
 	#Axis labels
 	ax.set_xlim(0,53)
@@ -291,9 +296,36 @@ def effective_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",para
 	#Save the figure
 	fig.savefig(".".join([figname,cmd_args.type]))
 
+###########################################################################################################################################
 
-def effective_nb_gaussian(cmd_args):
-	effective_nb(cmd_args,db_filename="variance_scaling_gaussian_expected.sqlite",parameter="w",correct=False,evaluate=lambda nb:nb-3,th_label=r"$N_b-N_p$",fontsize=22,figname="effective_nb_gaussian")
+#Curving effect of the variance versus 1/Nr fir different Nb
+def curving_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",nsim=200,fontsize=22,figname="curving_nb"):
+
+	#Plot panel
+	fig,ax = plt.subplots() 
+	
+	#################################################################################################################
+
+	#Load the database and fit for the effective dimensionality of each feature space
+	with Database("data/"+db_filename) as db:
+		
+		for f in db.tables:
+
+			#Read the table corresponding to each feature
+			v = db.read_table(f).query("nsim=={0}".format(nsim))
+			v["1/nreal"] = v.eval("1.0/nreal")
+			v = v.sort_values("1/nreal")
+
+			#Plot the variance versus 1/nreal
+			ax.plot(v["1/nreal"],v["w"]/v["w"].iloc[0],color=colors[f],marker=markers[f],label=labels[f],linewidth=1+(5-1)*(v["bins"].mean()-7)/(50-7),markersize=10+(20-10)*(v["bins"].mean()-1)/(200-1))
+
+	#Axis labels and legends
+	ax.set_xlabel(r"$1/N_r$",fontsize=fontsize)
+	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle/\langle\hat{\sigma}^2_w\rangle(N_r=1000)$",fontsize=fontsize)
+	ax.legend(loc="upper left")
+
+	#Save the figure
+	fig.savefig(".".join([figname,cmd_args.type]))
 
 		
 ###########################################################################################################################################
@@ -304,8 +336,8 @@ method["1"] = ps_pdf
 method["2"] = ps_variance
 method["3"] = scaling_nr
 method["4"] = scaling_ns
-method["5a"] = effective_nb
-method["5b"] = effective_nb_gaussian
+method["5"] = curving_nb
+method["6"] = effective_nb
 
 #Main
 def main():

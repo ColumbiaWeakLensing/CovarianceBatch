@@ -51,7 +51,7 @@
 \label{firstpage}
 
 \begin{abstract}
-Constraining cosmology using Weak Gravitational Lensing consists in comparing measured features with simulated ones. An accurate estimate of the feature covariance matrix is essential to obtain accurate parameter confidence intervals. When this covariance matrix $\bb{C}$ is measured from simulations, an important question to ask is how big the simulation set should be for an accurate estimation of $\bb{C}$. We construct different mock ensembles with $N_r$ realizations of the same shear field, based on $N_s<N_r$ independent $N$--body simulations. Using the shear--shear power spectrum as a summary statistic, we find that a single $N$--body simulation can be recycled a large number of times to produce an ensemble of $N_r=10^5$ shear realizations that are mutually independent. We also find that, for a range of summary statistics that include shear--shear power spectra measured at different scales and convergence peak counts, parameter constraints degrade faster than the $O(N_b)$ prediction by \citep{DodelsonSchneider13}, where $N_b$ is the length of the feature vector.       
+Constraining cosmology using Weak Gravitational Lensing consists in comparing measured features with simulated ones. An accurate estimate of the feature covariance matrix is essential to obtain accurate parameter confidence intervals. When this covariance matrix $\bb{C}$ is measured from simulations, an important question to ask is how big the simulation set should be for an accurate estimation of $\bb{C}$. We construct different mock ensembles with $N_r$ realizations of the same shear field, based on $N_s<N_r$ independent $N$--body simulations. Using the shear--shear power spectrum as a summary statistic, we find that a single $N$--body simulation can be recycled a large number of times to produce an ensemble of $N_r=10^5$ shear realizations that are mutually independent.       
 \end{abstract}
 
 
@@ -91,66 +91,6 @@ This randomization procedure allows us to produce an arbitrary number $N_r$ of m
 %
 As an additional summary statistic, we consider the counts of local $\kappa$ maxima of a certain height $\kappa_0$, $n_r(\kappa_0)$ (from now on \textit{peak counts}), with varying $\kappa_0$. The fact that the ensemble of $N_r$ mocks is not completely independent if $N_s$ is not large enough can have an effect on the covariance estimators of $P^{\kappa\kappa},n(\kappa_0)$. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{figure*}
-\includegraphics[scale=0.4]{Figures/ps_pdf.eps}
-\caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple). The thick black lines correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations.}
-\label{ps_pdf}
-\end{figure*}
-
-\begin{figure}
-\includegraphics[scale=0.3]{Figures/ps_variance.eps}
-\caption{Variance of the $\kappa$ power spectrum as a function of the multipole $l$, in units of the expected gaussian variance from equation (\ref{gaussianvar}). The variance is measured from different shear ensembles with $N_s=$1 (black), 2 (blue), 5 (green), 10 (red), 50 (purple), 100 (orange). }
-\label{ps_var}
-\end{figure}
-
-\begin{figure}
-\includegraphics[scale=0.3]{Figures/scaling_nr.eps}
-\caption{Bias in the $w$ variance, $\langle\h{\sigma}^2_w\rangle$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{ourscaling}). The thick black line correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations. }
-\label{wvar_nr}
-\end{figure}
-
-\begin{figure}
-\includegraphics[scale=0.3]{Figures/scaling_ns.eps}
-\caption{Variance on $w$ in the limit $N_r\rightarrow\infty$, varying the mock ensemble used to compute the covariance estimator (\ref{covest}). We show the dependence of $\sigma_0^2(N_s)$ in units of the mean over $N_s$, for the power spectrum logarithmically binned (black), the power spectrum linearly binned (red) and the peak counts (green).}
-\label{wvar_ns}
-\end{figure}
-
-\begin{table*}
-\begin{center}
-\begin{tabular}{ccccc}
-\toprule
-\textbf{Feature} &  \textbf{Specifications} & $N_b$ &  \textbf{Symbol} & \textbf{Color} \\ \hline \hline
-\midrule
-Power Spectrum, log binning  & $l \in [100,800] $ & 8 & $\times$ & black  \\ 
-Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\times$ & black  \\ 
-Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & $\times$ & black  \\
-Power Spectrum, linear binning  & $l \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
-Power Spectrum, linear binning  & $l \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
-Power Spectrum, linear binning  & $l \in [100,4500] $ & 30 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ 
-Power Spectrum, linear binning  & $l \in [100,6000] $ & 39 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ \hline
-Low peaks  & $\kappa_0 \in [-0.06,0.09] $ & 15 & \textcolor{OliveGreen}{$+$} & \textcolor{OliveGreen}{green}  \\ 
-Intermediate peaks  & $\kappa_0 \in [0.1,0.27] $ & 15 & \textcolor{OliveGreen}{$\bigstar$} & \textcolor{OliveGreen}{green}  \\ 
-High peaks  & $\kappa_0 \in [0.28,0.45] $ & 15 & \textcolor{OliveGreen}{$\diamond$} & \textcolor{OliveGreen}{green}  \\
-Low+Intermediate peaks  & $\kappa_0 \in [-0.06,0.27] $ & 30 & \textcolor{OliveGreen}{$\times$} & \textcolor{OliveGreen}{green}  \\
-Intermediate+High peaks  & $\kappa_0 \in [0.1,0.45] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\
-All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{OliveGreen}{$\blacksquare$} & \textcolor{OliveGreen}{green}  \\ \hline
-\bottomrule
-\end{tabular}
-\end{center}
-\caption{Catalog of feature types used in this work, along with the chosen number of bands $N_b$ and the plot legends for Figure \ref{effectivenb}.}
-\label{featuretable}
-\end{table*}
-
-\begin{figure*}
-\includegraphics[scale=0.3]{Figures/effective_nb.eps}
-\includegraphics[scale=0.3]{Figures/effective_nb_gaussian.eps}
-\caption{Effective dimesionality of the feature space, $D$, as a function of the number of bands $N_b$, for the features outlined in Table \ref{featuretable}. The left panel shows the case in which the feature ensembles are measured from our shear simulations, while in the right panel these ensembles have been replaced by independent draws from a Gaussian multivariate distribution with mean computed from \texttt{NICAEA} and diagonal covariance from equation (\ref{gaussianvar}). The solid black lines show theory predictions.}
-\label{effectivenb}
-\end{figure*}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Parameter inference}
 %
@@ -254,6 +194,66 @@ The true parameter variance $\sigma^2_p(N_s)$ in principle depends on the number
 
 \section{Results} 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure*}
+\includegraphics[scale=0.4]{Figures/ps_pdf.eps}
+\caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple). The thick black lines correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations.}
+\label{ps_pdf}
+\end{figure*}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/ps_variance.eps}
+\caption{Variance of the $\kappa$ power spectrum as a function of the multipole $l$, in units of the expected gaussian variance from equation (\ref{gaussianvar}). The variance is measured from different shear ensembles with $N_s=$1 (black), 2 (blue), 5 (green), 10 (red), 50 (purple), 100 (orange). }
+\label{ps_var}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/scaling_nr.eps}
+\caption{Bias in the $w$ variance, $\langle\h{\sigma}^2_w\rangle$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{ourscaling}). The thick black line correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations. }
+\label{wvar_nr}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/scaling_ns.eps}
+\caption{Variance on $w$ in the limit $N_r\rightarrow\infty$, varying the mock ensemble used to compute the covariance estimator (\ref{covest}). We show the dependence of $\sigma_0^2(N_s)$ in units of the mean over $N_s$, for the power spectrum logarithmically binned (black), the power spectrum linearly binned (red) and the peak counts (green).}
+\label{wvar_ns}
+\end{figure}
+
+\begin{table*}
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Feature} &  \textbf{Specifications} & $N_b$ &  \textbf{Symbol} & \textbf{Color} \\ \hline \hline
+\midrule
+Power Spectrum, log binning  & $l \in [100,800] $ & 8 & $\times$ & black  \\ 
+Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\times$ & black  \\ 
+Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & $\times$ & black  \\
+Power Spectrum, linear binning  & $l \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
+Power Spectrum, linear binning  & $l \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
+Power Spectrum, linear binning  & $l \in [100,4500] $ & 30 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ 
+Power Spectrum, linear binning  & $l \in [100,6000] $ & 39 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\ \hline
+Low peaks  & $\kappa_0 \in [-0.06,0.09] $ & 15 & \textcolor{OliveGreen}{$+$} & \textcolor{OliveGreen}{green}  \\ 
+Intermediate peaks  & $\kappa_0 \in [0.1,0.27] $ & 15 & \textcolor{OliveGreen}{$\bigstar$} & \textcolor{OliveGreen}{green}  \\ 
+High peaks  & $\kappa_0 \in [0.28,0.45] $ & 15 & \textcolor{OliveGreen}{$\diamond$} & \textcolor{OliveGreen}{green}  \\
+Low+Intermediate peaks  & $\kappa_0 \in [-0.06,0.27] $ & 30 & \textcolor{OliveGreen}{$\times$} & \textcolor{OliveGreen}{green}  \\
+Intermediate+High peaks  & $\kappa_0 \in [0.1,0.45] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\
+All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{OliveGreen}{$\blacksquare$} & \textcolor{OliveGreen}{green}  \\ \hline
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Catalog of feature types used in this work, along with the chosen number of bands $N_b$ and the plot legends for Figure \ref{curvingnb}.}
+\label{featuretable}
+\end{table*}
+
+\begin{figure}
+\includegraphics[scale=0.3]{Figures/curving_nb.eps}
+\caption{Expectation value of the $w$ variance computed with equation (\ref{estimatorcovariance}) as a function of $1/N_r$, for the features outlined in Table \ref{featuretable}. The line width increases with the number of bands $N_b$ used for each feature.}
+\label{curvingnb}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 In this section we outline the main results of this work. We show the qualitative behavior of the $P^{\kappa\kappa}$ probability distribution function (PDF) in ensembles built with different $N_s$. We also show how the forecasts on the Dark Energy equation of state, $w$, depend on $N_s$ and $N_r$. Figure \ref{ps_pdf} shows the power spectrum PDF at four selected multipoles, while Figure \ref{ps_var} shows the variance in each multipole. This result is compared to the one that we would obtain assuming that the convergence is a Gaussian random field
 \begin{equation}
 \label{gaussianvar}
@@ -268,7 +268,7 @@ N_{eff}(l) = \frac{N^2(l)}{N(l)+N(l,l_y=0)}
 %
 We not that this correction is important at low $l$ only, where pixelization effects are more important. In other words $N_{eff}(l\gg2\pi/\theta_{box})\approx N(l)$. 
 
-Figure \ref{wvar_nr} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ using the power spectrum and compare it with the known result obtained in \citep{DodelsonSchneider13} and expressed in equation (\ref{ourscaling}). Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint. Finally Figure \ref{effectivenb} shows how the effective feature dimensionality $D$ depends on the number of bands $N_b$, for a variety of features and binning choices outlined in Table \ref{featuretable}. This behavior is compared with the one that we obtain when the power spectrum ensembles $P_r^{\kappa\kappa}$ are replaced with 1000 independent random samples from a multivariate Gaussian distribution with mean $P^{\kappa\kappa}(l)$ (computed with \texttt{NICAEA}) and diagonal covariance given by equation (\ref{gaussianvar}). 
+Figure \ref{wvar_nr} show the scaling of the expectation value of $\h{\sigma}_w^2$ with the number of mocks $N_r$ using the power spectrum and compare it with the known result obtained in \citep{DodelsonSchneider13} and expressed in equation (\ref{ourscaling}). Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint. Finally Figure \ref{curvingnb} shows.... 
 
 %%%%%%%%%%%%%%%%%% DISCUSSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -282,7 +282,7 @@ In Figure \ref{wvar_nr} we examine how the $w$ constraint depends on the number 
 
 Figure \ref{wvar_ns} shows the dependence of the dark energy constraint with $N_s$. We find that, in the range $N_s\in[1,200]$ the $w$ inferred variance $\sigma_0^2$ fluctuates stochastically and does not show an appreciable trend with $N_s$. 
 
-We determine the effective dimensionality of the feature space, $D$, with a linear regression using equation (\ref{ourscaling}), for the set of features outlined in Table \ref{featuretable}. The results shown in Figure \ref{effectivenb}, however, show that the feature dimensionality $D$ grows faster than the linear $O(N_b)$ optimistic prediction by \citep{DodelsonSchneider13}. 
+
 
 When we estimate the data covariance $\bb{C}$ from the same simulation set used to measure $\bbh{\Psi}$, the effective dimensionality $D$ decreases with increasing $N_b$ in the case where the $\bbh{\Psi}$ bias is corrected, and stays constant when this bias is corrected. This fact that should be taken into considerations when estimating parameter errors purely from simulations, as underestimations might occur. 
 
