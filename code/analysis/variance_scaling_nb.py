@@ -16,7 +16,7 @@ import algorithms
 
 #Number of simulations to test
 nsim = [1,2,5,10,20,30,40,50,60,70,80,90,100,150,200]
-nreal = np.arange(100,1100,100)
+nreal = range(70,910,10)
 resample = 100
 
 def main():
