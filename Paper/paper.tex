@@ -183,7 +183,7 @@ Next, we restrict ourselves to the large $N_r$ limit, and we further investigate
 %
 This is the result obtained by \citep{DodelsonSchneider13}.
 
-\item Usually the true covariance is not known, and it is tempting to plug in its estimator $\bbh{C}$, measured from the same simulation set we use to compute $\bbh{\Psi}$. This approach has been used before in the literature (see \citep{MinkPetri,MinkShirasaki} for example). If we do that, and we do not correct for the $\bbh{\Psi}$ bias, the parameter variance will have a contribution from both the second and first order fluctuations in $\bbh{\Psi}$, which now have a non zero expectation value. In this case the bias sums up to 
+\item Usually the true covariance is not known, and it is tempting to plug in its estimator $\bbh{C}$, measured from the same simulation set we use to compute $\bbh{\Psi}$. This approach has been used before in the literature (see \citep{MinkPetri,MinkShirasaki} for example). If we do that, and we do not correct for the $\bbh{\Psi}$ bias (see equation (\ref{firstmoment})), the parameter variance will have a contribution from both the second and first order fluctuations in $\bbh{\Psi}$, which now have a non zero expectation value. In this case the bias sums up to 
 \begin{equation}
 \label{mockscalinguncorrected}
 \langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1-\frac{N_b-N_p}{N_r}\right)
