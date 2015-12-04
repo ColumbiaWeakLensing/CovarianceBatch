@@ -241,7 +241,7 @@ The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle depends on t
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/scaling_nr.eps}
-\caption{Bias in the $w$ variance, $\langle\h{\sigma}^2_w\rangle$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{ourscaling}). The thick black line correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations. }
+\caption{Bias in the $w$ variance, $\langle\h{\sigma}^2_w\rangle-\sigma^2_{w,\infty}$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{ourscaling}). The thick black line correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations. }
 \label{wvar_nr}
 \end{figure}
 
@@ -258,8 +258,8 @@ The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle depends on t
 \textbf{Feature} &  \textbf{Specifications} & $N_b$ &  \textbf{Symbol} & \textbf{Color} \\ \hline \hline
 \midrule
 Power Spectrum, log binning  & $l \in [100,800] $ & 8 & $\times$ & black  \\ 
-Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\times$ & black  \\ 
-Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
+Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\blacksquare$ & black  \\ 
+Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\
 Power Spectrum, linear binning  & $l \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
 Power Spectrum, linear binning  & $l \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
 Power Spectrum, linear binning  & $l \in [100,4500] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\ 
@@ -268,7 +268,7 @@ Low peaks  & $\kappa_0 \in [-0.06,0.09] $ & 15 & \textcolor{red}{$+$} & \textcol
 Intermediate peaks  & $\kappa_0 \in [0.1,0.27] $ & 15 & \textcolor{red}{$\bigstar$} & \textcolor{red}{red}  \\ 
 High peaks  & $\kappa_0 \in [0.28,0.45] $ & 15 & \textcolor{red}{$\diamond$} & \textcolor{red}{red}  \\
 Low+Intermediate peaks  & $\kappa_0 \in [-0.06,0.27] $ & 30 & \textcolor{OliveGreen}{$\times$} & \textcolor{OliveGreen}{green}  \\
-Intermediate+High peaks  & $\kappa_0 \in [0.1,0.45] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\
+Intermediate+High peaks  & $\kappa_0 \in [0.1,0.45] $ & 30 & \textcolor{OliveGreen}{$\blacksquare$} & \textcolor{OliveGreen}{green}  \\
 All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{magenta}{$\blacksquare$} & \textcolor{magenta}{magenta}  \\ \hline
 \bottomrule
 \end{tabular}

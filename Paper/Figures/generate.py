@@ -25,8 +25,8 @@ parser.add_argument("fig",nargs="*")
 #Markers
 markers = {
 "power_logb_large" : "x",
-"power_logb_small" : "x",
-"power_logb_all" : "x",
+"power_logb_small" : "s",
+"power_logb_all" : "o",
 "power_large" : "+",
 "power_small" : "x",
 "power_large+small" : "o",
@@ -35,7 +35,7 @@ markers = {
 "peaks_intermediate" : "*",
 "peaks_high" : "d",
 "peaks_low+intermediate" : "x",
-"peaks_intermediate+high" : "o",
+"peaks_intermediate+high" : "s",
 "peaks_all" : "s",
 } 
 
@@ -197,7 +197,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	#Fit with the Dodelson scaling and overlay the fit
 	vfit = algorithms.fit_nbins(v,parameter=parameter)
 	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
+	v[parameter+"_fit"] = v.eval("s0*D/nreal")
 	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
 
@@ -216,7 +216,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	#Fit with the Dodelson scaling and overlay the fit
 	vfit = algorithms.fit_nbins(v,parameter=parameter)
 	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_fit"] = v.eval("s0*nb/nreal")
+	v[parameter+"_fit"] = v.eval("s0*D/nreal")
 	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
 
@@ -232,7 +232,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 
 	#Labels
 	ax.set_xlabel(r"$N_r$",fontsize=fontsize)
-	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle$",fontsize=fontsize)
+	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$",fontsize=fontsize)
 
 	#Save
 	fig.savefig("scaling_nr."+cmd_args.type)
