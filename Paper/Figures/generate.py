@@ -58,36 +58,36 @@ colors = {
 
 #Labels
 labels = {
-"power_logb_large" : r"$N_b=7\div 8$",
-"power_logb_small" : None,
-"power_logb_all" : None,
-"power_large" : None,
-"power_small" : r"$N_b=15$",
-"power_large+small" : r"$N_b=30$",
-"power_all" : r"$N_b=39$",
-"peaks_low" : None,
-"peaks_intermediate" : None,
-"peaks_high" : None,
-"peaks_low+intermediate" : None,
-"peaks_intermediate+high" : None,
-"peaks_all" : r"$N_b=45$",
+"power_logb_large" : r"$\ell\in[100,800],N_b=8(\mathrm{log})$",
+"power_logb_small" : r"$\ell\in[1000,6000],N_b=7(\mathrm{log})$",
+"power_logb_all" : r"$\ell\in[100,6000],N_b=15(\mathrm{log})$",
+"power_large" : r"$\ell\in[100,2000],N_b=15(\mathrm{lin})$",
+"power_small" : r"$\ell\in[2500,4500],N_b=15(\mathrm{lin})$",
+"power_large+small" : r"$\ell\in[100,4500],N_b=30(\mathrm{lin})$",
+"power_all" : r"$\ell\in[2500,6000],N_b=39(\mathrm{lin})$",
+"peaks_low" : r"$\kappa_0\in[-0.06,0.09],N_b=15$",
+"peaks_intermediate" : r"$\kappa_0\in[0.1,0.27],N_b=15$",
+"peaks_high" : r"$\kappa_0\in[0.28,0.45],N_b=15$",
+"peaks_low+intermediate" : r"$\kappa_0\in[-0.06,0.27],N_b=30$",
+"peaks_intermediate+high" : r"$\kappa_0\in[0.1,0.45],N_b=30$",
+"peaks_all" : r"$\kappa_0\in[-0.06,0.45],N_b=45$",
 } 
 
 #Plot order
 order = {
-"power_logb_large" : 1,
-"power_logb_small" : -1,
-"power_logb_all" : -1,
-"power_large" : -1,
-"power_small" : 2,
-"power_large+small" : 3,
-"power_all" : 4,
-"peaks_low" : -1,
-"peaks_intermediate" : -1,
-"peaks_high" : -1,
-"peaks_low+intermediate" : -1,
-"peaks_intermediate+high" : -1,
-"peaks_all" : 5,
+"power_logb_large" : 8,
+"power_logb_small" : 7,
+"power_logb_all" : 15,
+"power_large" : 15,
+"power_small" : 15,
+"power_large+small" : 30,
+"power_all" : 39,
+"peaks_low" : 15,
+"peaks_intermediate" : 15,
+"peaks_high" : 15,
+"peaks_low+intermediate" : 30,
+"peaks_intermediate+high" : 30,
+"peaks_all" : 45,
 } 
 
 #Offsets
@@ -167,14 +167,15 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 
 	#Fill each sub plot
 	for na,subax in enumerate(ax.reshape(4)):
-		subax.hist(ens[nell[na]].values,histtype="step",bins=50,normed=True,color=colors[0],linewidth=3)
+		subax.hist(ens[nell[na]].values,histtype="step",bins=50,normed=True,color=colors[0],linestyle="--",label=r"$N_s=1,N_r=128000$")
 
 	#Labels
 	for na,subax in enumerate(ax.reshape(4)):
 		subax.set_xlabel(r"$P^{\kappa\kappa}_l$",fontsize=fontsize)
 		subax.set_ylabel(r"$\mathcal{L}(P^{\kappa\kappa}_l)$",fontsize=fontsize)
 		subax.set_title(r"$l={0}$".format(int(ell[nell[na]])),fontsize=fontsize)
-		subax.legend()
+		if na==0:
+			subax.legend()
 
 	#Save
 	fig.tight_layout()
@@ -359,7 +360,7 @@ def curving_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	#Axis labels and legends
 	ax.set_xlabel(r"$1/N_r$",fontsize=fontsize)
 	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle/\sigma^2_{w,\infty}$",fontsize=fontsize)
-	ax.legend(loc="upper left")
+	ax.legend(loc="upper left",prop={"size":13})
 
 	#Mirror x axis to show Nr on top
 	ax1 = ax.twiny()
