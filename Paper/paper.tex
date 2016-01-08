@@ -28,12 +28,18 @@
 \newcommand{\bb}[1]{\mathbf{#1}}
 \newcommand{\bbh}[1]{\mathbf{\hat{#1}}}
 \newcommand{\h}[1]{\hat{#1}}
+\newcommand\lsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+        \raise1pt\hbox{$<$}}}
+\newcommand\gsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+        \raise1pt\hbox{$>$}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
-\title{Simulating cosmic variance in Weak Lensing: effects on parameter inferences}
+%ZH: I changed to more catchy title:
+%\title{Simulating sample variance in weak lensing: effects on parameter inferences}
+\title{Sample variance in weak lensing: how many simulations are required?}
 
 \author{Andrea Petri}
 \email{apetri@phys.columbia.edu}
@@ -52,8 +58,38 @@
 
 \begin{abstract}
 
-Constraining cosmology using Weak Gravitational Lensing consists in comparing measured feature vectors, of various dimensions $N_b$, with simulated ones. An accurate estimate of the $N_b\times N_b$ feature covariance matrix is essential to obtain accurate parameter confidence intervals. When this covariance matrix $\bb{C}$ is measured from simulations, an important question to ask is how big the simulation set should be for an accurate estimation of $\bb{C}$. We construct different mock ensembles with $N_r$ realizations of the same shear field, using a common randomization procedure based on $N_s<N_r$ independent $N$--body simulations. Previous work \citep{DodelsonSchneider13} showed that noise fluctuations in the feature covariance lead, at quadratic order, to a $O(1/N_r)$ degradation of parameter constraints. Using a variety of features that include shear-shear power spectra and peak counts, we show that cubic and quartic covariance fluctuations lead to additional $O(1/N_r^2)$ error degradation that is not negligible when $N_r$ is only a factor of a few bigger than $N_b$. When we study the large $N_r$ limit we find that a single $N$--body simulation can be recycled a large number of times to produce an ensemble of $N_r=10^5$ shear realizations that are mutually independent. We also find that a small number of independent $N$--body simulations (1 or 2) are necessary to forecast parameter error bars at percent accuracy, while a larger number might be needed to measure accurate feature ensemble means.
-
+Constraining cosmology using weak gravitational lensing consists of
+comparing a measured feature vector of dimension $N_b$ with its
+simulated counterpart. An accurate estimate of the $N_b\times N_b$
+feature covariance matrix $\bb{C}$ is essential to obtain accurate
+parameter confidence intervals. When $\bb{C}$ is measured from a set
+of simulations, an important question is how large this set should
+be. To answer this question, we construct different ensembles of $N_r$
+realizations of the shear field, using a common randomization
+procedure that recycles the outputs from a smaller number $N_s\leq
+N_r$ of independent ray-tracing $N$--body simulations.  We study
+parameter confidence intervals as a function of ($N_s,N_r$) in the
+range $1\leq N_s\leq 200$ and $1\leq N_r\leq 10^5$.  Previous work
+\citep{DodelsonSchneider13} has shown that Gaussian noise in the
+feature covariance lead, at quadratic order, to an $O(1/N_r)$
+degradation of the parameter confidence intervals. Using a variety of
+lensing features measured in our simulations, including shear-shear
+power spectra and peak counts, we show that cubic and quartic
+covariance fluctuations lead to additional $O(1/N_r^2)$ error
+degradation that is not negligible when $N_r$ is only a factor of few
+larger than $N_b$. We study the large $N_r$ limit, and find that a
+single $N$--body simulation ($N_s=1$) can be repeatedly recycled to
+produce as many as $N_r=10^5$ mutually independent shear maps. As a
+result, a small number of simulations ($N_b=1$ or $2$) is sufficient
+to forecast parameter confidence intervals at percent
+accuracy. However, we find that in practice, a larger number of
+simulations might be needed to measure accurate feature means and to
+avoid parameter biases.
+%ZH: I am not sure about the last sentence. I believe it is based on
+%    an overly stringent reading of Fig.2, and that in fact we could
+%    claim here, instead, that N_s=2 simulations are also sufficient
+%    to get the correct mean.
+%    See my comments at the end of the Conclusion section. 
 \end{abstract}
 
 
@@ -67,58 +103,221 @@ Constraining cosmology using Weak Gravitational Lensing consists in comparing me
 
 \section{Introduction}
 %
-Weak Gravitational lensing is a promising cosmological probe for constraining the Dark Energy equation of state $w$, and has been considered by a range of past (CFHTLens \citep{cfht1,cfht2}), current (DES \citep{DES}) and future (LSST \citep{LSST}) experiments. In an era where cosmology is becoming data driven, accurate numerical simulations of shear fields are becoming important for a number of reasons including the study of baryonic effects \citep{BaryonXiuyuan}, non--Gaussian statistics \citep{PeaksJan,MinkJan,MinkPetri} and various systematics. Building cosmological predictions from simulations naturally introduces fluctuations in the forecasts, mainly due to cosmic variance. These fluctuations have been shown to have non negligible effects on estimates of features covariance matrices and hence on parameter constraints (see \citep{DodelsonSchneider13}). This work studies this issue further, focusing on the number of independent $N$--body simulations that is necessary to run for obtaining accurate estimates of parameter constraints, with particular focus on $w$. This paper is organized as follows: in the first paragraph we briefly describe the shear simulation methods we used, as well as the formalism we adopted to compute cosmological parameter constraints. We then outline our main findings and discuss the results, as well as future prospects for continuing this study.  
+Weak gravitational lensing (WL) is a promising cosmological probe for
+constraining the dark energy equation of state $w$, and has been
+considered by a range of past (CFHTLens \citep{cfht1,cfht2}),
+%ZH: also cite COSMOS survey here...
+ongoing (DES \citep{DES}) and future (LSST \citep{LSST})
+%ZH: also cite Euclid and WFIRST.
+experiments. In an era where cosmology is data driven, accurate
+numerical simulations of shear fields are becoming important for
+several reasons, including the study of baryonic effects
+\citep{BaryonXiuyuan}, 
+%ZH: also cite Joop Schaye's hydro-simulation papers on lensing (Semboloni et al), and earlier papers by Martin White et al...  Lloyd Knox et al... and Zentner et al... (I think all of these are in Xiuyuan's paper).
+the computation of non--Gaussian statistics
+\citep{PeaksJan,MinkJan,MinkPetri} 
+%ZH: Add here some citations of other groups - Marian+Bernstein.... Bhuvnesh Jain et al... Refregier et al... Dietrichh+Hartmann... Shirasaki+Yoshida.. (again just copy from our previous papers).
+and the  assessment of various systematics.
+%ZH: cite papers by Jan+Morgan+Bard... and also Chihway Chan...Shirasaki+Yoshida.. and older ones by Dragan Huterer on photo-z errors..
+
+A fundamental issue with predictions from simulations is that the
+finite number of simulations naturally introduces fluctuations in the
+forecasts, due to inevitable sample variance~\footnote{Sample variance is a broad term that has been used in the literature to describe a range of phenomena.  Throughout this paper, we use it to refer to the fluctuations in an ensemble of simulations, which represent random realizations of the same initial conditions.}.
+%ZH: I think 'cosmic variance' usually refers to observations of the actual sky (which is finite).  
+In general, quantities such as the mean or the variance of any feature
+(e.g. the shear power spectrum at a multipole $\ell$), measured from a
+finite set of simulations, will fluctuate, and can also suffer a bias.
+While biases in the estimates of both the mean and the variance have
+been studied extensively, the impact of fluctuations in the variance
+has received comparatively less attention.  These fluctuations have,
+however, been shown to have non-negligible effects on estimates of
+features covariance matrices and hence on parameter constraints. In
+particular, in the limit of Gaussian fluctuations, the parameter
+confidence limits are degraged by a factor
+$1+O(1/N_r)$~\citep{DodelsonSchneider13}.
+%also cite Taylor Joachimi and Kitching -Morgan
+
+This work studies these issues further, focusing on the number of
+independent $N$--body simulations required for an accurate estimate of
+the parameter constraints.  Ray-tracing simulations that resolve the
+cosmic structures responsible for lensing on arcminute scales are
+limited to physical sizes of hundreds of Mpc, and thus cover a solid
+angle of only $O(10$ deg$^2)$.  As a result, many simulations are
+required to tile a significant fraction of the sky, and to make
+predictions for large ``all-sky'' surveys, such as the ones by DES,
+LSST, Euclid, WFIRST.  In practice, this has led to the wide-spread
+use of ``pseudo-independent'' realizations, i.e. a procedure in which
+one randomizes and re-cycles the output of a single 3D simulation
+multiple times.
+%ZH: Add citations here of papers resorting to this technique
+In light of the forthcoming large surveys, it is imperative to assess
+the statistical validity of this approach, and to ask how many times a
+single simulation can be fairly recycled.  In this paper, we address
+these questions with ensembles of up to $N_r=10^5$ random
+realizations, extracted from up to $N_s=200$ independent ray-tracing
+N-body simulations. We focus in particular on the parameter $w$, and
+on two different statistics: the (convergence) power spectrum and
+the number counts of peaks.
+
+
+This paper is organized as follows.  In \S~II, we summarize the shear
+simulation methods we utilized, and describe the formalism we adopted
+to forecast cosmological parameter constraints. We then vary the
+number of simulations and the number of pseudo-independent
+realizations, and present our main findings in \S~III. These results
+are discussed further in \S~IV.  We offer our conclusions, and suggest
+follow-up future work in \S~V.
 
 %%%%%%%%%%%%%%%%%%% METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Methods}
 
-\subsection{Shear field simulations}
+\subsection{Ray-tracing simulations of the convergence field}
 \label{shearsim}
 %
-In this paragraph we describe how we constructed our shear field ensembles. Background galaxies at redshift $z_s$ are lensed by large scale structure between $z=0$ and $z_s$. The shape distortions due to the cosmic shear $\pmb{\gamma}$ can be computed in terms of the dark matter gravitational potential $\Phi(\bb{x},z)$. Because the evolution of $\Phi$ in redshift is non--linear, its evolution needs to be computed with numerical simulations. We make use of the public code \texttt{Gadget2} \citep{Gadget2}, with which we run a sequence of dark--matter--only $N$--body simulations that track the evolution of the density fluctuations in the large scale structure of the universe. We assume a standard $\Lambda$CDM framework with $(\Omega_m,\Omega_\Lambda,h,w,\sigma_8,n_s)=(0.26,0.74,0.72,-1,0.8,0.96)$ and we fix the comoving size of the simulation box to $240\mathrm{Mpc}/h$. We fill the box with $512^3$ particles, which correspond to a mass resolution of $10^{10}M_\odot$. We assume a uniform galaxy distribution at a constant redshift $z_s=2$ (at which the simulation box has an angular size of $\theta_{box}=3.5\mathrm{deg}$) and we discretize the mass distribution between $z_s$ and the observer at $z=0$ with a sequence of 46 two dimensional lenses of thickness $80\mathrm{Mpc}/h$. The surface density on each lens is computed by projecting the three dimensional density measured from \texttt{Gadget2} snapshots. We then apply the multi--lens--plane algorithm (see \citep{RayTracingHartlap,RayTracingJain} for example) to trace the deflections of $n_{ray}^2=2048^2$ light rays arranged on a square grid of total size $\theta_{box}$, from $z=0$ to $z_s$. The light deflection calculations have been performed with our implementation of multi--lens--plane algorithm, which is part of the \texttt{LensTools} computing package \citep{LensTools} (released under the \texttt{MIT} license). Different realizations $r$ of the same shear field $\pmb{\gamma}_r(\pmb{\theta})$ can be generated with different choices of the lenses that lay between the observer and $z_s$. The randomization procedure we adopt is the following:
+In this section, we describe how we constructed our shear field
+ensembles. Background galaxies at redshift $z_s$ are lensed by large
+scale structures between $z=0$ and $z_s$. The shape distortions due to
+the cosmic shear $\pmb{\gamma}$ can be computed in terms of the dark
+matter gravitational potential $\Phi(\bb{x},z)$. Because the evolution
+of $\Phi$ with redshift is non--linear, it needs to be computed with
+numerical simulations. We make use of the public code \texttt{Gadget2}
+\citep{Gadget2}, with which we run a sequence of $200$ independent
+dark--matter--only $N$--body simulations that track the evolution of
+the density fluctuations. We assume a standard $\Lambda$CDM background
+universe with the parameters
+$(\Omega_m,\Omega_\Lambda,h,w,\sigma_8,n_s)=(0.26,0.74,0.72,-1,0.8,0.96)$.
+We fix the comoving size of the simulation box to $240\mathrm{Mpc}/h$,
+and use $512^3$ particles, corresponding to a mass resolution of
+$\approx 10^{10}M_\odot$.
+%ZH: ``mass resolution'' here means DM particle mass ?
+
+We assume a uniform galaxy distribution at a constant redshift $z_s=2$
+(at which the simulation box has an angular size of $\theta_{\rm
+  box}=3.5\mathrm{deg}$) and we discretize the mass distribution
+between $z_s$ and the observer at $z=0$ with a sequence of 46 two
+dimensional lenses of thickness $80\mathrm{Mpc}/h$. The surface
+density on each lens plane is computed by projecting the
+three--dimensional density measured from \texttt{Gadget2}
+snapshots. We then apply the multi--lens--plane algorithm (see
+\citep{RayTracingHartlap,RayTracingJain} for example) to trace the
+deflections of $n_{ray}^2=2048^2$ light rays arranged on a square grid
+of total size $\theta_{\rm box}$, from $z=0$ to $z_s$. Our
+implementation of this algorithm is part of the \texttt{LensTools}
+computing package we have been developing \citep{LensTools}, and have
+released under the \texttt{MIT} license. Many different realizations
+$r$ of the same shear field $\pmb{\gamma}_r(\pmb{\theta})$ can be
+generated by picking different lens planes that lie between the
+observer and $z_s$. The randomization procedure we adopt is the
+following:
+%ZH: we should cite some paper here. We didn't invent most of this
+%procedure ourselves (except for maybe the 3-times thicker simulation
+%output, and the random mixing of the planes from different N-body sims ?).
 
 \begin{itemize}
-\item Pick a lens redshift $z_l$, and select the snapshot at $z_l$ from the $i$--th $N$--body simulation at disposal, where $i$ is a random number in $[1,N_s]$
-\item Choose randomly a direction between the three choices ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$: the lens plane will be pependicular to this direction
-\item Choose the cutting point of the plane in the snapshot: because the lens thickness is 1/3 the size of the box, we can cut three different slices of the simulation box for each orientation ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$, which gives a total of 9 choices for generating a lens plane out of a $N$--body snapshot
-\item Perform a periodical random shift of the lens plane along its two directions
-\item Repeat this procedure for each lens redshift $z_l$  
+\item For each lens-plane redshift $z_l$, select the snapshot at $z_l$ from the $i$--th $N$--body simulation, where $i$ is a random integer $i\in [1,N_s]$.
+\item Choose randomly between the three orthogonal directions ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$: the lens plane will be perpendicular to this direction.
+\item Choose the position of the plane along the snapshot: because the lens thickness is 1/3 the size of the box, we can cut three different slices of the simulation box for each orientation ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$. This gives a total of 9 choices for generating a lens plane out of a single $N$--body snapshot.
+\item Perform a periodic random shift of the lens plane along its two directions.
+%ZH: should we specify the range of the random shifts (0 to 1/2 the lens plane dimension?)
+\item Repeat the above procedure for each lens-plane redshift $z_l$.
 \end{itemize}  
 %
-This randomization procedure allows us to produce an arbitrary number $N_r$ of mock shear realizations $\pmb{\gamma}_r(\pmb{\theta})$, which however will not be all independent if $N_s$ is not large enough. Using a set of 200 independent $N$--body simulations, we construct different ensembles with different choices of $N_s\in[1,200]$, each made of 1000 mock shear realizations. We also build an additional ensemble with $N_s=1$ and $10^5$ mocks. From each of these mocks we reconstruct the convergence $\kappa_r(\pmb{\theta})$ and measure its angular power spectrum $P^{\kappa\kappa}_r(l)$ defined as
+This randomization procedure allows us to produce an (almost)
+arbitrary number $N_r$ of shear realizations
+$\pmb{\gamma}_r(\pmb{\theta})$. However, these realizations are not
+guaranteed to be independent, if $N_s$ is not large enough. Using the
+set of 200 independent $N$--body simulations, we construct different
+ensembles with different choices of $N_s\in[1,200]$. Each of these
+ensembles consists of the same number $N_r=1000$ of shear
+realizations. We also build an additional ensemble with $N_s=1$ and
+$N_r=10^5$ realizations. For each realization of each ensemble, we
+reconstruct the convergence $\kappa_r(\pmb{\theta})$ 
+%ZH: we should add 2 sentences on how you measured kappa.  Directly from the ray-tracing?
+%   (but above, when you discuss ray-tracing, you mention only gamma).  Or did you do 
+%    Kaiser-Squires on the gamma field ? 
+and measure its
+angular power spectrum $P^{\kappa\kappa}_r(l)$ defined as
 \begin{equation}
 \langle\tilde{\kappa}_r(\bb{l})\tilde{\kappa}_r(\bb{l}')\rangle = (2\pi)^2\delta_D(\bb{l}+\bb{l}')P^{\kappa\kappa}_r(l)
 \end{equation}
 %
-As an additional summary statistic, we consider the counts of local $\kappa$ maxima of a certain height $\kappa_0$, $n_r(\kappa_0)$ (from now on \textit{peak counts}), with varying $\kappa_0$. The fact that the ensemble of $N_r$ mocks is not completely independent if $N_s$ is not large enough can have an effect on the covariance estimators of $P^{\kappa\kappa},n(\kappa_0)$. 
+As an additional summary statistic, we consider the counts of local
+$\kappa$ maxima of a certain height $\kappa_0$, $n_r(\kappa_0)$
+(hereafter \textit{peak counts}), with varying $\kappa_0$.
+%ZH: state here the range and binning choice of $\kappa_0$
+The fact that the ensemble of $N_r$ realizations is not completely
+independent if $N_s$ is not large enough can have an effect on the
+covariance estimators of both $P^{\kappa\kappa}$ and $n(\kappa_0)$.
+
+%ZH: it would be logical to mention the other w,Sig,Om, sims here, and point to \ref{simtable})
 
 
-\subsection{Parameter inference}
+
+\subsection{Cosmological parameter inference}
 %
-Let $\bbh{d}$ a feature of dimension $N_b$, $\bb{d}(\bb{p})$ be the smooth expectation of this feature at a point $\bb{p}$ in parameter space (which has a dimension $N_p$) and $\bb{C}$ be the $N_b\times N_b$ feature covariance matrix. For the purpose of this work $\bb{p}$ is the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is one of the features listed in Table \ref{featuretable}. While, in some cases, $d(\bb{p})$ can usually be predicted reasonably accurately by already existing emulators (see \citep{coyote2,Nicaea} for example), the matter is more complicated for covariance matrices. Estimating $\bb{C}$ from simulations involves generating a series of mock realizations $\bbh{d}_r$ with $r=1...N_r$ and estimating the sample covariance $\bbh{C}$
+
+Let $\bbh{d}$ be a single estimate for a feature of dimension $N_b$, 
+%ZH: ``Hat'' here refers to an estimator?
+$\bb{d}(\bb{p})$ be the
+%smooth expectation
+%ZH: I believe ``smooth expectation'' means true mean value, yes?
+true mean value of this feature at a point $\bb{p}$ in parameter space
+(which has a dimension $N_p$) and $\bb{C}$ be the $N_b\times N_b$
+feature covariance matrix. For the purpose of this work $\bb{p}$ is
+the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is one of the
+features -- either a power spectrum or a peak count -- in Table
+\ref{featuretable}. While in many cases $\bb{d}(\bb{p})$ can be
+predicted reasonably accurately by already existing emulators (see
+\citep{coyote2,Nicaea} for example), the matter is more complicated
+for covariance matrices.
+%ZH: I am missing the point here.  Why is covariance matrix ``more complicated'' ?
+%    Even to estimate a mean, one has to ``generate a series of mock realizations''.
+%    Unless you are willing to equate a single realization as the mean.   But then
+%    by the same logic, you could estimate the covariance matrix from two realizations.
+%    Please clarify what you mean...  maybe I am missing something?  Or you simply mean
+%    that published emulators usually do not emulate the cov.matrix (even though they could)?
+%    Note that there is a paper by Schneider and Knox, in which they do an interpolation of the
+%    power spectrum covariance matrix.
+Estimating $\bb{C}$ from simulations involves generating a series of
+mock realizations $\bbh{d}_r$ with $r=1...N_r$ and computing the
+sample covariance $\bbh{C}$,
 
 \begin{equation}
-\bb{\bar{d}} = \frac{1}{N_r}\sum_{r=1}^{N_r} \bbh{d}_r
+\bb{\bar{d}} = \frac{1}{N_r}\sum_{r=1}^{N_r} \bbh{d}_r,
 \end{equation}
 
 \begin{equation}
 \label{covest}
-\bbh{C} = \frac{1}{N_r-1}\sum_{r=1}^{N_r} (\bbh{d}_r - \bar{\bb{d}}) (\bbh{d}_r - \bar{\bb{d}})^T
+\bbh{C} = \frac{1}{N_r-1}\sum_{r=1}^{N_r} (\bbh{d}_r - \bar{\bb{d}}) (\bbh{d}_r - \bar{\bb{d}})^T.
 \end{equation}
 %
-Assuming a normal feature likelihood, together with a flat prior on the parameter space, the parameter posterior distribution $\mathcal{L}(\bb{p}\vert\bbh{d}_{obs})$ given an observed instance of $\bbh{d}$, which we call $\bbh{d}_{obs}$, can be obtained using Bayes theorem
+Assuming a normal feature likelihood, together with a flat prior on
+the parameter space, the parameter posterior distribution
+$\mathcal{L}(\bb{p}\vert\bbh{d}_{\rm obs})$ given an observed instance of
+$\bbh{d}$, which we call $\bbh{d}_{\rm obs}$, follows from Bayes' theorem,
+%
 \begin{equation}
 \label{posteriorbayes}
--2\log\mathcal{L}(\bb{p}\vert\bbh{d}_{obs}) = (\bbh{d}_{obs}-\bb{d}(\bb{p}))^T\bbh{C}^{-1}(\bbh{d}_{obs}-\bb{d}(\bb{p}))
+-2\log\mathcal{L}(\bb{p}\vert\bbh{d}_{\rm obs}) = [\bbh{d}_{\rm obs}-\bb{d}(\bb{p})]^T\bbh{C}^{-1}[\bbh{d}_{\rm obs}-\bb{d}(\bb{p})].
 \end{equation}
 %
-For the sake of simplicity, we approximate the posterior as a Gaussian around its maximum. This is easily done approximating the simulated feature at first order around a point $\bb{p}_0$ (that ideally is the maximum of (\ref{posteriorbayes}))
+For the sake of simplicity, we approximate the posterior as a Gaussian
+around its maximum. This corresponds to Taylor-expanding the simulated
+feature to first order around a point $\bb{p}_0$ (ideally the maximum
+of Eq.~\ref{posteriorbayes}):
+%
 \begin{equation}
-\bb{d}(\bb{p}) \approx \bb{d}_0 + \bb{d}_0^\prime(\bb{p}-\bb{p}_0) 
+\bb{d}(\bb{p}) \approx \bb{d}_0 + \bb{d}_0^\prime(\bb{p}-\bb{p}_0).
 \end{equation}
 %
-To measure the feature derivatives $\bb{d}'_0$ with respect to cosmology, we make use of the public code \texttt{NICAEA} \citep{Nicaea} for the power spectrum, and we use an independent simulation set (that contains mocks at different combinations of $(\Omega_m,w,\sigma_8)$, see Table \ref{simtable}) for the peak counts.
+
+To measure the derivatives of the features $\bb{d}'_0$ with respect to
+the cosmological parameters, we make use of the public code
+\texttt{NICAEA} \citep{Nicaea} for the power spectrum, and we use an
+independent simulation set (containing simulations with a variety of
+different combinations of $(\Omega_m,w,\sigma_8)$, see Table
+\ref{simtable}) for the peak counts.
 
 \begin{table}
 \begin{center}
@@ -126,87 +325,186 @@ To measure the feature derivatives $\bb{d}'_0$ with respect to cosmology, we mak
 \toprule
 $\Omega_m$ &  $w$ & $\sigma_8$ & $N_s$ & Number of $\kappa$ ensembles \\ \hline \hline
 \midrule
-
-0.26 & -1 & 0.8 & $1\div 200$ & 16 \\
+%
+0.26 & -1 & 0.8 & $1$ to $200$ & 16 \\
 0.29 & -1 & 0.8 & 1 & 1 \\
 0.26 & -0.8 & 0.8 & 1 & 1 \\
 0.26 & -1 & 0.6 & 1 & 1 \\
-
+%
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Summary table of the shear ensembles used in this work.}
+\caption{Summary of the shear ensembles used in this work.}
+%ZH: So each of these have N_r=1000, yes?  You should state this here. And also,
+%    Add the ensemble with N_s=1, N_r=10^5 to this table.
+%    Also: point the reader to this table in the text, up front, when the 
+%    ensembles are first discussed.
 \label{simtable}
 \end{table}
 
-We can build the estimator for the posterior maximum $\bbh{p}$, given the observation $\bbh{d}_{obs}$, as follows:
+We can build the estimator for the posterior maximum $\bbh{p}$, given
+the observation $\bbh{d}_{\rm obs}$, as follows:
 %
 \begin{equation}
 \label{estimatormean}
-\bbh{p} = \bb{p}_0 + \bbh{T}(\bbh{d}_{obs}-\bb{d}_0)
+\bbh{p} = \bb{p}_0 + \bbh{T}(\bbh{d}_{\rm obs}-\bb{d}_0),
 \end{equation}
 
 \begin{equation}
-\bbh{T} = (\bb{d}_0'^T\bbh{C}^{-1}\bb{d}_0')^{-1}\bb{d}_0'^T\bbh{C}^{-1}
+\bbh{T} = (\bb{d}_0'^T\bbh{C}^{-1}\bb{d}_0')^{-1}\bb{d}_0'^T\bbh{C}^{-1}.
 \end{equation}
 %
-Because $\bbh{p}$ is estimated using a noisy data instance $\bbh{d}_{obs}$, its estimate will be scattered around the true value $\langle\bbh{p}\rangle_O$. In the following we use the $\langle\rangle_O$ notation for expectation values taken with respect to observations, while we keep the notation $\langle\rangle$ for expectation values taken with respect to the simulations. Defining the \textit{precision matrix} $\bbh{\Psi}=\bbh{C}^{-1}$, we can express the estimator of the observational scatter in $\bbh{p}$
+Because $\bbh{p}$ is estimated using a single noisy data instance
+$\bbh{d}_{\rm obs}$, its estimate will be scattered around the true
+value $\langle\bbh{p}\rangle_O$. In the following we use the
+$\langle\rangle_O$ notation for expectation values taken with respect
+to observations, while we keep the notation $\langle\rangle$ for
+expectation values taken with respect to the simulations. Defining the
+\textit{precision matrix} $\bbh{\Psi}=\bbh{C}^{-1}$, we can express
+the estimator of the observational scatter in $\bbh{p}$:
 
 \begin{equation}
 \label{estimatorcovariance}
-\h{\Sigma}_\bb{p} = \bbh{F}^{-1}\bb{d}_0'^T\bbh{\Psi}\langle(\bbh{d}_{obs}-\bb{d}_0)(\bbh{d}_{obs}-\bb{d}_0)^T\rangle_O\bbh{\Psi}\bb{d}_0'\bbh{F}^{-1}
+\h{\Sigma}_\bb{p} = \bbh{F}^{-1}\bb{d}_0'^T\bbh{\Psi}\langle(\bbh{d}_{\rm obs}-\bb{d}_0)(\bbh{d}_{\rm obs}-\bb{d}_0)^T\rangle_O\bbh{\Psi}\bb{d}_0'\bbh{F}^{-1},
 \end{equation}
 
 \begin{equation}
 \label{estimatorfisher}
-\bbh{F} = \bb{d}_0'^T\bbh{\Psi}\bb{d}_0'
+\bbh{F} = \bb{d}_0'^T\bbh{\Psi}\bb{d}_0'.
 \end{equation}
 %
-Where we introduced the Fisher matrix estimator $\bbh{F} = \bb{d}_0'^T\bbh{\Psi}\bb{d}_0'$ and, for simplicity, we assumed $\langle\bbh{d}_{obs}\rangle_O=\bb{d}_0$, so that $\langle(\bbh{d}_{obs}-\bb{d}_0)(\bbh{d}_{obs}-\bb{d}_0)^T\rangle_O=\bb{C}$. 
-When we perform an observation $\bbh{d}_{obs}$, the parameter estimate $\bbh{p}$ is a random draw from a probability distribution with variance $\h{\Sigma}_\bb{p}$, which inherits noise from the simulations. The noise in the covariance estimator (\ref{covest}) and its inverse $\bbh{\Psi}$ propagates all the way to the posterior (\ref{posteriorbayes}), the parameter estimate (\ref{estimatormean}) and its variance (\ref{estimatorcovariance}). Following \citep{DodelsonSchneider13,Taylor12,MasumotoWishart} we compute the expectation value of (\ref{estimatorcovariance}) over simulations, $\langle\h{\Sigma}_\bb{p}\rangle$, up to $O(1/N_r^2)$ by expanding (\ref{estimatorcovariance}) to quartic order in the $\bbh{\Psi}$ statistical fluctuations. Indicating the noiseless parameter covariance as $\Sigma_\bb{p}=\bb{F}^{-1}$, the result we get is \footnote{The details of the calculation are given in Appendix A}  
+Here we introduced the familiar Fisher matrix estimator $\bbh{F} =
+\bb{d}_0'^T\bbh{\Psi}\bb{d}_0'$ and, for simplicity, we assumed
+$\langle\bbh{d}_{\rm obs}\rangle_O=\bb{d}_0$, so that
+$\langle(\bbh{d}_{\rm obs}-\bb{d}_0)(\bbh{d}_{\rm
+  obs}-\bb{d}_0)^T\rangle_O=\bb{C}$.  When we perform an observation
+$\bbh{d}_{\rm obs}$, the parameter estimate $\bbh{p}$ is a random draw
+from a probability distribution with variance $\h{\Sigma}_\bb{p}$,
+which inherits noise from the simulations. The noise in the covariance
+estimator (Eq.~\ref{covest}) and in its inverse $\bbh{\Psi}$ propagate
+all the way to the posterior (Eq.~\ref{posteriorbayes}), the parameter
+estimate (Eq.~\ref{estimatormean}) and its variance
+(Eq.~\ref{estimatorcovariance}). Following
+refs.~\citep{DodelsonSchneider13,Taylor12,MasumotoWishart} we compute
+the expectation value of Eq.~(\ref{estimatorcovariance}) over
+simulations, $\langle\h{\Sigma}_\bb{p}\rangle$, up to $O(1/N_r^2)$ by
+expanding Eq.~(\ref{estimatorcovariance}) to quartic order in the
+statistical fluctuations of $\bbh{\Psi}$. Denoting the noiseless
+parameter covariance, i.e. the usual Fisher matrix, as
+$\Sigma_\bb{p}=\bb{F}^{-1}$, we find the result~\footnote{The
+  details of the calculation are given in Appendix A.}:
 
 \begin{widetext}
 \begin{equation}
 \label{quarticdegradation}
-\langle\h{\Sigma}_\bb{p}\rangle = \Sigma_\bb{p}\left[1+\frac{N_b-N_p}{N_r}+\frac{(N_b-N_p)(N_b-N_p+2)}{N_r^2}\right] + O\left(\frac{1}{N_r^3}\right)
+\langle\h{\Sigma}_\bb{p}\rangle = \Sigma_\bb{p}\left[1+\frac{N_b-N_p}{N_r}+\frac{(N_b-N_p)(N_b-N_p+2)}{N_r^2}\right] + O\left(\frac{1}{N_r^3}\right).
 \end{equation}
 \end{widetext}
 %
-Next, we restrict ourselves to the large $N_r$ limit, and we further investigate the behavior of the $O(1/N_r)$ term. We consider three cases \footnote{The details of these calculations are given in Appendix B}:
+Next, we restrict ourselves to the large $N_r$ limit, and we further
+investigate the behavior of the $O(1/N_r)$ term. We consider three
+cases \footnote{The details of these calculations are given in
+  Appendix B}:
+
+
 \begin{enumerate}
-\item If the true data covariance $\bb{C}$ is known, the estimator (\ref{estimatorcovariance}) is biased, and the dominant contribution of the bias comes from the second order fluctuations in $\bbh{\Psi}$. Once the expectation values over simulations are taken, the bias sums up to 
+\item If the true data covariance $\bb{C}$ is known, the estimator in
+  Eq.~(\ref{estimatorcovariance}) is biased, and the dominant
+  contribution of the bias comes from the second order fluctuations in
+  $\bbh{\Psi}$. Once the expectation values over simulations are
+  taken, the bias sums up to
 
 \begin{equation}
 \label{dodelsonscaling}
-\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1+\frac{N_b-N_p}{N_r}\right)
+\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1+\frac{N_b-N_p}{N_r}\right).
 \end{equation}
 %
-This is the result obtained by \citep{DodelsonSchneider13}.
+This is the result obtained by ref.~\citep{DodelsonSchneider13}.
 
-\item Usually the true covariance is not known, and it is tempting to plug in its estimator $\bbh{C}$, measured from the same simulation set we use to compute $\bbh{\Psi}$. This approach has been used before in the literature (see \citep{MinkPetri,MinkShirasaki} for example). If we do that, and we do not correct for the $\bbh{\Psi}$ bias (see equation (\ref{firstmoment})), the parameter variance will have a contribution from both the second and first order fluctuations in $\bbh{\Psi}$, which now have a non zero expectation value. In this case the bias sums up to 
+\item Usually the true data covariance is unknown, and it is tempting
+  to plug in its estimator $\bbh{C}$, measured from the same
+  simulation set we use to compute $\bbh{\Psi}$. This approach has
+  been used before in the literature
+  (e.g.~\citep{MinkPetri,MinkShirasaki}). If this is done without
+  correcting for the bias in $\bbh{\Psi}$ (see Eq.~\ref{firstmoment}
+  below), 
+%ZH: we should probably cite Hartlap et al. and Taylor et al. here for this Psi bias.  (I assume this is what you mean in eq. 19)
+  the parameter variance will have a contribution from both the second
+  and first-order fluctuations in $\bbh{\Psi}$, which now have a
+  nonzero expectation value. In this case the bias sums up to
+%
 \begin{equation}
 \label{mockscalinguncorrected}
-\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1-\frac{N_b-N_p}{N_r}\right)
+\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1-\frac{N_b-N_p}{N_r}\right).
 \end{equation}
 
-\item If we repeat the same exercise as above, but we correct for the bias in the precision matrix estimator, we are left with 
+\item If we repeat the same exercise as above, but we correct for the
+  bias in the precision matrix estimator, we are left with
 
 \begin{equation}
 \label{mockscalingcorrected}
-\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1+\frac{1+N_p}{N_r}\right)
+\langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1+\frac{1+N_p}{N_r}\right).
 \end{equation}
 
 \end{enumerate} 
 %
-The error degradation  in each parameter $p$, at dominant order, scales as $D/N_r$, where $D=N_b-N_p,N_p-N_b,1+N_p$ for cases 1,2,3 respectively. This means that, when parameter errors are estimated purely from simulations, and the same simulation set is used to estimate both $\bbh{C},\bbh{\Psi}$, these errors tend to decrease with $N_b$ (case 2), or at best remain constant (case 3), while the distribution of $\bbh{p}$ has still a variance that increases with $N_b$. This typically leads to underestimates in parameter errors. We test the scaling relation
+The error degradation in each parameter $p$, at leading order, scales
+as $D/N_r$, where $D=N_b-N_p$, $N_p-N_b$, and $1+N_p$ for cases 1, 2,
+and 3, respectively.
+%ZH: It was not clear to me what the main point of the text below was. I paraphrased it slightly. OK?
+%This means that, when parameter errors are
+%estimated purely from simulations, and the same simulation set is used
+%to estimate both $\bbh{C},\bbh{\Psi}$, these errors tend to decrease
+%with $N_b$ (case 2), or at best remain constant (case 3), while the
+%distribution of $\bbh{p}$ has still a variance that increases with
+%$N_b$. This typically leads to underestimates in parameter errors. 
+Note that in the last case, which is most relevant when fitting actual
+data, the noise in both $\bbh{C}$ and $\bbh{\Psi}$ together degrade
+the confidence limits.  However, this degradation turns out to be less
+severe than in the idealized case 1 of a noiseless $\bbh{C}$ (assuming
+$N_b\gg N_p$).  We also note that the distribution of $\bbh{p}$ has a
+variance ($\Sigma_\bb{p}$) that increases with $N_b$, but the bias in
+$\h{\Sigma}_\bb{p}$ is independent of $N_b$ in the realistic case 3.
+
+We derived the scaling relations of the form
+%
 \begin{equation}
 \label{ourscaling}
 \langle\h{\sigma}_p^2\rangle = \sigma^2_{p,\infty}(N_s)\left(1+\frac{D}{N_r}\right)
 \end{equation}
 %
-on our simulations for high and small $N_r$. We use notation $\h{\sigma}^2_p=\h{\Sigma}_{pp}$ and we indicate as $\sigma^2_{p,\infty}$ the expectation value of the variance in the limit of infinite mocks $N_r\rightarrow\infty$. We call $D$ the \textit{effective dimensionality} of the feature space (which, as seen before, can be negative in some cases). We compute the expectation values of $\h{\sigma}^2_p$ (equations (\ref{estimatorcovariance}),(\ref{ourscaling})) averaging over 100 random resamplings of our shear ensembles. For the true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use the estimated covariance from a grand ensemble built with the union of all the ensembles with different $N_s$. 
+above by assuming that the noise in both $\bbh{C}$ and $\bbh{\Psi}$ is
+Gaussian.  We next directly test these scaling relations using our
+simulations, in the limits of both high and low $N_r$.
+%ZH: It is still a little unclear here what is being tested.  Is it the Gaussianity assumption? I added that.
+%    But perhaps you had some other issue in mind.
+We use the notation $\h{\sigma}^2_p=\h{\Sigma}_{pp}$ 
+%ZH: I am confused.  Why is a new symbol \sigma necessary here, on top of \Sigma ?
+%    (And also: here you write \Sigma_pp, but above it was denoted \Sigma_p  )
+and we indicate by $\sigma^2_{p,\infty}$ the expectation value of the
+variance in the limit of an infinite number of realizations
+$N_r\rightarrow\infty$.  We call $D$ the \textit{effective
+  dimensionality} of the feature space (which, as seen before, can be
+negative in some pathological cases).
+%ZH: I added pathological here.  Do you agree?  It's only negative in case 1, when
+%    N_p > N_b (which is impossible -- cannot measure N_p parameters with N_b observables)
+%    or in case 2 (when N_b > N_p, so that's OK, but this case ust means we ``forgot'' to correct for the psi-bias).
+We compute the expectation values of $\h{\sigma}^2_p$
+(equations~\ref{estimatorcovariance} and \ref{ourscaling}) by
+averaging over 100 random resamplings of our shear ensembles. For the
+true feature covariance matrix
+$\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use
+the estimated covariance from a grand ensemble built with the union of
+all the ensembles with different $N_s$.
 
-The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle depends on the number of independent $N$--body simulations $N_s$, which appears in the randomization procedure we describe in \S~\ref{shearsim}. The reason for this can be found in that, if $N_s$ is not big enough, the different shear realizations cannot be all independent, and hence the true variance $\sigma^2_{p,\infty}(N_s\rightarrow\infty)$ cannot be recovered for low $N_s$ even if $N_r$ is large. In the next paragraph we outline our main findings.
+The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle
+can depend on the number of independent $N$--body simulations $N_s$,
+which appears in the randomization procedure described in
+\S~\ref{shearsim} above. This is because if $N_s$ is not large enough,
+the different shear realizations cannot be all independent, and hence
+the true variance $\sigma^2_{p,\infty}(N_s\rightarrow\infty)$ cannot
+be recovered for low $N_s$ even if $N_r$ is arbitrarily large. In the
+next section, we present our main findings.
  
 
 %%%%%%%%%%%%%%%%%%% RESULTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,37 +515,124 @@ The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle depends on t
 
 \begin{figure*}
 \includegraphics[scale=0.4]{Figures/ps_pdf.eps}
-\caption{PDF of the $\kappa$ power spectrum,$\mathcal{L}(P_l^{\kappa\kappa})$, at four selected multipoles $l=115,344,1349,5283$, for different shear ensembles constructed with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple). The thick black lines correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations.}
+\caption{PDF of the $\kappa$ power spectrum
+  $\mathcal{L}(P_l^{\kappa\kappa})$ at four selected multipoles
+  $\ell=115,344,1349,5283$, for different shear ensembles constructed
+  from on $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), and 100
+  (purple) independent N-body simulations. Each curve is based on
+  $N_r=1000$ realizations.
+%ZH: I added the Nr=1000 above. Yes?
+  The thick
+  black curves correspond to ensembles generated with $N_s=1$ and
+  $N_r=10^5$. For $N_s\geq2$, the distributions appear
+  similar to the eye; this similarity is confirmed by the comparisons
+  in Figures \ref{means_ns} and \ref{ps_var} below. }
+%added last two sentences. -Morgan
+%Also: Thick black line draws the eye and looks like the most significant thing on the plot. replace with dotted black line or something else that stands out less.-Morgan
+%ZH: Also, include a label ``N_r=10^5'' with the other N_s=... labels in the figure panels 
+%   (it is just confusing why there are labels for all the other curves, but not for the thick black)
 \label{ps_pdf}
 \end{figure*}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/means_ns.eps}
-\caption{Means of shear features $d$ measured from different shear ensembles. The quantities shown are the differences between mean features measured from ensemble with varying $N_s$, with respect to the means measured from the $N_s=200$ ensemble, in units of the statistical error measured from the $N_s=200$ ensemble. The colored lines refer to shear-shear power spectra measured at $l=115$ (black), 1027 (cyan), 5283 (green) and peak counts of height $\kappa_0=0.05$ (red), 0.17 (purple), 0.28 (orange).}
+\caption{The mean value 
+ $\bb{\bar{d}}$
+% $d$  
+%ZH: I think you mean  \bb{\bar{d}} here?  You introduced a lot of different
+%    subtle notations in the previous section, so we should  follow those ....
+  of various features, measured from ensembles created from different
+  numbers $N_s$ of simulations.  For each case, the difference compared
+  to the mean in the $N_s=200$ ensemble is shown, in units of the
+  statistical error measured in the $N_s=200$ ensemble.  The colored
+  curves refer to shear-shear power spectra measured at $\ell=115$
+  (black), 1027 (cyan), and 5283 (green), and peak counts 
+%of
+%ZH: I replace ``of'' with ``above''.  These are cumulative peak counts N(>kappa_0) ?
+%    Or do you mean differential counts in some delta-kappa_0 bins?   Then you should
+%    correct the text (and state the bin width).  Table II contains some kappa-bins
+%    but no obvious relation to the 0.05, 0.17  and 0.28 mentioned here...
+  with height above $\kappa_0=0.05$ (red), 0.17 (purple), and 0.28
+  (orange).  For $N_s\geq 2$, the means are statistically
+  indistinguishable from the means measured in the ensemble with $N_s=200$.}
+% added last sentence stating conclusion to be drawn from the figure-Morgan
+%ZH:  Good idea.  All figures captions should similarly state a conclusion!
+%ZH:  What is the horizontal dashed line?  It is never mentioned in the caption or
+%     the text.   I guess you decided to mark the ``0.1 sigma'' deviation?
+%     We should state that.    I suppose this is what Morgan refers to by 
+%    ``statistically indistinguishable'' ....  0.1 sigma.
 \label{means_ns}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/ps_variance.eps}
-\caption{Variance of the $\kappa$ power spectrum as a function of the multipole $l$, in units of the expected gaussian variance from equation (\ref{gaussianvar}). The variance is measured from different shear ensembles with $N_s=$1 (black), 2 (blue), 5 (green), 10 (red), 50 (purple), 100 (orange). }
+\caption{Variance of the $\kappa$ power spectrum as a function of the
+  multipole $\ell$, in units of the expected Gaussian variance from
+  equation (\ref{gaussianvar}). The variance is measured from
+  different shear ensembles based on $N_s=$1 (black), 2 (blue), 5
+  (green), 10 (red), 50 (purple), or 100 (orange) N-body simulations. 
+%ZH: Added ``conclusion'':
+  Non-Gaussianities of the underlying structures increase the variance on
+  small scales, but no clear trend with $N_s$ can be identied on any scale.}
 \label{ps_var}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/curving_nb.eps}
-\caption{Expectation value of the $w$ variance computed with equation (\ref{estimatorcovariance}) as a function of $1/N_r$, for the features outlined in Table \ref{featuretable}. The dashed and solid lines show the the theory predictions from equation (\ref{quarticdegradation}) at orders $O(1/N_r),O(1/N_r^2)$. The asymptotic variance $\sigma^2_{w,\infty}$ has been computed from a linear regression of $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ for $N_r>500$.}
+\caption{Expectation value of the variance of $w$ computed from
+  equation (\ref{estimatorcovariance}), shown as a function of
+  $1/N_r$. The different symbols and colors correspond to the features
+  listed in Table~\ref{featuretable}.
+%ZH: It would be better to write the features on the legend embedded in the figure.
+%    Why make the reader flip back-and-forth between the figure and the Table ?
+  The dashed and solid curves show the analytic predictions from
+  equation (\ref{quarticdegradation}) at orders $O(1/N_r)$ and
+  $O(1/N_r^2)$, respectively. The asymptotic variance
+  $\sigma^2_{w,\infty}$ has been computed from a linear regression of
+  $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ for $N_r>500$. The figure
+  clearly shows that terms beyond $O(1/N_r)$ need to be considered,
+  unless $N_r\gg N_b$.}
+%added last sentence stating conclusion to be drawn from the figure-Morgan
+%in legend box change line that reads Nb=7 divided by 8
 \label{curvingnb}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/scaling_nr.eps}
-\caption{Bias in the $w$ variance, $\langle\h{\sigma}^2_w\rangle-\sigma^2_{w,\infty}$, as a function of the number of mock realizations $N_r$ used in the feature covariance estimator (\ref{covest}). Results for different mock ensembles generated with $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), 100 (purple) are shown. The figure shows both the measured trends (solid lines) and their best fits according to equation (\ref{ourscaling}). The thick black line correspond to an ensemble generated with $N_s=1$ and $10^5$ mock realizations. }
+\caption{Bias in the variance of $w$,
+  $\langle\h{\sigma}^2_w\rangle-\sigma^2_{w,\infty}$, as a function of
+  the number of realizations $N_r$ used to estimate the covariance
+  (eq.~\ref{covest}). Results for different ensembles, generated from
+  $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), and 100 (purple)
+  simulations are shown. The figure shows both the measured trends
+  (solid lines) and their best fits based on eq.~(\ref{ourscaling}),
+  with $D$ treated as a free parameter.
+%ZH: We need to explain what you mean by best-fit (presumably you treat ``D'' as a free parameter).
+%   I added that. But if you meant something else, please correct.
+  The thick black curve corresponds to an ensemble of $N_r=10^5$
+  realizations from a single simulation ($N_s=1$).
+%ZH: I added 'conclusion':
+  No systematic deviation from the expected scaling is seen, even in
+  the extreme last case.  }
 \label{wvar_nr}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/scaling_ns.eps}
-\caption{Variance on $w$ in the limit $N_r\rightarrow\infty$, varying the mock ensemble used to compute the covariance estimator (\ref{covest}). We show the dependence of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over $N_s$, for the power spectrum logarithmically binned (black), the power spectrum linearly binned (red) and the peak counts (green).}
+\caption{The variance of $w$ in the limit of $N_r\rightarrow\infty$,
+%ZH: state here what N_r was actually used to approximate the infinity limit
+  varying the number of simulations $N_s$ used in the ensemble to
+  estimate the covariance (eq.~\ref{covest}). We show the dependence
+  of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over $N_s$, 
+%ZH: Just to make sure: what you mean here is an averaging of sigma_infty over the 16 different
+%    cases of N_s ?   
+  for
+  the power spectrum logarithmically binned (black), the power
+  spectrum linearly binned (red) and the peak counts (green).
+%ZH: What ell and kappa ranges were used?
+%XH: Added conclusion:
+  No trend with $N_s$ is seen for $N_s\geq 2$, and the
+  differences are only 1\%.  }
 \label{wvar_ns}
 \end{figure}
 
@@ -257,13 +642,13 @@ The true parameter variance $\sigma^2_{p,\infty}(N_s)$ in principle depends on t
 \toprule
 \textbf{Feature} &  \textbf{Specifications} & $N_b$ &  \textbf{Symbol} & \textbf{Color} \\ \hline \hline
 \midrule
-Power Spectrum, log binning  & $l \in [100,800] $ & 8 & $\times$ & black  \\ 
-Power Spectrum, log binning  & $l \in [1000,6000] $ & 7 & $\blacksquare$ & black  \\ 
-Power Spectrum, log binning  & $l \in [100,6000] $ & 15 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\
-Power Spectrum, linear binning  & $l \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
-Power Spectrum, linear binning  & $l \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
-Power Spectrum, linear binning  & $l \in [100,4500] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\ 
-Power Spectrum, linear binning  & $l \in [100,6000] $ & 39 & \textcolor{blue}{$\bullet$} & \textcolor{blue}{blue}  \\ \hline
+Power Spectrum, log binning  & $\ell \in [100,800] $ & 8 & $\times$ & black  \\ 
+Power Spectrum, log binning  & $\ell \in [1000,6000] $ & 7 & $\blacksquare$ & black  \\ 
+Power Spectrum, log binning  & $\ell \in [100,6000] $ & 15 & \textcolor{red}{$\bullet$} & \textcolor{red}{red}  \\
+Power Spectrum, linear binning  & $\ell \in [100,2000] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
+Power Spectrum, linear binning  & $\ell \in [2500,4500] $ & 15 & \textcolor{red}{$\times$} & \textcolor{red}{red}  \\
+Power Spectrum, linear binning  & $\ell \in [100,4500] $ & 30 & \textcolor{OliveGreen}{$\bullet$} & \textcolor{OliveGreen}{green}  \\ 
+Power Spectrum, linear binning  & $\ell \in [100,6000] $ & 39 & \textcolor{blue}{$\bullet$} & \textcolor{blue}{blue}  \\ \hline
 Low peaks  & $\kappa_0 \in [-0.06,0.09] $ & 15 & \textcolor{red}{$+$} & \textcolor{red}{red}  \\ 
 Intermediate peaks  & $\kappa_0 \in [0.1,0.27] $ & 15 & \textcolor{red}{$\bigstar$} & \textcolor{red}{red}  \\ 
 High peaks  & $\kappa_0 \in [0.28,0.45] $ & 15 & \textcolor{red}{$\diamond$} & \textcolor{red}{red}  \\
@@ -279,62 +664,244 @@ All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{magenta}{$\blacksqua
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section we outline the main results of this work. We show the qualitative behavior of a variety of features $\bbh{d}_r$ probability distribution function (PDF) in ensembles built with different $N_s$. Figure \ref{ps_pdf} shows the power spectrum PDF at four selected multipoles, Figure \ref{means_ns} shows the dependence of feature ensemble means on $N_s$, while Figure \ref{ps_var} shows the variance in each measure power spectrum multipole. This last result is compared to the one that would be obtained assuming that the convergence $\kappa$ is a Gaussian random field
+In this section we present the main results of this work. We show the
+qualitative behavior of a variety of feature $\bbh{d}_r$ probability
+distribution functions (PDFs) in ensembles built with different $N_s$
+and $N_r$. In Figure~\ref{ps_pdf}, we show the PDF of the power
+spectrum at four selected multipoles, spanning the linear ($\ell=115$)
+to the nonlinear ($\ell=5283$) regime. In Figure~\ref{means_ns}, we
+shows the ensemble mean for these power spectra, as well as for peak
+counts above three different $\kappa$ thresholds (corresponding to
+$\approx 2-12\sigma$ peaks), as a function of $N_s$.
+%ZH: added above 2-12.  OK ?
+In Figure~\ref{ps_var}, we show the variance of the power spectrum at
+each multipole, as a function of $N_s$, in units of the variance
+expected if the convergence $\kappa$ was a Gaussian random field
+%
+%ZH:  I changed ``l''  to ``\ell'' in many places, for the multipole
 \begin{equation}
 \label{gaussianvar}
-\mathrm{Var}(P^{\kappa\kappa}(l)) = \frac{P^{\kappa\kappa,2}(l)}{N_{eff}(l)}
+\mathrm{Var}(P^{\kappa\kappa}_\ell) = \frac{(P^{\kappa\kappa}_\ell)^2}{N_{\rm eff}(\ell).}
 \end{equation}
 %
-where $N_{eff}(l)$ is the number of independent modes used to estimate the power spectrum at $l$. To measure $P^{\kappa\kappa}(l),N_{eff}(l)$, we compute the real Fourier transform of the pixelized map $\kappa_r(\pmb{\theta})$ with the FFT algorithm. Each Fourier pixel $(i_x,j_y)$ corresponds to a mode $(l_x,l_y)=2\pi(i_x,i_y)/\theta_{box}$, with $i_x=-n_{ray}/2,...,n_{ray}/2$ and $i_y=0,...,n_{ray}/2$. We count the number of pixels $N(l)$ that fall inside a multipole bin $(l_1,l_2)$. Because the $\kappa$ field is real, the modes $(\pm l_x,0)$ are not independent. If we let $N(l,l_y=0)$ be the number of non--independent modes, the mode counting for the variance should be corrected as 
+Here $N_{\rm eff}(l)$ is the number of independent modes used to
+estimate the power spectrum at $\ell$.  
+
+In practice, we measure $P^{\kappa\kappa}_\ell$ on the Fourier
+transform of the pixelized simulated map $\kappa_r(\pmb{\theta})$,
+using the FFT algorithm, and some care must be taken to count the
+number of modes $N_{\rm eff}(\ell)$ correctly. Each pixel $(i_x,j_y)$
+in Fourier space corresponds to a mode
+$(\ell_x,\ell_y)=2\pi(i_x,i_y)/\theta_{\rm box}$, with $i_x=-n_{\rm
+  ray}/2,...,n_{\rm ray}/2$ and $i_y=0,...,n_{\rm ray}/2$.
+%ZH: added this:
+Here $n_{\rm ray}=2048$ is the linear number of pixels on the
+ray-traced convergence maps.  We count the number of pixels $N(\ell)$
+that fall inside a multipole bin $(\ell_1,\ell_2)$. Because the
+$\kappa$ field is real, the modes $(\pm \ell_x,0)$ are not
+independent. If we let $N(\ell,\ell_y=0)$ be the number of
+non--independent modes, the effective number of independent modes
+for the variance is given by
 
 \begin{equation}
-N_{eff}(l) = \frac{N^2(l)}{N(l)+N(l,l_y=0)}
+N_{\rm eff}(\ell) = \frac{N^2(\ell)}{N(\ell)+N(\ell,\ell_y=0)}.
 \end{equation}
 %
-We not that this correction is important at low $l$ only, where pixelization effects are more important. In other words $N_{eff}(l\gg2\pi/\theta_{box})\approx N(l)$. 
+This correction is important at low $\ell$, where pixelization effects
+are non-negligible; $N_{\rm eff}(\ell\gg2\pi/\theta_{\rm box})\approx
+N(\ell)$.
 
-Figure \ref{curvingnb} shows a comparison between the dependence of $\langle\h{\sigma^2_w}\rangle$ measured from simulations and the theory prediction from equation (\ref{quarticdegradation}). 
-
-Figure \ref{wvar_nr} shows the scaling of the expectation value of $\h{\sigma}_w^2$ when the number of mocks is large, $N_r\gg500$, using the power spectrum and compare it with the known result obtained in \citep{DodelsonSchneider13} and expressed in equation (\ref{ourscaling}). Finally, Figure \ref{wvar_ns} shows the effect of varying $N_s$ on the $w$ constraint.  
+In Figures~\ref{curvingnb} and \ref{wvar_nr}, we show the dependence
+of the confidence range $\langle\h{\sigma}^2_w\rangle$ on $N_r$,
+derived from the power spectrum.
+%ZH: previously you only stated ``power spectrum'' for Figure 5.  But I assume Fig.4 is
+%    also based on the power spectrum?  If not, please correct.
+Figure~\ref{curvingnb} illustrates the behavior at relatively low
+$N_r$, and compares $\langle\h{\sigma}^2_w\rangle$ measured directly
+from the simulations with the analytic expectations from
+equation~(\ref{quarticdegradation}).  Figure~\ref{curvingnb} shows the
+behavior in the limit of a large number $N_r\gg500$ of realizations,
+and compares it with the scaling of the form in
+equation~(\ref{ourscaling}). Finally, in Figure~\ref{wvar_ns}, we show
+how the $w$ confidence limit changes with $N_s$.
 
 %%%%%%%%%%%%%%%%%% DISCUSSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Discussion}
 
-In this section we discuss our main findings. Figure \ref{ps_pdf} shows that, although different choices of $N_s$ do not seem to affect the power spectrum PDF at large scales (top two panels), there are some qualitative differences on small scales (bottom two panels), on which a shear ensemble built with a small $N_s$ does not have the same statistical behavior of ensembles built with large $N_s$. Looking at the black curves, we see that the $N_s=1$ ensembles exibit some stochastic fluctuations in where the PDF peaks. We need as small as $N_s=2$ to recover the right location parameter for the power spectrum on small scales. Figure \ref{means_ns} shows that mutiple independent $N$--body simulations $N_s>1$ are necessary for measuring the means of feature ensembles to an accuracy corresponding to 10\% of the statistical error. The number of required simulations $N_s$ depends on the feature type and ranges from a few (1 or 2) for the power spectrum at small multipoles $l\lesssim 500$ to an order of $30\div50$ for the power spectrum at large multipoles $l\gtrsim1000$ peak counts at a high threshold $\kappa_0\approx0.3$.   
+In this section we discuss our main findings and their
+implications. Figure \ref{ps_pdf} shows that, although different
+choices of $N_s$ do not affect the power spectrum PDF on large scales
+(top two panels), there are some qualitative differences on smaller
+scales (bottom two panels). On these smaller scales, shear ensembles
+built from $N_s=1$ do not produce the same statistical behavior as
+ensembles built with larger $N_s$. In particular, looking at the
+black curves, we see that the $N_s=1$ ensembles exibit large shifts
+with respect to the other PDFs to lower power, including the locations
+of the peaks of the PDFs.  We attribute these offsets to large
+(random) statistical errors.
+%ZH: I changed the wording above.  We didn't really prove that these are statistical errors,
+%    and not some systematic shift to low power when N_s is low.
 
-Figure \ref{ps_var} shows the variance of convergence power spectrum computed from different ensembles, in units of the Gaussian expectation. We find that, even with $N_s=1$, our results are in good agreement with the ones obtained by \citep{Sato12}, which used $N_s=400$. This fact by itself is not sufficient to conclude that $N_s$ does not have an effect on parameter inferences, since these depend on the cross band covariances.
+Interestingly, we need as few as $N_s=2$ simulations to recover the
+right PDF
+%ZH: what is ``location parameter'' ?
+%location parameter 
+for the small-scale power spectrum.  Figure~\ref{means_ns} shows that
+multiple independent $N$--body simulations $N_s\geq2$ are indeed
+necessary for measuring the means of feature ensembles to an accuracy
+corresponding to 10\% of the statistical error. The number of required
+simulations $N_s$ depends on the feature type and ranges from a few ($N_s=1$
+or 2) for the power spectrum at low multipoles ($\ell\lesssim 500$) to
+$N_s\approx 30-50$ for the power spectrum at larger
+multipoles ($\ell\gtrsim1000$) or peak counts above a high threshold
+($\kappa_0\approx0.3$).
+%ZH: I think this text above is a bit misleading.  Wny would we actually impose the ``0.1 sigma''
+%    requirement?    It sounds too stringent.  If we instead imposed, say, 0.5 sigma, would
+%    N_s=2 always be sufficient?    We should probably at least add this (delete if untrue):
+On the other hand, relaxing the required accuracy to 50\% of the statistical
+error, we find $N_s=2$ to be always sufficient.
 
-Figure \ref{curvingnb} shows that error degradation estimates truncated at order $O(1/N_r)$ are too optimistic when the number of mocks $N_r$ used to measure the covariance is only a factor of few larger than the dimension of the feature space $N_b$. In these cases effects coming the next--to--leading orders $O(1/N_r^2)$ become non--negligible on constraints degradation. In particular we find that already for $N_b=30$ and $N_r\sim100$, error degradation estimates at $O(1/N_r^2)$ are too optimistic, and more accurate estimates require at least the terms of order $O(1/N_r^3)$, which come from higher than quartic $\bbh{\Psi}$ fluctations.      
+Figure \ref{ps_var} shows the variance of convergence power spectrum
+computed from different ensembles, in units of the Gaussian
+expectation. We find that, even with $N_s=1$, we are able to recover
+the known result that non-Gaussian structures increase the variance
+significantly on small scales. 
+%ZH: We could add more references here, e.g. the earlier Sato et al. 2009 paper, and the Takada and Spergel
+%    papers looking at the non-Gaussian variance of the pow.spectrum.. 
+Our results are in fact in excellent agreement with
+ref.~\citep{Sato12}, which used $N_s=400$ independent N-body
+simulations.  This result is highly encouraging, suggesting that
+individual N-body runs can be recycled repeatedly.  However, it is not
+sufficient by itself to conclude that $N_s$ does not impact the
+parameter inferences, since these depend on the cross band
+covariances.
 
-In Figure \ref{wvar_nr} we examine how the $w$ constraint depends on the number of mocks used to estimate the covariance in the limit of large $N_r$, and we find good agreement with (\ref{ourscaling}) up to values comparable to $\sim 10^5$. Bacause of this, we can argue that one $N$--body simulation is enough to construct an ensemble of $O(10^5)$ mutually independent mock power spectra.    
+Figure \ref{curvingnb} investigates the parameter errors. This figure
+shows that error degradation estimates truncated at order $O(1/N_r)$
+are too optimistic when the number of simulations $N_r$ used to
+measure the covariance is only a factor of few larger than the
+dimension of the feature space $N_b$. In these cases effects coming
+the next--to--leading orders $O(1/N_r^2)$ become non--negligible on
+constraint degradation. In particular, we find that already for
+$N_b=30$ and $N_r\sim100$, the error degradation estimates to the next
+leading order, $O(1/N_r^2)$, remain too optimistic. Accurate analytic
+estimates in this regime would require at least terms of order
+$O(1/N_r^3)$, which come from higher--than--quartic $\bbh{\Psi}$
+fluctations.
 
-Figure \ref{wvar_ns} shows the dependence of the dark energy constraint with $N_s$. We find that, in the range $N_s\in[1,200]$ the $w$ inferred variance $\sigma_{w,\infty}^2$ fluctuates stochastically and does not show an appreciable trend with $N_s$. 
+In Figure \ref{wvar_nr}, we examine how the degradation in the $w$
+constraint depends on the number of simulations used to estimate the
+covariance, in the limit of large $N_r$. We find excellent agreement
+with the expected scaling (eq.~\ref{ourscaling}) up to values
+comparable to $N_r\sim 10^5$. We therefore conclude that a single
+$N$--body simulation is sufficient to construct an ensemble of
+$O(10^5)$ mutually independent convergence power spectra.
 
-When we estimate the data covariance $\bb{C}$ from the same simulation set used to measure $\bbh{\Psi}$, the effective dimensionality $D$ decreases with increasing $N_b$ in the case where the $\bbh{\Psi}$ bias is corrected, and stays constant when this bias is corrected. This fact that should be taken into considerations when estimating parameter errors purely from simulations, as underestimations might occur. 
+Figure \ref{wvar_ns} shows how the ``true'' $w$ constraint (in the
+limit $N_r\rightarrow \infty$; or equivalently the $w$ constraint with
+the known $N_r$ dependence factored out),
+%ZH: see my paraphrasing above.  I wanted to clearly distinguish the point
+%    of this paragraph from the previous paragraph.
+depends on $N_s$. We find that, in the range $N_s\in[1,200]$ the
+inferred $w$-variance $\sigma_{w,\infty}^2$ fluctuates stochastically
+only by 1\%, and does not show any trend with $N_s$.
+
+Finally, we found that when we estimate the data covariance $\bb{C}$
+from the same simulation set used to measure $\bbh{\Psi}$, the
+effective dimensionality $D$ decreases with increasing $N_b$ in the
+case where the $\bbh{\Psi}$ bias is not corrected
+(eq.~\ref{mockscalinguncorrected}).  This $N_b$-dependence disappears
+when the bias is corrected (eq.~\ref{mockscalingcorrected}).  This
+fact that should be taken into consideration when forecasting
+parameter errors purely from simulations, as the errors will otherwise
+be underestimated.
+%ZH: reworded above.  OK?  Also, I am not sure if this point is new.
+%    Didn't Hartlap (and others) make this point? If so, we should cite them.
+%    Also, it would make the point more relevant if we could cite some 
+%    papers (including our own) which neglected this correction in the past
+%    and therefore under-forecasted the errors.
+
+
 
 %%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Conclusion}
+\section{Conclusions}
 
-In this work we examine the effect of $N$--body simulations based shear ensembles on forecasted cosmological constraints. Our main results can be summarized as follows:
-
+In this work, we have examined the effect of forecasting cosmological
+constraints based on shear ensembles generated from a finite number of
+$N$--body simulations.  Our main results can be summarized as follows:
+\vspace{0.4\baselineskip}
 \begin{itemize}
-\item When the feature covariance matrix is measured from simulations, parameter constraints are degraded. This degradation is appreciably larger than the $O(1/N_r)$ computed by \citep{DodelsonSchneider13} when the number of mocks $N_r$ is only a factor of few larger than the feature vector size $N_b$.
-\item We can recycle a single $N$--body simulation to produce an ensemble of $O(10^5)$ independent maps. The mean feature measured from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.   
-\item One or two indpendent $N$--body simulations are sufficient to forecast $w$ errorbars to an accuracy of percent level, given that enough mock shear realizations $N_r$ are used to measure feature covariances. Depending on the feature type used to constrain cosmology, more $N$--body simulations might be needed to measure accurate ensemble means and hence avoid introducing biases in parameter estimators.   
+
+\item When the feature covariance matrix is measured from simulations,
+  parameter constraints are degraded. This degradation is appreciably
+  larger than the $O(1/N_r)$ computed by \citep{DodelsonSchneider13}
+  when the number of realizations $N_r$ is only a factor of few larger
+  than the feature vector size $N_b$.
+\item We can recycle a single $N$--body simulation to produce an
+  ensemble of $O(10^5)$ independent maps. The mean feature measured
+  from a shear ensemble, though, could be inaccurate if only one
+  $N$--body simulation is used.
+\item As few as one or two independent $N$--body simulations are
+  sufficient to forecast $w$ errorbars to 1\% accuracy, provided that
+  a sufficiently large number $N_r$ of realizations are used to
+  measure feature covariances.  In particular, provided that biases
+  in the inverse covariance are corrected, percent-level forecasts
+  require $N_r\gsim 100 N_p$ realizations (where $N_p$ is the number
+  of parameters to be constrained).
+%ZH: what is sufficiently large here?  I presume a ``few hundred'' 
+%    (or $>100N_p$, based on eq. 13).  I added that.  Please correct if 
+%    this is not OK.
+\item Depending on the feature type used to constrain cosmology, a
+  larger number of $N$--body simulations might be needed to measure
+  accurate ensemble means and hence to avoid introducing biases in
+  parameter estimators.
+%ZH:  So I am not sure about this last conclusion.   
+%     What exactly do you have in mind?   Is it Figure 2, which shows
+%     some deviations above the horizontal dashed line, for N_s up to ~50 ?
+%     But this is based on the super-stringent requirement that the bias
+%     is <0.1*sigma.
+%     The same figure seems to show that N_s=2 simulation is in fact
+%     sufficient to measure the means to within 0.5*sigma, as well.
+%     If you agree, we should revise this bullet to state this more
+%     positive conclusions!
 \end{itemize}
 %
-Future prospects of this work involve extending this analysis to more general feature spaces, such as the ones that characterize non--Gaussian statistics such as higher moments of $\kappa$ fields, Minkowski Functionals and higher order $\kappa$ correlators. In order to scale these considerations to future surveys such as LSST, it is necessary to see if our findinds hold when challenged by larger and higher resolution $N$--body simulations \citep{Qcontinuum}.   
+Future extensions of this work should involve extending our analysis
+to a larger set of cosmological parameters, and to more general
+feature spaces, such as the ones that characterize non--Gaussian
+statistics (e.g. including higher moments of the $\kappa$ field,
+Minkowski Functionals, and higher-order $\kappa$ correlators). While
+our results are highly encouraging, and suggest that a single N-body
+simulation can be recycled repeatedly, to produce as many as $10^5$
+independent shear power spectra or peak count histograms. In order to
+scale our results to large future surveys, such as LSST, it will be
+necessary to determine if our findinds hold when challenged by larger
+and higher-resolution $N$--body simulations \citep{Qcontinuum}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% ACKNOWLEDGMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 
 \section*{Acknowledgements}
+We thank Lam Hui for useful discussions.  The simulations in this work
+were performed at the NSF XSEDE facility, supported by grant number
+ACI-1053575, and at the New York Center for Computational Sciences, a
+cooperative effort between Brookhaven National Laboratory and Stony
+Brook University, supported in part by the State of New York. This
+work was supported in part by the U.S. Department of Energy under
+Contract Nos. DE-AC02-98CH10886 and DE-SC0012704, and by the NSF Grant
+No. AST-1210877 (to Z.H.) and by the Research Opportunities and
+Approaches to Data Science (ROADS) program at the Institute for Data
+Sciences and Engineering at Columbia University (to Z.H.).  
 
 \bibliography{ref}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% APPENDIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ZH: I did not carefully re-read the appendices.  I guess that is OK.
+%    One cosmetic comment:  when you refer to equations, you need to say
+%    ``as in eq. (xx)''  rather than  ``as in (xx)''.
+%    
 \section*{Appendix A: cubic and quartic covariance fluctuations}
 \label{appendixA}
 
@@ -422,6 +989,8 @@ And every trace of the noise is gone, hence powers of $1/N_r^a$ must not appear 
 When the results from (\ref{expansionbreakdown}) are summed, (\ref{quarticdegradation}) immediately follows. 
 
 
+\clearpage
+\newpage
 \section*{Appendix B: negative effective dimensionality}
 \label{appendixB}
 
