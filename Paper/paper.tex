@@ -67,7 +67,7 @@ realizations of the shear field, using a common randomization
 procedure that recycles the outputs from a smaller number $N_s\leq
 N_r$ of independent ray-tracing $N$--body simulations.  We study
 parameter confidence intervals as a function of ($N_s,N_r$) in the
-range $1\leq N_s\leq 200$ and $1\leq N_r\leq 10^5$.  Previous work
+range $1\leq N_s\leq 200$ and $1\leq N_r\lesssim 10^5$.  Previous work
 \citep{DodelsonSchneider13} has shown that Gaussian noise in the
 feature covariance lead, at quadratic order, to an $O(1/N_r)$
 degradation of the parameter confidence intervals. Using a variety of
@@ -111,11 +111,7 @@ and the assessment of various systematics
 
 A fundamental issue with predictions from simulations is that the
 finite number of simulations naturally introduces fluctuations in the
-forecasts, due to inevitable sample variance~\footnote{Sample variance
-  is a broad term that has been used in the literature to describe a
-  range of phenomena.  Throughout this paper, we use it to refer to
-  the fluctuations in an ensemble of simulations, which represent
-  random realizations of the same initial conditions.}.  In general,
+forecasts, due to inevitable sample variance~\footnote{Sample variance is a broad term that has been used in the literature to describe a range of phenomena. Throughout this paper, we use it to refer to the fluctuations in an ensemble of simulations, which represent random realizations of the same initial conditions.}. In general,
 quantities such as the mean or the variance of any feature (e.g. the
 shear power spectrum at a multipole $\ell$), measured from a finite
 set of simulations, will fluctuate, and can also suffer a bias.  While
@@ -266,6 +262,7 @@ an exception by ref.~\citep{SchneiderKnoxCovariance}).
 %    power spectrum covariance matrix.
 %AP: The intended meaning is the latter: published emulators only predict the means. It is also true that getting the covariance accurate is more difficult than getting the means accurate. I rephrased the sentence.
 %ZH2: OK, I rephrased it a bit above to be clearer.  I believe only Schneider et al. did ``C''.
+%AP2: OK
 Estimating $\bb{C}$ from simulations involves generating a series of
 mock realizations $\bbh{d}_r$ with $r=1...N_r$ and computing the
 sample covariance $\bbh{C}$,
@@ -331,8 +328,9 @@ $\Omega_m$ &  $w$ & $\sigma_8$ & $(N_s,N_r)$ & Number of $\kappa$ ensembles \\ \
 %    Also: point the reader to this table in the text, up front, when the 
 %    ensembles are first discussed.
 %AP: done
-%ZH2: The first raw was a bit confusing, so I separated it into two rows. Also added words to the caption
+%ZH2: The first row was a bit confusing, so I separated it into two rows. Also added words to the caption
 %    (also, the N_r=10^5 one is the 17th ensemble, in addition to the 16 you listed here before, no? So 16 should have been 17?)
+%AP2: OK
 \label{simtable}
 \end{table*}
 
@@ -454,13 +452,14 @@ and 3, respectively.
 %ZH2: OK.  I think by `` the parameter estimate $\bbh{p}$ has a variance that grows linearly with $N_b$,'' you mean equation 10
 %   (i.e.  technically it is [variance-1] grows linearly with N_b.   I rephrased below to say ``whose noise'' grows linearly and
 % cite eq.10.    OK?
+%AP2: OK
 Note that in the last case, which is most relevant when fitting actual
 data, the estimated degradation turns out to be too optimistic: the
 parameter estimate $\bbh{p}$ has a variance whose noise grows linearly
 with $N_b$ (eq.~\ref{quarticdegradation}), whereas the degradation
 estimated via eq. (\ref{mockscalingcorrected}) is constant with
 $N_b$. This can lead to underestimation of error bars, which can be
-mistakenly interpreted as a parameter bias.  We derived the scaling
+mistakenly interpreted as a parameter bias. We test scaling
 relations of the form
 %
 \begin{equation}
@@ -468,9 +467,7 @@ relations of the form
 \langle\h{\sigma}_p^2\rangle = \sigma^2_{p,\infty}(N_s)\left(1+\frac{D}{N_r}\right)
 \end{equation}
 %
-above by assuming that the noise in $\bbh{d}$ is Gaussian. We then
-directly test these scaling relations using our simulations, in the
-limits of both high and low $N_r$.
+againts our simulations, in the limits of both high and low $N_r$.
 %ZH: It is still a little unclear here what is being tested.  Is it the Gaussianity assumption? I added that.
 %    But perhaps you had some other issue in mind.
 %AP: The noise in $\bbh{C}$ and $\bbh{\Psi}$ is not Gaussian: if the data vector from which $\bbh{C}$ and $\bbh{\Psi}$ are estimated in Gaussian, then these matrices are distibuted according to, respectively, the Wishart and inverse Wishart distributions. We are testing that the degradation effectively decreases as 1/Nr at leading order.  
@@ -481,6 +478,7 @@ limits of both high and low $N_r$.
 %     and beyond 1/N_r^2) could cause a deviation from 1/N_r that is different from the 1/N_r^2 term in eq.10 ?  In other words,
 %     then we're testing for the importance of the 1/N_r^3 and higher terms numerically...  is that your point?
 %
+%AP2: Technically the 1/Nr scaling has been obtained using the inverse Wishart distribution; if the data is non Gaussian, the covariance is not Wishart, but maybe one can say that for an arbitrary, not too crazy, distribution the leading term is still 1/Nr and the coefficient is not too different from Nb-Np... This is indeed what we find: the error degradation is basically the same should we use power spectra or peak counts which have different PDFs... I removed the mention to the Gaussianity, which is not what we test. What we test is eq. 10 in the low Nr limit and the (possible) deviations from 1/Nr when Nr is very large (due to the maps being pseudo independent). 
 We indicate the diagonal elements of $\h{\Sigma}_{\bb{p}}$ as
 $\h{\sigma}^2_p=\mathrm{diag}(\h{\Sigma}_{\bb{p}})$ and we indicate by
 $\sigma^2_{p,\infty}$ the expectation value of the variance of each
@@ -780,6 +778,7 @@ using the same simulation set for $\bb{C}$ and $\bbh{\Psi}$).
 %    and therefore under-forecasted the errors.
 %AP: yes, Hartlap et al. reached a similar conclusion. I think we are saying something more though: even if the bias in the Psi estimator is corrected, if the same simulation set for Psi and C is used, parameter errors are still underestimated because of the explanation we give in section II-B. I don't think this point appears in Hartlap et al. 
 %ZH2: OK I added this clarification above.  
+%AP2: OK: Hartlap focuses on the Psi distribution, translating it into a parameter distribution using a naive Fisher analysis; what he does is in fact use the same simulation set for Psi and C, but this kind of discussion is absent from his paper.  
 
 
 %%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -846,7 +845,7 @@ Sciences and Engineering at Columbia University (to Z.H.).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% APPENDIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %ZH2: I went through the appendix, too, now, and made minor cosmetic changes.
-%     
+%AP2: OK     
 \section*{Appendix A: cubic and quartic covariance fluctuations}
 \label{appendixA}
 
@@ -860,8 +859,9 @@ distributions). Computing expectation values of
 eq. (\ref{estimatorcovariance}) over the inverse Wishart distribution
 is not possible analytically, and a perturbative expansion is
 necessary. Writing $\bbh{\Psi}=\bb{\Psi}+\delta\bbh{\Psi}$, we can
-expand eq. (\ref{quarticdegradation}) 
+expand eq.~(\ref{estimatorcovariance}) 
 %ZH2: you must mean eq.~(\ref{estimatorcovariance}) above, instead of eq.10 
+%AP2: yes
 in powers of $\delta\bbh{\Psi}$. The expectation value of each term in
 this expansion can be calculated in terms of moments of the inverse
 Wishart distribution. Ref.~\citep{MasumotoWishart} provides a general
