@@ -37,10 +37,6 @@
 
 \begin{document}
 
-%ZH: I changed to more catchy title:
-%\title{Simulating sample variance in weak lensing: effects on parameter inferences}
-%AP: Ok
-
 \title{Sample variance in weak lensing: how many simulations are required?}
 
 \author{Andrea Petri}
@@ -86,17 +82,6 @@ result, a small number of simulations ($N_s=1$ or $2$) is sufficient
 to forecast parameter confidence intervals at percent
 accuracy. 
 
-%However, we find that in practice, a larger number of
-%simulations might be needed to measure accurate feature means and to
-%avoid parameter biases.
-%ZH: I am not sure about the last sentence. I believe it is based on
-%    an overly stringent reading of Fig.2, and that in fact we could
-%    claim here, instead, that N_s=2 simulations are also sufficient
-%    to get the correct mean.
-%    See my comments at the end of the Conclusion section. 
-
-%AP: Ok, sentence removed
-
 \end{abstract}
 
 
@@ -112,45 +97,36 @@ accuracy.
 %
 Weak gravitational lensing (WL) is a promising cosmological probe for
 constraining the dark energy equation of state $w$, and has been
-considered by a range of past (CFHTLens \citep{cfht1,cfht2}, COSMOS \citep{cosmos}),
-%ZH: also cite COSMOS survey here...
-%AP: done
-ongoing (DES \citep{DES}) and future (LSST \citep{LSST}, Euclid \citep{Euclid}, WFIRST \citep{WFIRST})
-%ZH: also cite Euclid and WFIRST.
-%AP: done
+considered by a range of past (CFHTLens \citep{cfht1,cfht2}, COSMOS
+\citep{cosmos}), ongoing (DES \citep{DES}) and future (LSST
+\citep{LSST}, Euclid \citep{Euclid}, WFIRST \citep{WFIRST})
 experiments. In an era where cosmology is data driven, accurate
 numerical simulations of shear fields are becoming important for
 several reasons, including the study of baryonic effects
-\citep{BaryonXiuyuan,BaryonSemboloni,BaryonsWhite,BaryonsKnox,BaryonsZentner1,BaryonsZentner2}, 
-%ZH: also cite Joop Schaye's hydro-simulation papers on lensing (Semboloni et al), and earlier papers by Martin White et al...  Lloyd Knox et al... and Zentner et al... (I think all of these are in Xiuyuan's paper).
-%AP: done
+\citep{BaryonXiuyuan,BaryonSemboloni,BaryonsWhite,BaryonsKnox,BaryonsZentner1,BaryonsZentner2},
 the computation of non--Gaussian statistics
-\citep{PeaksJan,MinkJan,MinkPetri,NG-Marian,NG-Jain1,NG-Jain2,NG-Jain3,NG-Refregier,NG-Dietrich} 
-%ZH: Add here some citations of other groups - Marian+Bernstein.... Bhuvnesh Jain et al... Refregier et al... Dietrichh+Hartmann... Shirasaki+Yoshida.. (again just copy from our previous papers).
-%AP: done
-and the  assessment of various systematics
+\citep{PeaksJan,MinkJan,MinkPetri,NG-Marian,NG-Jain1,NG-Jain2,NG-Jain3,NG-Refregier,NG-Dietrich}
+and the assessment of various systematics
 \citep{MinkShirasaki,Sys-Bard,Sys-Chang,Sys-Huterer}.
-%ZH: cite papers by Jan+Morgan+Bard... and also Chihway Chan...Shirasaki+Yoshida.. and older ones by Dragan Huterer on photo-z errors..
-%AP: done
 
 A fundamental issue with predictions from simulations is that the
 finite number of simulations naturally introduces fluctuations in the
-forecasts, due to inevitable sample variance~\footnote{Sample variance is a broad term that has been used in the literature to describe a range of phenomena.  Throughout this paper, we use it to refer to the fluctuations in an ensemble of simulations, which represent random realizations of the same initial conditions.}.
-%ZH: I think 'cosmic variance' usually refers to observations of the actual sky (which is finite). 
-%AP: OK 
-In general, quantities such as the mean or the variance of any feature
-(e.g. the shear power spectrum at a multipole $\ell$), measured from a
-finite set of simulations, will fluctuate, and can also suffer a bias.
-While biases in the estimates of both the mean and the variance have
-been studied extensively, the impact of fluctuations in the variance
-has received comparatively less attention.  These fluctuations have,
+forecasts, due to inevitable sample variance~\footnote{Sample variance
+  is a broad term that has been used in the literature to describe a
+  range of phenomena.  Throughout this paper, we use it to refer to
+  the fluctuations in an ensemble of simulations, which represent
+  random realizations of the same initial conditions.}.  In general,
+quantities such as the mean or the variance of any feature (e.g. the
+shear power spectrum at a multipole $\ell$), measured from a finite
+set of simulations, will fluctuate, and can also suffer a bias.  While
+biases in the estimates of both the mean and the variance have been
+studied extensively, the impact of fluctuations in the variance has
+received comparatively less attention.  These fluctuations have,
 however, been shown to have non-negligible effects on estimates of
 features covariance matrices and hence on parameter constraints. In
 particular, in the limit of Gaussian fluctuations, the parameter
 confidence limits are degraged by a factor
 $1+O(1/N_r)$~\citep{DodelsonSchneider13,Taylor12}.
-%MM: also cite Taylor Joachimi and Kitching
-%AP: done
 
 This work studies these issues further, focusing on the number of
 independent $N$--body simulations required for an accurate estimate of
@@ -163,16 +139,14 @@ predictions for large ``all-sky'' surveys, such as the ones by DES,
 LSST, Euclid, WFIRST.  In practice, this has led to the wide-spread
 use of ``pseudo-independent'' realizations, i.e. a procedure in which
 one randomizes and re-cycles the output of a single 3D simulation
-multiple times.
-%ZH: Add citations here of papers resorting to this technique
-In light of the forthcoming large surveys, it is imperative to assess
-the statistical validity of this approach, and to ask how many times a
-single simulation can be fairly recycled.  In this paper, we address
-these questions with ensembles of up to $N_r=10^5$ random
-realizations, extracted from up to $N_s=200$ independent ray-tracing
-N-body simulations. We focus in particular on the parameter $w$, and
-on two different statistics: the (convergence) power spectrum and
-the number counts of peaks.
+multiple times.  In light of the forthcoming large surveys, it is
+imperative to assess the statistical validity of this approach, and to
+ask how many times a single simulation can be fairly recycled.  In
+this paper, we address these questions with ensembles of up to
+$N_r=10^5$ random realizations, extracted from up to $N_s=200$
+independent ray-tracing N-body simulations. We focus in particular on
+the parameter $w$, and on two different statistics: the (convergence)
+power spectrum and the number counts of peaks.
 
 
 This paper is organized as follows.  In \S~II, we summarize the shear
@@ -203,10 +177,8 @@ the density fluctuations. We assume a standard $\Lambda$CDM background
 universe with the parameters
 $(\Omega_m,\Omega_\Lambda,h,w,\sigma_8,n_s)=(0.26,0.74,0.72,-1,0.8,0.96)$.
 We fix the comoving size of the simulation box to $240\mathrm{Mpc}/h$,
-and use $512^3$ particles, corresponding to a Dark Matter particle mass of
-$\approx 10^{10}M_\odot$.
-%ZH: ``mass resolution'' here means DM particle mass ?
-%AP: fixed
+and use $512^3$ particles, corresponding to a dark matter particle
+mass of $\approx 10^{10}M_\odot$.
 
 We assume a uniform galaxy distribution at a constant redshift $z_s=2$
 (at which the simulation box has an angular size of $\theta_{\rm
@@ -226,18 +198,12 @@ $r$ of the same shear field $\pmb{\gamma}_r(\pmb{\theta})$ can be
 generated by picking different lens planes that lie between the
 observer and $z_s$. The randomization procedure we adopt is the
 following (see \citep{Sato12} for reference):
-%ZH: we should cite some paper here. We didn't invent most of this
-%procedure ourselves (except for maybe the 3-times thicker simulation
-%output, and the random mixing of the planes from different N-body sims ?).
-%AP: I added the citation to Sato et. al, which refer to this procedure without citing anyone
 
 \begin{itemize}
 \item For each lens-plane redshift $z_l$, select the snapshot at $z_l$ from the $i$--th $N$--body simulation, where $i$ is a random integer $i\in [1,N_s]$.
 \item Choose randomly between the three orthogonal directions ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$: the lens plane will be perpendicular to this direction.
 \item Choose the position of the plane along the snapshot: because the lens thickness is 1/3 the size of the box, we can cut three different slices of the simulation box for each orientation ${\bb{n}_x,\bb{n}_y,\bb{n}_z}$. This gives a total of 9 choices for generating a lens plane out of a single $N$--body snapshot.
 \item Perform a periodic random shift of the lens plane along its two directions.
-%ZH: should we specify the range of the random shifts (0 to 1/2 the lens plane dimension?)
-%AP: This is not necessary, since the shifts are periodic, in principle one could choose a random number of pixels. In particular this number should be between 0 and 4095, because each lens plane has 4096 pixels
 \item Repeat the above procedure for each lens-plane redshift $z_l$.
 \end{itemize}  
 %
@@ -250,11 +216,10 @@ ensembles with different choices of $N_s\in[1,200]$. Each of these
 ensembles consists of the same number $N_r=1000$ of shear
 realizations. We also build an additional ensemble with $N_s=1$ and
 $N_r=10^5$ realizations. For each realization of each ensemble, we
-reconstruct the convergence $\kappa_r(\pmb{\theta})$ from the trace of the light ray deflection Jacobian matrix, measured looking at the difference in angle deflection between nearby light rays \citep{RayTracingHartlap,RayTracingJain,Sato12}.
-%ZH: we should add 2 sentences on how you measured kappa.  Directly from the ray-tracing?
-%   (but above, when you discuss ray-tracing, you mention only gamma).  Or did you do 
-%    Kaiser-Squires on the gamma field ? 
-%AP: done, we measure kappa directly from the ray tracing
+reconstruct the convergence $\kappa_r(\pmb{\theta})$ from the trace of
+the light-ray deflection Jacobian matrix, measured from the difference
+in deflection angles between nearby light-rays
+\citep{RayTracingHartlap,RayTracingJain,Sato12}.
 
 We measure the $\kappa$ angular power spectrum $P^{\kappa\kappa}_r(\ell)$ defined as
 \begin{equation}
@@ -263,34 +228,34 @@ We measure the $\kappa$ angular power spectrum $P^{\kappa\kappa}_r(\ell)$ define
 %
 As an additional summary statistic, we consider the counts of local
 $\kappa$ maxima of a certain height $\kappa_0$, $n_r(\kappa_0)$
-(hereafter \textit{peak counts}), with varying $\kappa_0$ chosen between the minimum and maximum values measured from the maps $(\kappa_{\rm min},\kappa_{\rm max})=(-0.06,0.45)$. Different choices of $\kappa_0$ binning used in this work are outlined in Table \ref{featuretable}. 
-%ZH: state here the range and binning choice of $\kappa_0$
-%AP: done
-The fact that the ensemble of $N_r$ realizations is not completely
-independent if $N_s$ is not large enough can have an effect on the
-covariance estimators of both $P^{\kappa\kappa}$ and $n(\kappa_0)$.
+(hereafter \textit{peak counts}), with varying $\kappa_0$ chosen
+between the minimum and maximum values measured from the maps
+$(\kappa_{\rm min},\kappa_{\rm max})=(-0.06,0.45)$. Different choices
+of $\kappa_0$ binning used in this work are outlined in Table
+\ref{featuretable}.  The fact that the ensemble of $N_r$ realizations
+is not completely independent if $N_s$ is not large enough can have an
+effect on the covariance estimators of both $P^{\kappa\kappa}$ and
+$n(\kappa_0)$.
 
-%ZH: it would be logical to mention the other w,Sig,Om, sims here, and point to \ref{simtable})
-%AP: done, added the below
-
-To measure the cosmological dependence of the $\kappa$ peak counts, we also performed additional ray--tracing simulations with different combinations of the cosmological parameter triplet $(\Omega_m,w,\sigma_8)$. A summary of the complete set of shear ensembles used in this work is outlined in Table \ref{simtable}.
+To measure the cosmological dependence of the $\kappa$ peak counts, we
+performed a set of additional ray--tracing simulations with different
+combinations of the cosmological parameter triplet
+$(\Omega_m,w,\sigma_8)$. A summary of the complete set of shear
+ensembles used in this work is listed in Table \ref{simtable}.
 
 \subsection{Cosmological parameter inference}
 %
-Let $\bbh{d}$ be a single estimate for a feature of dimension $N_b$, 
-%ZH: ``Hat'' here refers to an estimator?
-%AP: Yes: quantities without the hat are the expectation values 
-$\bb{d}(\bb{p})$ be the
-%smooth expectation
-%ZH: I believe ``smooth expectation'' means true mean value, yes?
-%AP: yes
-true value of this feature at a point $\bb{p}$ in parameter space
-(which has a dimension $N_p$) and $\bb{C}$ be the $N_b\times N_b$
-feature covariance matrix. For the purpose of this work $\bb{p}$ is
-the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is one of the
-features -- either a power spectrum or a peak count histogram -- in Table
-\ref{featuretable}. Although existing emulators (see
-\citep{coyote2,Nicaea,SchneiderKnoxCovariance} for example) can be used to compute $\bb{d}(\bb{p}),\bb{C}$ in some cases, this is not true in the general case. 
+Let $\bbh{d}$ be a single estimate for a feature of dimension $N_b$,
+$\bb{d}(\bb{p})$ be the true value of this feature at a point $\bb{p}$
+in parameter space (which has a dimension $N_p$) and $\bb{C}$ be the
+$N_b\times N_b$ feature covariance matrix. For the purpose of this
+work $\bb{p}$ is the triplet $(\Omega_m,w,\sigma_8)$ and $\bb{d}$ is
+one of the features -- either a power spectrum or a peak count
+histogram -- in Table \ref{featuretable}. Although existing emulators
+can be used, in principle, to compute both $\bb{d}(\bb{p})$ and
+$\bb{C}$, the latter is more difficult, and typically only the mean,
+$\bb{d}(\bb{p})$, has been computed to date (refs.~\citep{coyote2,Nicaea}, but see
+an exception by ref.~\citep{SchneiderKnoxCovariance}).
 %ZH: I am missing the point here.  Why is covariance matrix ``more complicated'' ?
 %    Even to estimate a mean, one has to ``generate a series of mock realizations''.
 %    Unless you are willing to equate a single realization as the mean.   But then
@@ -300,7 +265,9 @@ features -- either a power spectrum or a peak count histogram -- in Table
 %    Note that there is a paper by Schneider and Knox, in which they do an interpolation of the
 %    power spectrum covariance matrix.
 %AP: The intended meaning is the latter: published emulators only predict the means. It is also true that getting the covariance accurate is more difficult than getting the means accurate. I rephrased the sentence.
-Estimating $\bb{C}$ from simulations involves generating a series of mock realizations $\bbh{d}_r$ with $r=1...N_r$ and computing the
+%ZH2: OK, I rephrased it a bit above to be clearer.  I believe only Schneider et al. did ``C''.
+Estimating $\bb{C}$ from simulations involves generating a series of
+mock realizations $\bbh{d}_r$ with $r=1...N_r$ and computing the
 sample covariance $\bbh{C}$,
 
 \begin{equation}
@@ -346,7 +313,8 @@ different combinations of $(\Omega_m,w,\sigma_8)$, see Table
 $\Omega_m$ &  $w$ & $\sigma_8$ & $(N_s,N_r)$ & Number of $\kappa$ ensembles \\ \hline \hline
 \midrule
 %
-0.26 & $-$1 & 0.8 & $(1\div200,1024),(1,128000)$ & 16 \\
+0.26 & $-$1 & 0.8 & (1 to 200,1024) & 16 \\
+0.26 & $-$1 & 0.8 & (1,128000) & 1 \\
 0.29 & $-$1 & 0.8 & (1,1024) & 1 \\
 0.26 & $-$0.8 & 0.8 & (1,1024) & 1 \\
 0.26 & $-$1 & 0.6 & (1,1024) & 1 \\
@@ -354,12 +322,17 @@ $\Omega_m$ &  $w$ & $\sigma_8$ & $(N_s,N_r)$ & Number of $\kappa$ ensembles \\ \
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Summary of the shear ensembles used in this work.}
+\caption{Summary of the shear ensembles used in this work. $N_s$ and
+  $N_r$ refer to the number of independent N-body simulations, and the
+  number of pseudo-independent realizations created from these
+  simulations, respectively.}
 %ZH: So each of these have N_r=1000, yes?  You should state this here. And also,
 %    Add the ensemble with N_s=1, N_r=10^5 to this table.
 %    Also: point the reader to this table in the text, up front, when the 
 %    ensembles are first discussed.
 %AP: done
+%ZH2: The first raw was a bit confusing, so I separated it into two rows. Also added words to the caption
+%    (also, the N_r=10^5 one is the 17th ensemble, in addition to the 16 you listed here before, no? So 16 should have been 17?)
 \label{simtable}
 \end{table*}
 
@@ -412,7 +385,8 @@ simulations, $\langle\h{\Sigma}_\bb{p}\rangle$, up to $O(1/N_r^2)$ by
 expanding Eq.~(\ref{estimatorcovariance}) to quartic order in the
 statistical fluctuations of $\bbh{\Psi}$. Denoting the noiseless
 parameter covariance, i.e. the usual Fisher matrix, as
-$\Sigma_\bb{p}=\bb{F}^{-1}$, we find the result~\footnote{The details of the calculation are given in Appendix A.}:
+$\Sigma_\bb{p}=\bb{F}^{-1}$, we find the result~\footnote{The details
+  of the calculation are given in Appendix A.}:
 
 \begin{widetext}
 \begin{equation}
@@ -427,7 +401,11 @@ cases \footnote{The details of these calculations are given in Appendix B}:
 
 
 \begin{enumerate}
-\item If the true data covariance $\bb{C}$ is known, the estimator in eq.~(\ref{estimatorcovariance}) is biased, and the dominant contribution of the bias comes from the second order fluctuations in $\bbh{\Psi}$. Once the expectation values over simulations are taken, the bias sums up to
+\item If the true data covariance $\bb{C}$ is known, the estimator in
+  eq.~(\ref{estimatorcovariance}) is biased, and the dominant
+  contribution of the bias comes from the second order fluctuations in
+  $\bbh{\Psi}$. Once the expectation values over simulations are
+  taken, the bias sums up to
 
 \begin{equation}
 \label{dodelsonscaling}
@@ -436,17 +414,24 @@ cases \footnote{The details of these calculations are given in Appendix B}:
 %
 This is the result obtained by ref.~\citep{DodelsonSchneider13}.
 
-\item Usually the true data covariance is unknown, and it is tempting to plug in its estimator $\bbh{C}$, measured from the same simulation set we use to compute $\bbh{\Psi}$. This approach has been used before in the literature (e.g.~\citep{MinkPetri,MinkShirasaki}). If this is done without correcting for the bias in $\bbh{\Psi}$ (see eq.~(\ref{firstmoment}) below or \citep{Taylor12} for reference), 
-%ZH: we should probably cite Hartlap et al. and Taylor et al. here for this Psi bias.  (I assume this is what you mean in eq. 19)
-%AP: done
-the parameter variance will have a contribution from both the second and first-order fluctuations in $\bbh{\Psi}$, which now have a nonzero expectation value. In this case the bias sums up to
+\item Usually the true data covariance is unknown, and it is tempting
+  to plug in its estimator $\bbh{C}$, measured from the same
+  simulation set we use to compute $\bbh{\Psi}$. This approach has
+  been used before in the literature
+  (e.g.~\citep{MinkPetri,MinkShirasaki}). If this is done without
+  correcting for the bias in $\bbh{\Psi}$ (see Ref.~\citep{Taylor12}
+  and eq.~\ref{firstmoment} below), the parameter variance will have a
+  contribution from both the second and first-order fluctuations in
+  $\bbh{\Psi}$, which now have a nonzero expectation value. In this
+  case the bias sums up to
 %
 \begin{equation}
 \label{mockscalinguncorrected}
 \langle\h{\Sigma}_\bb{p}\rangle=\Sigma_\bb{p}\left(1-\frac{N_b-N_p}{N_r}\right).
 \end{equation}
 
-\item If we repeat the same exercise as above, but we correct for the bias in the precision matrix estimator, we are left with
+\item If we repeat the same exercise as above, but we correct for the
+  bias in the precision matrix estimator, we are left with
 
 \begin{equation}
 \label{mockscalingcorrected}
@@ -466,33 +451,47 @@ and 3, respectively.
 %distribution of $\bbh{p}$ has still a variance that increases with
 %$N_b$. This typically leads to underestimates in parameter errors. 
 %AP: Not exactly: my point was that the distribution of \bbh{p} has a true variance that increases with Nb, but the estimate of this variance (which we quote as the errorbar) does not increase with Nb. Hence we get the wrong parameter fit (i.e. which excludes the true value at high significance level)
-Note that in the last case, which is most relevant when fitting actual data, the estimated degradation turns out to be too optimistic: the parameter estimate $\bbh{p}$ has a variance that grows linearly with $N_b$, but the estimated degradation in eq. (\ref{mockscalingcorrected}) is constant with $N_b$. This can lead to underestimation of error bars, which can be mistakenly interpreted as a parameter bias.  
-We derived the scaling relations of the form
+%ZH2: OK.  I think by `` the parameter estimate $\bbh{p}$ has a variance that grows linearly with $N_b$,'' you mean equation 10
+%   (i.e.  technically it is [variance-1] grows linearly with N_b.   I rephrased below to say ``whose noise'' grows linearly and
+% cite eq.10.    OK?
+Note that in the last case, which is most relevant when fitting actual
+data, the estimated degradation turns out to be too optimistic: the
+parameter estimate $\bbh{p}$ has a variance whose noise grows linearly
+with $N_b$ (eq.~\ref{quarticdegradation}), whereas the degradation
+estimated via eq. (\ref{mockscalingcorrected}) is constant with
+$N_b$. This can lead to underestimation of error bars, which can be
+mistakenly interpreted as a parameter bias.  We derived the scaling
+relations of the form
 %
 \begin{equation}
 \label{ourscaling}
 \langle\h{\sigma}_p^2\rangle = \sigma^2_{p,\infty}(N_s)\left(1+\frac{D}{N_r}\right)
 \end{equation}
 %
-above by assuming that the noise in $\bbh{d}$ is Gaussian. We then directly test these scaling relations using our simulations, in the limits of both high and low $N_r$.
+above by assuming that the noise in $\bbh{d}$ is Gaussian. We then
+directly test these scaling relations using our simulations, in the
+limits of both high and low $N_r$.
 %ZH: It is still a little unclear here what is being tested.  Is it the Gaussianity assumption? I added that.
 %    But perhaps you had some other issue in mind.
 %AP: The noise in $\bbh{C}$ and $\bbh{\Psi}$ is not Gaussian: if the data vector from which $\bbh{C}$ and $\bbh{\Psi}$ are estimated in Gaussian, then these matrices are distibuted according to, respectively, the Wishart and inverse Wishart distributions. We are testing that the degradation effectively decreases as 1/Nr at leading order.  
-We indicate the diagonal elements of $\h{\Sigma}_{\bb{p}}$ as $\h{\sigma}^2_p=\mathrm{diag}(\h{\Sigma}_{\bb{p}})$ 
-%ZH: I am confused.  Why is a new symbol \sigma necessary here, on top of \Sigma ?
-%    (And also: here you write \Sigma_pp, but above it was denoted \Sigma_p  )
-%AP: fixed. I introduced the \sigma symbol for the single parameter variances (as opposed to the full parameter covariance), because these are the quantities we plot
-and we indicate by $\sigma^2_{p,\infty}$ the expectation value of the variance of each parameter in the limit of an infinite number of realizations
-$N_r\rightarrow\infty$.  We call $D$ the \textit{effective dimensionality} of the feature space (which, as seen before, can be
-negative in some pathological cases).
-%ZH: I added pathological here.  Do you agree?  It's only negative in case 1, when
-%    N_p > N_b (which is impossible -- cannot measure N_p parameters with N_b observables)
-%    or in case 2 (when N_b > N_p, so that's OK, but this case ust means we ``forgot'' to correct for the psi-bias).
-%AP: agreed
-We compute the expectation values of $\h{\sigma}^2_p$
-(eqs.~\ref{estimatorcovariance} and \ref{ourscaling}) by
-averaging over 100 random resamplings of our shear ensembles. For the
-true feature covariance matrix $\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use
+%ZH2: I am still confused.  What is it that could go wrong?   I.e. do you have something in mind that could cause a departure from this 1/N_r
+%     scaling?    That is what we are testing, then, but I am not sure what it is.   Are we testing whether the simulations could have a bug?  
+%     Or maybe you simply are testing the validity of truncating the expansion at second order in DeltaPsi ?   
+%     Or maybe what you have in mond is the possible importance of high-order terms in the expansion (beyond the quartic terms, 
+%     and beyond 1/N_r^2) could cause a deviation from 1/N_r that is different from the 1/N_r^2 term in eq.10 ?  In other words,
+%     then we're testing for the importance of the 1/N_r^3 and higher terms numerically...  is that your point?
+%
+We indicate the diagonal elements of $\h{\Sigma}_{\bb{p}}$ as
+$\h{\sigma}^2_p=\mathrm{diag}(\h{\Sigma}_{\bb{p}})$ and we indicate by
+$\sigma^2_{p,\infty}$ the expectation value of the variance of each
+parameter in the limit of an infinite number of realizations
+$N_r\rightarrow\infty$.  We call $D$ the \textit{effective
+  dimensionality} of the feature space (which, as seen before, can be
+negative in some pathological cases).  We compute the expectation
+values of $\h{\sigma}^2_p$ (eqs.~\ref{estimatorcovariance} and
+\ref{ourscaling}) by averaging over 100 random resamplings of our
+shear ensembles. For the true feature covariance matrix
+$\langle(\bbh{d}-\bb{d}_0)(\bbh{d}-\bb{d}_0)^T\rangle=\bb{C}$ we use
 the estimated covariance from a grand ensemble built with the union of
 all the ensembles with different $N_s$.
 
@@ -519,48 +518,28 @@ next section, we present our main findings.
   $\ell=115,344,1349,5283$, for different shear ensembles constructed
   from on $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), and 100
   (purple) independent N-body simulations. Each curve is based on
-  $N_r=1024$ realizations.
-%ZH: I added the Nr=1000 above. Yes?
-%AP: Yes, 1024 in reality, but it doesn't change much
-  The dashed black curves correspond to ensembles generated with $N_s=1$ and
-  $N_r=128000$. For $N_s\geq2$, the distributions appear
-  similar to the eye; this similarity is confirmed by the comparisons
-  in Figures \ref{means_ns} and \ref{ps_var} below.}
-%MM: added last two sentences
-%MM: Thick black line draws the eye and looks like the most significant thing on the plot. replace with dotted black line or something else that stands out less.
-%ZH: Also, include a label ``N_r=10^5'' with the other N_s=... labels in the figure panels 
-%   (it is just confusing why there are labels for all the other curves, but not for the thick black)
-%AP: done
+  $N_r=1024$ realizations.  The dashed black curves correspond to
+  ensembles generated with $N_s=1$ and $N_r=128000$. For $N_s\geq2$,
+  the distributions appear similar to the eye; this similarity is
+  confirmed by the comparisons in Figures \ref{means_ns} and
+  \ref{ps_var} below.}
 \label{ps_pdf}
 \end{figure*}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/means_ns.eps}
-\caption{The mean value $\bb{\bar{d}}$
-% $d$  
-%ZH: I think you mean  \bb{\bar{d}} here?  You introduced a lot of different
-%    subtle notations in the previous section, so we should  follow those ....
-%AP: OK
-  of various features, measured from ensembles created from different
-  numbers $N_s$ of simulations.  For each case, the difference compared
-  to the mean in the $N_s=200$ ensemble is shown, in units of the
-  statistical error measured in the $N_s=200$ ensemble.  The colored
-  curves refer to shear--shear power spectra measured at $\ell=115$
-  (black), 1027 (cyan), and 5283 (green), and peak counts 
-%ZH: I replace ``of'' with ``above''.  These are cumulative peak counts N(>kappa_0) ?
-%    Or do you mean differential counts in some delta-kappa_0 bins?   Then you should
-%    correct the text (and state the bin width).  Table II contains some kappa-bins
-%    but no obvious relation to the 0.05, 0.17  and 0.28 mentioned here...
-%AP: The peak counts are differential, I added the clarifications; I chose three values of kappa0 for the sake of presentation simplicity (one value in the low height peaks, one in the middle and one in the large)
-  with height of $\kappa_0=0.05$ (red), 0.17 (purple), and 0.28
-  (orange). The $\kappa$ bin width for the peak counts has been fixed to $\Delta\kappa=0.011$. The dashed black line shows a level of $0.1\sigma$ accuracy for reference.  For $N_s\geq 2$, the means are statistically indistinguishable (at $\sim0.1\sigma$) from the means measured in the ensemble with $N_s=200$.}
-%MM: added last sentence stating conclusion to be drawn from the figure
-%ZH:  Good idea.  All figures captions should similarly state a conclusion!
-%ZH:  What is the horizontal dashed line?  It is never mentioned in the caption or
-%     the text.   I guess you decided to mark the ``0.1 sigma'' deviation?
-%     We should state that.    I suppose this is what Morgan refers to by 
-%    ``statistically indistinguishable'' ....  0.1 sigma.
-%AP: Ok, added the clarifications to the caption
+\caption{The mean value $\bb{\bar{d}}$ of various features, measured
+  from ensembles created from different numbers $N_s$ of simulations.
+  For each case, the difference compared to the mean in the $N_s=200$
+  ensemble is shown, in units of the statistical error measured in the
+  $N_s=200$ ensemble.  The colored curves refer to shear--shear power
+  spectra measured at $\ell=115$ (black), 1027 (cyan), and 5283
+  (green), and peak counts with heights $\kappa_0=0.05$ (red), 0.17
+  (purple), and 0.28 (orange). The $\kappa$ bin width for the peak
+  counts has been fixed to $\Delta\kappa=0.011$. The dashed black line
+  shows a level of $0.1\sigma$ accuracy for reference.  For $N_s\geq
+  2$, the means are statistically indistinguishable (even at
+  $\sim0.1\sigma$) from those in the ensemble with $N_s=200$.}
 \label{means_ns}
 \end{figure}
 
@@ -570,11 +549,10 @@ next section, we present our main findings.
   multipole $\ell$, in units of the expected Gaussian variance from
   equation (\ref{gaussianvar}). The variance is measured from
   different shear ensembles based on $N_s=$1 (black), 2 (blue), 5
-  (green), 10 (red), 50 (purple), or 100 (orange) N--body simulations. 
-%ZH: Added ``conclusion'':
-%AP: OK
-  Non--Gaussianities of the underlying structures increase the variance on
-  small scales, but no clear trend with $N_s$ can be identied on any scale.}
+  (green), 10 (red), 50 (purple), or 100 (orange) N--body simulations.
+  Non--Gaussianities of the underlying structures increase the
+  variance on small scales, but no clear trend with $N_s$ can be
+  identied on any scale.}
 \label{ps_var}
 \end{figure}
 
@@ -583,20 +561,13 @@ next section, we present our main findings.
 \caption{Expectation value of the variance of $w$ computed from
   equation (\ref{estimatorcovariance}), shown as a function of
   $1/N_r$. The different symbols and colors correspond to the features
-  listed in Table~\ref{featuretable}.
-%ZH: It would be better to write the features on the legend embedded in the figure.
-%    Why make the reader flip back-and-forth between the figure and the Table ?
-%AP: done
-  The dashed and solid curves show the analytic predictions from
-  equation (\ref{quarticdegradation}) at orders $O(1/N_r)$ and
-  $O(1/N_r^2)$, respectively. The asymptotic variance
-  $\sigma^2_{w,\infty}$ has been computed from a linear regression of
-  $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ for $N_r>500$. The figure
-  clearly shows that terms beyond $O(1/N_r)$ need to be considered,
-  unless $N_r\gg N_b$.}
-%MM: added last sentence stating conclusion to be drawn from the figure
-%in legend box change line that reads Nb=7 divided by 8
-%AP: done, the legend is comprehensive now
+  listed in Table~\ref{featuretable}.  The dashed and solid curves
+  show the analytic predictions from equation
+  (\ref{quarticdegradation}) at orders $O(1/N_r)$ and $O(1/N_r^2)$,
+  respectively. The asymptotic variance $\sigma^2_{w,\infty}$ has been
+  computed from a linear regression of $\langle\h{\sigma}^2_w\rangle$
+  vs $1/N_r$ for $N_r>500$. The figure clearly shows that terms beyond
+  $O(1/N_r)$ need to be considered, unless $N_r\gg N_b$.}
 \label{curvingnb}
 \end{figure}
 
@@ -609,35 +580,26 @@ next section, we present our main findings.
   $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), and 100 (purple)
   simulations are shown. The figure shows both the measured trends
   (solid lines) and their best fits based on eq.~(\ref{ourscaling}),
-  with $D$ treated as a free parameter.
-%ZH: We need to explain what you mean by best-fit (presumably you treat ``D'' as a free parameter).
-%   I added that. But if you meant something else, please correct.
-%AP: OK
-  The thick black curve corresponds to an ensemble of $N_r=128000$
-  realizations from a single simulation ($N_s=1$).
-%ZH: I added 'conclusion':
-%AP: OK
-  No systematic deviation from the expected scaling is seen, even in
-  the extreme last case.  }
+  with $D$ treated as a free parameter.  The thick black curve
+  corresponds to an ensemble of $N_r=128000$ realizations from a
+  single simulation ($N_s=1$).  No systematic deviation from the
+  expected scaling is seen, even in the extreme last case.  }
 \label{wvar_nr}
 \end{figure}
 
 \begin{figure}
 \includegraphics[scale=0.3]{Figures/scaling_ns.eps}
-\caption{The variance of $w$ in the limit of $N_r\rightarrow\infty$ (measured from the intercept of the fit $\sigma^2_w$ vs $1/N_r$),
-%ZH: state here what N_r was actually used to approximate the infinity limit
-%AP: the value plotted is actually $N_r\rightarrow\infty$, because it is estimated from the intercept of the fit. Even if all the points have Nr finite, the intercept of the line corresponds to Nr infinite. 
+\caption{The variance of $w$ in the limit of $N_r\rightarrow\infty$
+  (measured from the intercept of the fit $\sigma^2_w$ vs $1/N_r$),
   varying the number of simulations $N_s$ used in the ensemble to
   estimate the covariance (eq.~\ref{covest}). We show the dependence
-  of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over the 16 ensembles with different $N_s$, 
-%ZH: Just to make sure: what you mean here is an averaging of sigma_infty over the 16 different
-%    cases of N_s ?   
-%AP: Yes
-  for the power spectrum logarithmically binned (black, $N_b=15,\ell\in[100,6000]$), the power spectrum linearly binned (red,$N_b=39,\ell\in[100,6000]$) and the peak counts (green,$N_b=45,\kappa_0\in[-0.06,0.45]$).
-%ZH: What ell and kappa ranges were used?
-%ZH: Added conclusion:
-%AP: OK, added binning information
-  No trend with $N_s$ is seen for $N_s\geq 2$, and the differences are only of order 1\%.}
+  of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over the 16
+  ensembles with different $N_s$, for the power spectrum
+  logarithmically binned (black, $N_b=15,\ell\in[100,6000]$), the
+  power spectrum linearly binned (red,$N_b=39,\ell\in[100,6000]$) and
+  the peak counts (green,$N_b=45,\kappa_0\in[-0.06,0.45]$).  No trend
+  with $N_s$ is seen for $N_s\geq 2$, and the differences are only of
+  order 1\%.}
 \label{wvar_ns}
 \end{figure}
 
@@ -663,7 +625,9 @@ All peaks  & $\kappa_0 \in [-0.06,0.45] $ & 45 & \textcolor{magenta}{$\blacksqua
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Catalog of feature types used in this work, along with the chosen number of bands $N_b$ and the plot legends for Figure \ref{curvingnb}.}
+\caption{Catalog of feature types used in this work, along with the
+  chosen number of bands $N_b$ and the plot legends for Figure
+  \ref{curvingnb}.}
 \label{featuretable}
 \end{table*}
 
@@ -677,15 +641,11 @@ spectrum at four selected multipoles, spanning the linear ($\ell=115$)
 to the nonlinear ($\ell=5283$) regime. In Figure~\ref{means_ns}, we
 shows the ensemble mean for these power spectra, as well as for peak
 counts of three different $\kappa_0$ heights (corresponding to
-$\approx 2\div13\sigma$ peaks), as a function of $N_s$.
-%ZH: added above 2-12.  OK ?
-%AP: the actual numbers are 2-13, but again, only minor change
-In Figure~\ref{ps_var}, we show the variance of the power spectrum at
+$\approx 2-13\sigma$ peaks), as a function of $N_s$.  In
+Figure~\ref{ps_var}, we show the variance of the power spectrum at
 each multipole, as a function of $N_s$, in units of the variance
 expected if the convergence $\kappa$ was a Gaussian random field
 %
-%ZH:  I changed ``l''  to ``\ell'' in many places, for the multipole
-%AP: OK, I fixed this throughout the rest of the paper
 \begin{equation}
 \label{gaussianvar}
 \mathrm{Var}(P^{\kappa\kappa}_\ell) = \frac{(P^{\kappa\kappa}_\ell)^2}{N_{\rm eff}(\ell).}
@@ -700,16 +660,13 @@ using the FFT algorithm, and some care must be taken to count the
 number of modes $N_{\rm eff}(\ell)$ correctly. Each pixel $(i_x,j_y)$
 in Fourier space corresponds to a mode
 $(\ell_x,\ell_y)=2\pi(i_x,i_y)/\theta_{\rm box}$, with $i_x=-n_{\rm
-  ray}/2,...,n_{\rm ray}/2$ and $i_y=0,...,n_{\rm ray}/2$.
-%ZH: added this:
-%AP: OK
-Here $n_{\rm ray}=2048$ is the linear number of pixels on the
-ray--traced convergence maps.  We count the number of pixels $N(\ell)$
-that fall inside a multipole bin $(\ell_1,\ell_2)$. Because the
-$\kappa$ field is real, the modes $(\pm \ell_x,0)$ are not
-independent. If we let $N(\ell,\ell_y=0)$ be the number of
-non--independent modes, the effective number of independent modes
-for the variance is given by
+  ray}/2,...,n_{\rm ray}/2$ and $i_y=0,...,n_{\rm ray}/2$.  Here
+$n_{\rm ray}=2048$ is the linear number of pixels on the ray--traced
+convergence maps.  We count the number of pixels $N(\ell)$ that fall
+inside a multipole bin $(\ell_1,\ell_2)$. Because the $\kappa$ field
+is real, the modes $(\pm \ell_x,0)$ are not independent. If we let
+$N(\ell,\ell_y=0)$ be the number of non--independent modes, the
+effective number of independent modes for the variance is given by
 
 \begin{equation}
 N_{\rm eff}(\ell) = \frac{N^2(\ell)}{N(\ell)+N(\ell,\ell_y=0)}.
@@ -721,10 +678,10 @@ N(\ell)$.
 
 In Figures~\ref{curvingnb} and \ref{wvar_nr}, we show the dependence
 of the confidence range $\langle\h{\sigma}^2_w\rangle$ on $N_r$,
-derived from the features used in this work (see Table \ref{featuretable} for a comprehensive list). Figure \ref{wvar_nr} shows the $N_r$ trends of the $w$ constraint obtained with the power spectrum logarithmically binned with $\ell\in[100,6000],N_b=15$. 
-%ZH: previously you only stated ``power spectrum'' for Figure 5.  But I assume Fig.4 is
-%    also based on the power spectrum?  If not, please correct.
-%AP: OK, fixed
+derived from the features used in this work (see Table
+\ref{featuretable} for a comprehensive list). Figure \ref{wvar_nr}
+shows the $N_r$ trends of the $w$ constraint obtained with the power
+spectrum logarithmically binned with $\ell\in[100,6000], N_b=15$.
 Figure~\ref{curvingnb} illustrates the behavior at relatively low
 $N_r$, and compares $\langle\h{\sigma}^2_w\rangle$ measured directly
 from the simulations with the analytic expectations from
@@ -744,48 +701,35 @@ choices of $N_s$ do not affect the power spectrum PDF on large scales
 (top two panels), there are some qualitative differences on smaller
 scales (bottom two panels). On these smaller scales, shear ensembles
 built from $N_s=1$ do not produce the same statistical behavior as
-ensembles built with larger $N_s$. In particular, looking at the
-black curves, we see that the $N_s=1$ ensembles exibit large shifts
-with respect to the other PDFs to lower power, including the locations
-of the peaks of the PDFs.  We attribute these offsets to large
-(random) statistical errors.
-%ZH: I changed the wording above.  We didn't really prove that these are statistical errors,
-%    and not some systematic shift to low power when N_s is low.
-%AP: OK
+ensembles built with larger $N_s$. In particular, looking at the black
+curves, we see that the $N_s=1$ ensembles exibit large shifts with
+respect to the other PDFs to lower power, including the locations of
+the peaks of the PDFs.  We attribute these offsets to large (random)
+statistical errors.
 
 Interestingly, we need as few as $N_s=2$ simulations to recover the
-right PDF
-%ZH: what is ``location parameter'' ?
-%location parameter 
-%AP: location parameter usually indicated where the PDF peaks. This might be the mean, but not always. 
-for the small--scale power spectrum.  Figure~\ref{means_ns} shows that
-multiple independent $N$--body simulations $N_s\geq2$ are indeed
-necessary for measuring the means of feature ensembles to an accuracy
-corresponding to 10\% of the statistical error. The number of required
-simulations $N_s$ depends on the feature type and ranges from a few ($N_s=1$
-or 2) for the power spectrum at low multipoles ($\ell\lesssim 500$) to
-$N_s\approx 30-50$ for the power spectrum at larger
-multipoles ($\ell\gtrsim1000$) or peak counts above a high threshold
-($\kappa_0\approx0.3$).
-%ZH: I think this text above is a bit misleading.  Wny would we actually impose the ``0.1 sigma''
-%    requirement?    It sounds too stringent.  If we instead imposed, say, 0.5 sigma, would
-%    N_s=2 always be sufficient?    We should probably at least add this (delete if untrue):
-%AP: OK, agreed
-On the other hand, relaxing the required accuracy to 50\% of the statistical
-error, we find $N_s=2$ to be always sufficient.
+right PDF for the small--scale power spectrum.  Figure~\ref{means_ns}
+shows that multiple independent $N$--body simulations $N_s\geq2$ are
+indeed necessary for measuring the means of feature ensembles to an
+accuracy corresponding to 10\% of the statistical error. The number of
+required simulations $N_s$ depends on the feature type and ranges from
+a few ($N_s=1$ or 2) for the power spectrum at low multipoles
+($\ell\lesssim 500$) to $N_s\approx 30-50$ for the power spectrum at
+larger multipoles ($\ell\gtrsim1000$) or peak counts above a high
+threshold ($\kappa_0\approx0.3$).  On the other hand, relaxing the
+required accuracy to 50\% of the statistical error, we find $N_s=2$ to
+be always sufficient.
 
 Figure \ref{ps_var} shows the variance of convergence power spectrum
 computed from different ensembles, in units of the Gaussian
 expectation. We find that, even with $N_s=1$, we are able to recover
 the known result that non--Gaussian structures increase the variance
-significantly on small scales (see \citep{Sato12,TakadaSpergel14} for reference). 
-%ZH: We could add more references here, e.g. the earlier Sato et al. 2009 paper, and the Takada and Spergel
-%    papers looking at the non-Gaussian variance of the pow.spectrum.. 
-%AP: Done: that is, in fact, the Sato 2009 paper, I mis-labelled it with Sato12 in the bibtex
-Our results are in fact in excellent agreement with \citep{Sato12}, which used $N_s=400$ independent N-body
+significantly on small scales (see \citep{Sato12,TakadaSpergel14} for
+reference).  Our results are in fact in excellent quantitative
+agreement with \citep{Sato12}, which used $N_s=400$ independent N-body
 simulations.  This result is highly encouraging, suggesting that
-individual $N$--body runs can be recycled repeatedly.  However, it is not
-sufficient by itself to conclude that $N_s$ does not impact the
+individual $N$--body runs can be recycled repeatedly.  However, it is
+not sufficient by itself to conclude that $N_s$ does not impact the
 parameter inferences, since these depend on the cross band
 covariances.
 
@@ -812,13 +756,10 @@ $O(10^5)$ mutually independent convergence power spectra.
 
 Figure \ref{wvar_ns} shows how the ``true'' $w$ constraint (in the
 limit $N_r\rightarrow \infty$; or equivalently the $w$ constraint with
-the known $N_r$ dependence factored out),
-%ZH: see my paraphrasing above.  I wanted to clearly distinguish the point
-%    of this paragraph from the previous paragraph.
-%AP: OK
-depends on $N_s$. We find that, in the range $N_s\in[1,200]$ the
-inferred $w$--variance $\sigma_{w,\infty}^2$ fluctuates stochastically
-only by 1\%, and does not show any trend with $N_s$.
+the known $N_r$ dependence factored out), depends on $N_s$. We find
+that, in the range $N_s\in[1,200]$ the inferred $w$--variance
+$\sigma_{w,\infty}^2$ fluctuates stochastically only by 1\%, and does
+not show any trend with $N_s$.
 
 Finally, we found that when we estimate the data covariance $\bb{C}$
 from the same simulation set used to measure $\bbh{\Psi}$, the
@@ -828,14 +769,17 @@ case where the $\bbh{\Psi}$ bias is not corrected
 when the bias is corrected (eq.~\ref{mockscalingcorrected}).  This
 fact that should be taken into consideration when forecasting
 parameter errors purely from simulations, as the errors will otherwise
-be underestimated. A similar conclusion was reached by \citep{Hartlap07}.
+be underestimated. A similar conclusion was reached by
+\citep{Hartlap07} (although their paper did not address the impact of
+using the same simulation set for $\bb{C}$ and $\bbh{\Psi}$).
+
 %ZH: reworded above.  OK?  Also, I am not sure if this point is new.
 %    Didn't Hartlap (and others) make this point? If so, we should cite them.
 %    Also, it would make the point more relevant if we could cite some 
 %    papers (including our own) which neglected this correction in the past
 %    and therefore under-forecasted the errors.
 %AP: yes, Hartlap et al. reached a similar conclusion. I think we are saying something more though: even if the bias in the Psi estimator is corrected, if the same simulation set for Psi and C is used, parameter errors are still underestimated because of the explanation we give in section II-B. I don't think this point appears in Hartlap et al. 
-
+%ZH2: OK I added this clarification above.  
 
 
 %%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -863,23 +807,12 @@ $N$--body simulations.  Our main results can be summarized as follows:
   measure feature covariances.  In particular, provided that biases
   in the inverse covariance are corrected, percent--level forecasts
   require $N_r\gsim 100 (N_b-N_p)$ realizations.
-%ZH: what is sufficiently large here?  I presume a ``few hundred'' 
-%    (or $>100N_p$, based on eq. 13).  I added that.  Please correct if 
-%    this is not OK.
-%AP: OK, the quantity to compare to is Nb-Np though. If Nb=Np there is no degradation at every order
 \item Depending on the feature type used to constrain cosmology, a
   larger number of $N$--body simulations might be needed to measure
-  accurate ensemble means to an accuracy corresponding 10\% of the statistical error. If this accuracy requirement is relaxed to 50\% of the statistical error, we find that as low as $N_s=2$ simulations are needed, for the feature types we consider in this work. 
-%ZH:  So I am not sure about this last conclusion.   
-%     What exactly do you have in mind?   Is it Figure 2, which shows
-%     some deviations above the horizontal dashed line, for N_s up to ~50 ?
-%     But this is based on the super-stringent requirement that the bias
-%     is <0.1*sigma.
-%     The same figure seems to show that N_s=2 simulation is in fact
-%     sufficient to measure the means to within 0.5*sigma, as well.
-%     If you agree, we should revise this bullet to state this more
-%     positive conclusions!
-%AP: Agreed, I rephrased the bullet point
+  accurate ensemble means to an accuracy corresponding 10\% of the
+  statistical error. If this accuracy requirement is relaxed to 50\%
+  of the statistical error, we find that as low as $N_s=2$ simulations
+  are sufficient for the feature types we consider in this work.
 \end{itemize}
 %
 Future extensions of this work should involve extending our analysis
@@ -912,14 +845,30 @@ Sciences and Engineering at Columbia University (to Z.H.).
 \bibliography{ref}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% APPENDIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ZH: I did not carefully re-read the appendices.  I guess that is OK.
-%    One cosmetic comment:  when you refer to equations, you need to say
-%    ``as in eq. (xx)''  rather than  ``as in (xx)''.
-%AP: done   
+%ZH2: I went through the appendix, too, now, and made minor cosmetic changes.
+%     
 \section*{Appendix A: cubic and quartic covariance fluctuations}
 \label{appendixA}
 
-The goal of this appendix is to give a derivation of eq. (\ref{quarticdegradation}). When the simulated feature vector $\bbh{d}_r$ is drawn from a Gaussian distribution, the covariance estimator $\bbh{C}$ follows the Wishart distribution, and its inverse $\bbh{\Psi}$ follows the inverse Wishart distribution. For the analytical expressions of these probability distributions we remand the reader to \citep{Taylor12}. Computing expectation values of eq. (\ref{estimatorcovariance}) over the inverse Wishart distribution is not possible analytically, and a perturbative expansion is necessary. Writing $\bbh{\Psi}=\bb{\Psi}+\delta\bbh{\Psi}$, we can expand eq. (\ref{quarticdegradation}) in powers of $\delta\bbh{\Psi}$. The expectation values of each term in this perturbative expansion can be calculated in term of the moments of the inverse Wishart distribution. \citep{MasumotoWishart} provide a general framework to compute these moments, and give exact expressions for moments up to quartic order. First, let us expand the inverse of the Fisher matrix estimator (\ref{estimatorfisher}) in powers of $\delta\bbh{\Psi}$. The $n$--th order of this expansion will be 
+The goal of this appendix is to give a derivation of
+eq. (\ref{quarticdegradation}). When the simulated feature vector
+$\bbh{d}_r$ is drawn from a Gaussian distribution, the covariance
+estimator $\bbh{C}$ follows the Wishart distribution, and its inverse
+$\bbh{\Psi}$ follows the inverse Wishart distribution (see
+Ref.~\citep{Taylor12} for analytical expressions for these probability
+distributions). Computing expectation values of
+eq. (\ref{estimatorcovariance}) over the inverse Wishart distribution
+is not possible analytically, and a perturbative expansion is
+necessary. Writing $\bbh{\Psi}=\bb{\Psi}+\delta\bbh{\Psi}$, we can
+expand eq. (\ref{quarticdegradation}) 
+%ZH2: you must mean eq.~(\ref{estimatorcovariance}) above, instead of eq.10 
+in powers of $\delta\bbh{\Psi}$. The expectation value of each term in
+this expansion can be calculated in terms of moments of the inverse
+Wishart distribution. Ref.~\citep{MasumotoWishart} provides a general
+framework to compute these moments, and give exact expressions for
+moments up to quartic order. First, let us expand the inverse of the
+Fisher matrix estimator (eq.~\ref{estimatorfisher}) in powers of
+$\delta\bbh{\Psi}$. The $n$--th order of this expansion will be
 
 \begin{equation}
 \label{nthterm}
@@ -931,7 +880,16 @@ with
 \delta\bbh{F} = \bb{d}_0'^T\delta\bbh{\Psi}\bb{d}_0'
 \end{equation}
 %
-Using eq. (\ref{nthterm}), we can expand eq. (\ref{estimatorcovariance}) to an arbitrary order in $\delta\bbh{\Psi}$, take the expectation values of the fluctuations over the inverse Wishart distribution, and finally get to eq. (\ref{quarticdegradation}). We use the notation $\nu=N_r-1$ and $\gamma=(\nu-N_b-1)/2$. We indicate with capital letters pairs of matrix indices, for example $I=(i_1,i_2)$, where $i_a=1..N_b$. The main results we take out from \citep{MasumotoWishart} regarding the first four moments are (up to order $O(1/\nu^2)$)
+Using eq. (\ref{nthterm}), we can expand
+eq. (\ref{estimatorcovariance}) to an arbitrary order in
+$\delta\bbh{\Psi}$, take the expectation values of the fluctuations
+over the inverse Wishart distribution, and finally arrive at
+eq.~(\ref{quarticdegradation}). We use the notation $\nu\equiv N_r-1$
+and $\gamma\equiv (\nu-N_b-1)/2$, and we indicate with capital letters
+pairs of matrix indices, for example $I=(i_1,i_2)$, where
+$i_a=1..N_b$. The main results we utilize from
+ref.~\citep{MasumotoWishart} regarding the first four moments are (up
+to order $O(1/\nu^2)$)
 
 \begin{widetext}
 
@@ -952,32 +910,69 @@ Using eq. (\ref{nthterm}), we can expand eq. (\ref{estimatorcovariance}) to an a
 
 \begin{equation}
 \label{fourthmoment}
-\langle\delta\h{\Psi}_I\delta\h{\Psi}_J\delta\h{\Psi}_K\delta\h{\Psi}_L\rangle = \frac{\nu^4(2\gamma^2-5\gamma+9)\Psi_{[I}\Psi_{J]}\Psi_{[K}\Psi_{L]}}{16\gamma(\gamma-1)(\gamma-2)(\gamma-3)(2\gamma-1)(\gamma+1)(2\gamma+1)(2\gamma+3)}
+\langle\delta\h{\Psi}_I\delta\h{\Psi}_J\delta\h{\Psi}_K\delta\h{\Psi}_L\rangle = \frac{\nu^4(2\gamma^2-5\gamma+9)\Psi_{[I}\Psi_{J]}\Psi_{[K}\Psi_{L]}}{16\gamma(\gamma-1)(\gamma-2)(\gamma-3)(2\gamma-1)(\gamma+1)(2\gamma+1)(2\gamma+3)}.
 \end{equation}
 
 \end{widetext}
 %
-Where the square bracket notation is a shorthand for a symmetrization over pair of indices: for example
+Here the square bracket notation is a shorthand for a symmetrization over pair of indices: for example
 \begin{equation}
 \Psi_{[I}\Psi_{J]} = \Psi_{i_1j_1}\Psi_{i_2j_2} + \Psi_{i_1j_2}\Psi_{i_2j_1}
 \end{equation}
 %
-Eq. (\ref{firstmoment}) expresses the bias in the $\bbh{\Psi}$ estimator that already appears in the literature \citep{Hartlap07}. If we want to use the bias corrected $\bbh{\Psi}$ estimator (that is required in a perturbative expansion of eq. (\ref{estimatorcovariance})), we need to apply an additional factor of $(2\gamma/\nu)^n$ to eqs. (\ref{firstmoment}--\ref{fourthmoment}), where $n$ is the order of the moment we are applying the correction to. If we limit ourselves to computing the expectation value of eq. (\ref{estimatorcovariance}) up to order $O(1/\nu^2)$, we do not need to worry about this correction for eqs. (\ref{thirdmoment}--\ref{fourthmoment}), as the dominant term here is already $O(1/\nu^2)$. The next step is expanding eq. (\ref{estimatorcovariance}) in powers of $\delta\bbh{\Psi}$ up to fourth order: this is easily done
+Eq. (\ref{firstmoment}) expresses the bias in the $\bbh{\Psi}$
+estimator that already appears in the literature~\citep{Hartlap07}. If
+we want to use the bias-corrected $\bbh{\Psi}$ estimator (required for
+the perturbative expansion of eq.~\ref{estimatorcovariance}), we need
+to apply an additional factor of $(2\gamma/\nu)^n$ to
+eqs. (\ref{firstmoment}--\ref{fourthmoment}), where $n$ is the order
+of the moment up to which we are applying the correction. If we limit
+ourselves to computing the expectation value of
+eq. (\ref{estimatorcovariance}) up to order $O(1/\nu^2)$, we do not
+need to worry about this correction for
+eqs. (\ref{thirdmoment}--\ref{fourthmoment}), as the dominant term
+here is already $O(1/\nu^2)$. The next step is expanding
+eq. (\ref{estimatorcovariance}) in powers of $\delta\bbh{\Psi}$ up to
+fourth order: this is easily done:
 
 \begin{widetext}
 \begin{equation}
 \label{fullpertexpansion}
-\h{\Sigma}_\bb{p} = \left(\bb{F}^{-1}+\sum_{n=1}^4\delta\bbh{F}^{-1}_{(n)}\right)\bb{d}'^T_0(\bb{\Psi}+\delta\bbh{\Psi})\bb{C}(\bb{\Psi}+\delta\bbh{\Psi})\bb{d}'_0\left(\bb{F}^{-1}+\sum_{n=1}^4\delta\bbh{F}^{-1}_{(n)}\right)
+\h{\Sigma}_\bb{p} = \left(\bb{F}^{-1}+\sum_{n=1}^4\delta\bbh{F}^{-1}_{(n)}\right)\bb{d}'^T_0(\bb{\Psi}+\delta\bbh{\Psi})\bb{C}(\bb{\Psi}+\delta\bbh{\Psi})\bb{d}'_0\left(\bb{F}^{-1}+\sum_{n=1}^4\delta\bbh{F}^{-1}_{(n)}\right).
 \end{equation}
 \end{widetext}
 %
-Carrying out the calculations is simpler than it looks: because of the structure of eq. (\ref{fullpertexpansion}), each term in the expansion is going to be proportional to $\Sigma_\bb{p}f_a(N_b,N_p)/N_r^a$, where $f_a(N_b,N_p)$ is polynomial in $N_b,N_p$. Terms proportional to $N_b$ arise from index contractions of type $\mathrm{tr}(\bb{\Psi C})=N_b$, which come from symmetrization terms of type $\Psi_{[I}\Psi_{J]}$. Symmetrization factors of type $\Psi_{[I}\Psi_J\Psi_{K]}$ or $\Psi_{[I}\Psi_{J]}\Psi_{[K}\Psi_{L]}$, on the other hand, give rise to contractions of type $\mathrm{tr}(\bb{\Psi C})\mathrm{tr}(\bb{\bb{F}\bb{F}^{-1}})=N_bN_p$. Moreover, we know that, at every order $O(1/N_r^a)$, $f_a(N_b,N_p)$ has to be proportional to $N_b-N_p$ because it must vanish when $N_b=N_p$. The reason for this is that, when the feature derivative matrix $\bb{d}'_0$ is square and invertible (which it should be in absence of degeneracies), then eq. (\ref{estimatorcovariance}) reduces to 
+Carrying out the calculations is simpler than it looks: because of the
+structure of eq. (\ref{fullpertexpansion}), each term in the expansion
+is proportional to $\Sigma_\bb{p}f_a(N_b,N_p)/N_r^a$, where
+$f_a(N_b,N_p)$ is a polynomial in $N_b$ and $N_p$. Terms proportional
+to $N_b$ arise from index contractions of type $\mathrm{tr}(\bb{\Psi
+  C})=N_b$, which come from symmetrization terms of type
+$\Psi_{[I}\Psi_{J]}$. Symmetrization factors of type
+$\Psi_{[I}\Psi_J\Psi_{K]}$ or $\Psi_{[I}\Psi_{J]}\Psi_{[K}\Psi_{L]}$,
+on the other hand, give rise to contractions of type
+$\mathrm{tr}(\bb{\Psi
+  C})\mathrm{tr}(\bb{\bb{F}\bb{F}^{-1}})=N_bN_p$. Moreover, we know
+that, at every order $O(1/N_r^a)$, $f_a(N_b,N_p)$ has to be
+proportional to $N_b-N_p$, because it must vanish when $N_b=N_p$. The
+reason for this is that if the feature derivative matrix $\bb{d}'_0$
+is square and invertible (which it should be in absence of
+degeneracies), then eq. (\ref{estimatorcovariance}) reduces to
 
 \begin{equation}
-\h{\Sigma}_\bb{p} = (\bb{d}'_0)^{-1}\bb{C}(\bb{d}'^T_0)^{-1}
+\h{\Sigma}_\bb{p} = (\bb{d}'_0)^{-1}\bb{C}(\bb{d}'^T_0)^{-1}.
 \end{equation} 
 %
-And every trace of the noise is gone, hence powers of $1/N_r^a$ must not appear at any order if $N_b=N_p$. Armed with the knowledge of the above considerations, we can compute the expectation value of eq. (\ref{fullpertexpansion}) at second, third and fourth order in $\delta\bbh{\Psi}$, keeping the terms that are at most $O(1/\nu^2)=O(1/N_r^2)$. When the combinatorial factors that arise from the expansion of eq. (\ref{fullpertexpansion}) are properly computed and the expectation values over the inverse Wishart distribution are taken according to eqs. (\ref{firstmoment}--\ref{fourthmoment}), the results should look like
+Every trace of the noise is gone, hence powers of $1/N_r^a$ must not
+appear at any order if $N_b=N_p$. Armed with the knowledge of the
+above considerations, we can compute the expectation value of
+eq. (\ref{fullpertexpansion}) at second, third and fourth order in
+$\delta\bbh{\Psi}$, keeping the terms that are at most
+$O(1/\nu^2)=O(1/N_r^2)$. When the combinatorial factors that arise
+from the expansion of eq. (\ref{fullpertexpansion}) are properly
+computed and the expectation values over the inverse Wishart
+distribution are taken according to
+eqs. (\ref{firstmoment}--\ref{fourthmoment}), the results take the form
 
 \begin{widetext}
 \begin{equation}
@@ -993,7 +988,7 @@ And every trace of the noise is gone, hence powers of $1/N_r^a$ must not appear 
 
 
 \begin{displaystyle}
-(\delta\bbh{\Psi})^4 \rightarrow 3\Sigma_\bb{p}\frac{(N_b-N_p)(1+N_p)}{N_r^2}
+(\delta\bbh{\Psi})^4 \rightarrow 3\Sigma_\bb{p}\frac{(N_b-N_p)(1+N_p)}{N_r^2}.
 \end{displaystyle}
 
 \end{cases}
@@ -1008,7 +1003,7 @@ When the results from eq. (\ref{expansionbreakdown}) are summed, eq. (\ref{quart
 \section*{Appendix B: negative effective dimensionality}
 \label{appendixB}
 
-The goal of this appendix is giving a justification on why the effective dimensionality $D$ that appears in eq. (\ref{ourscaling}) can be negative in some cases. When we use the same simulation set to estimate $\bb{C},\bbh{\Psi}$, eq. (\ref{estimatorcovariance}) reduces to the inverse Fisher estimator $\h{\Sigma}_\bb{p}=\bbh{F}^{-1}$. At second order in the $\Psi$ fluctuations this becomes
+The goal of this appendix is to give a justification for why the effective dimensionality $D$ that appears in eq. (\ref{ourscaling}) can be negative in some cases. When we use the same simulation set to estimate $\bb{C},\bbh{\Psi}$, eq. (\ref{estimatorcovariance}) reduces to the inverse Fisher estimator $\h{\Sigma}_\bb{p}=\bbh{F}^{-1}$. At second order in the $\Psi$ fluctuations this becomes
 
 \begin{equation}
 \h{\Sigma}_\bb{p} = \bb{F}^{-1} + \bb{F}^{-1}\left(- \delta{\bbh{F}}+ \delta{\bbh{F}}\bb{F}^{-1}\delta{\bbh{F}}\right)\bb{F}^{-1}  
@@ -1018,11 +1013,11 @@ If the biased estimator for $\bbh{\Psi}$ is used, we can use eqs. (\ref{firstmom
 \begin{widetext}
 \begin{equation}
 \label{negativeD}
-\langle\h{\Sigma}_\bb{p}\rangle = \Sigma_\bb{p}\left(1-\frac{N_b+1}{N_r}+\frac{1+N_p}{N_r}\right) = \Sigma_\bb{p}\left(1+\frac{N_p-N_b}{N_r}\right)
+\langle\h{\Sigma}_\bb{p}\rangle = \Sigma_\bb{p}\left(1-\frac{N_b+1}{N_r}+\frac{1+N_p}{N_r}\right) = \Sigma_\bb{p}\left(1+\frac{N_p-N_b}{N_r}\right).
 \end{equation}
 \end{widetext}
 %
-And we immediately see that the coefficient of $1/N_r$ is negative, because $N_b>N_p$. This is the result shown in eq. (\ref{mockscalinguncorrected}). If the bias correction for $\bbh{\Psi}$ is applied, the first order terms $\delta{\bbh{F}}$ average to 0, and we are left with only the last term in the sum (\ref{negativeD}), which immediately yields eq. (\ref{mockscalingcorrected}). 
+We immediately see that the coefficient of $1/N_r$ is negative, because $N_b>N_p$. This is the result shown in eq. (\ref{mockscalinguncorrected}). If the bias correction for $\bbh{\Psi}$ is applied, the first order terms $\delta{\bbh{F}}$ average to 0, and we are left with only the last term in the sum eq.~(\ref{negativeD}), which immediately yields eq. (\ref{mockscalingcorrected}). 
 
 
 \label{lastpage}
