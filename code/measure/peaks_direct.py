@@ -44,7 +44,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	if len(parts)==2:
 
-		assert isinstance(settings,PowerSpectrumSettings)
+		assert isinstance(settings,PeaksSettings)
 	
 		#Separate the id into cosmo_id and geometry_id
 		cosmo_id,geometry_id = parts
@@ -59,7 +59,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	elif len(parts)==1:
 
-		assert isinstance(settings,PowerSpectrumSettings)
+		assert isinstance(settings,PeaksSettings)
 
 		#Get a handle on the model
 		model = batch.getModel(parts[0])
@@ -310,9 +310,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 ############################################################################################################################################################################
 
-########################################################
-###########PowerSpectrumSettings class##################
-########################################################
+################################################
+###########PeaksSettings class##################
+################################################
 
 class PeaksSettings(MapSettings):
 
