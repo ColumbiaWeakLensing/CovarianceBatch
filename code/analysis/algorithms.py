@@ -74,6 +74,9 @@ def fit_nbins(variance_ensemble,parameter="w",extra_columns=["bins"],correct=Fal
 		fit_results["D2"] = list()
 		fit_results["res_exponent"] = list()
 
+	if kind=="subtract":
+		fit_results["decay_exponent"] = list()
+
 	for c in extra_columns:
 		fit_results[c] = list()
 
@@ -88,6 +91,17 @@ def fit_nbins(variance_ensemble,parameter="w",extra_columns=["bins"],correct=Fal
 			a,b,r_value,p_value,err = linregress(vmean_group["1/nreal"],vmean_group[parameter])
 			fit_results["D"].append(a/b)
 			fit_results["s0"].append(b)
+
+		elif kind=="subtract":
+
+			#Let the variance with the highest nreal be the intercept
+			vmean_group_sorted = vmean_group.sort_values("1/nreal")
+			s0 = vmean_group_sorted[parameter].iloc[0]
+			fit_results["s0"].append(s0)
+			a,b,r_value,p_value,err = linregress(np.log(vmean_group_sorted["nreal"].values[1:]),np.log(np.abs((vmean_group_sorted[parameter]-s0).values[1:])))
+
+			fit_results["decay_exponent"].append(a)
+			fit_results["D"].append(np.exp(b)/s0)
 
 		elif kind=="quadratic":
 
