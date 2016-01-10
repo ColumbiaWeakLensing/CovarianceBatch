@@ -211,7 +211,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	####################################################################################################################################
 
 	#Open the database and look for different nsim
-	with Database("data/variance_scaling_power_largeNr.sqlite") as db:
+	with Database("data/variance_scaling_largeNr.sqlite") as db:
 		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all".format(parameter))
 
 	#Fit with the Dodelson scaling and overlay the fit
