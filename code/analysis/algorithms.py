@@ -143,3 +143,19 @@ def fit_nbins_all(db,**kwargs):
 	#Return to user
 	return Ensemble.concat(nb_all,axis=0,ignore_index=True)
 
+#Fit a single table, but vary the threshold for the maximum Nr
+def fit_nbins_nr(variance_ensemble,nrmax,**kwargs):
+
+	nb_all = list()
+
+	#Fit all Nr tables
+	for nr in nrmax:
+		nb = fit_nbins(variance_ensemble,vfilter=lambda db:db.query("nreal<={0}".format(nr)),**kwargs)
+		nb["nreal_max"] = nr
+		nb_all.append(nb)
+
+	#Return to user
+	return Ensemble.concat(nb_all,axis=0,ignore_index=True)
+
+
+
