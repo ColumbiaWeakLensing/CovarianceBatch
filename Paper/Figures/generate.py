@@ -182,48 +182,43 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",nsim=[1,2,5,50,100],colors=["black","blue","green","red","purple"],fontsize=22):
-
-	assert len(colors)>=len(nsim)
+def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",fontsize=22):
 
 	#Plot panel
 	fig,ax = plt.subplots()
 
-	####################################################################################################################################
-
-	#Open the database and look for different nsim
-	with Database("data/"+db_filename) as db:
-		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all WHERE nsim IN ({1})".format(parameter,",".join([str(n) for n in nsim])))
-
-	#Fit with the Dodelson scaling and overlay the fit
-	vfit = algorithms.fit_nbins(v,parameter=parameter)
-	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_fit"] = v.eval("s0*D/nreal")
-	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
-	nsim_group = v.groupby("nsim")
-
-	for nc,ns in enumerate(nsim):
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",color=colors[nc],ax=ax,label=r"$N_s={0}$".format(ns))
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",color=colors[nc],ax=ax,legend=False)
-
-	####################################################################################################################################
-	###############Same thing for the BIG simulation set################################################################################
-	####################################################################################################################################
+	##############################################################################################################################
+	###############Consider the BIG simulation set################################################################################
+	##############################################################################################################################
 
 	#Open the database and look for different nsim
 	with Database("data/variance_scaling_largeNr.sqlite") as db:
 		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all".format(parameter))
 
-	#Fit with the Dodelson scaling and overlay the fit
-	vfit = algorithms.fit_nbins(v,parameter=parameter)
+	#Number of bins
+	nb = v["bins"].iloc[0]
+
+	#Fit with the Dodelson scaling in the range Nr=500-10000
+	vfit = algorithms.fit_nbins(v,parameter=parameter,kind="linear",vfilter=lambda db:db.query("nreal>=500 and nreal<=10000"))
 	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_fit"] = v.eval("s0*D/nreal")
 	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
 	nsim_group = v.groupby("nsim")
 
 	for ns in [1]:
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=1.5,color=colors[0],ax=ax,legend=False)
-		nsim_group.get_group(ns).plot(x="nreal",y=parameter+"_fit",linestyle="--",linewidth=1.5,color=colors[0],ax=ax,legend=False)
+
+		vgroup = nsim_group.get_group(ns)
+
+		#Plot the intercept obtained with the linear fit
+		vgroup.plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=1.5,color="black",ax=ax,label=r"$\sigma^2_{\infty}\rightarrow{\rm Fit}$ $500\leq N_r\leq 10000$")
+		ax.plot(vgroup["nreal"],vgroup["s0"]*(nb-3)/vgroup["nreal"],linestyle="--",color="black")
+
+		#Estimate the intercept using the variance at a high number of realizations
+		colors = ["red","green"]
+		for n,nr in enumerate([50000,100000]):
+			s0 = vgroup.query("nreal=={0}".format(nr))[parameter].iloc[0]
+			ax.plot(vgroup["nreal"],vgroup[parameter]-s0,linestyle="-",linewidth=1.5,color=colors[n],label=r"$\sigma^2_{\infty}"+r"=\sigma^2(N_r={0})$".format(nr))
+			ax.plot(vgroup["nreal"].values,s0*(nb-3)/vgroup["nreal"].values,linestyle="--",color=colors[n],label=None)
+
 
 	####################################################################################################################################
 
@@ -232,6 +227,7 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	ax.set_yscale("log")
 
 	#Labels
+	ax.legend()
 	ax.set_xlabel(r"$N_r$",fontsize=fontsize)
 	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$",fontsize=fontsize)
 
