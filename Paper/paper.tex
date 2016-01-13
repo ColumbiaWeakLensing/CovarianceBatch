@@ -248,22 +248,12 @@ one of the features -- either a power spectrum or a peak count
 histogram -- in Table \ref{featuretable}. Although existing emulators
 can be used, in principle, to compute both $\bb{d}(\bb{p})$ and
 $\bb{C}$, the latter is more difficult, and typically only the mean,
-$\bb{d}(\bb{p})$, has been computed to date (refs.~\citep{coyote2,Nicaea}, but see
-an exception by ref.~\citep{SchneiderKnoxCovariance}).
-%ZH: I am missing the point here.  Why is covariance matrix ``more complicated'' ?
-%    Even to estimate a mean, one has to ``generate a series of mock realizations''.
-%    Unless you are willing to equate a single realization as the mean.   But then
-%    by the same logic, you could estimate the covariance matrix from two realizations.
-%    Please clarify what you mean...  maybe I am missing something?  Or you simply mean
-%    that published emulators usually do not emulate the cov.matrix (even though they could)?
-%    Note that there is a paper by Schneider and Knox, in which they do an interpolation of the
-%    power spectrum covariance matrix.
-%AP: The intended meaning is the latter: published emulators only predict the means. It is also true that getting the covariance accurate is more difficult than getting the means accurate. I rephrased the sentence.
-%ZH2: OK, I rephrased it a bit above to be clearer.  I believe only Schneider et al. did ``C''.
-%AP2: OK
-Estimating $\bb{C}$ from simulations involves generating a series of
-mock realizations $\bbh{d}_r$ with $r=1...N_r$ and computing the
-sample covariance $\bbh{C}$,
+$\bb{d}(\bb{p})$, has been computed to date
+(refs.~\citep{coyote2,Nicaea}, but see an exception by
+ref.~\citep{SchneiderKnoxCovariance}).  Estimating $\bb{C}$ from
+simulations involves generating a series of mock realizations
+$\bbh{d}_r$ with $r=1...N_r$ and computing the sample covariance
+$\bbh{C}$,
 
 \begin{equation}
 \bb{\bar{d}} = \frac{1}{N_r}\sum_{r=1}^{N_r} \bbh{d}_r,
@@ -321,14 +311,6 @@ $\Omega_m$ &  $w$ & $\sigma_8$ & $(N_s,N_r)$ & Number of $\kappa$ ensembles \\ \
   $N_r$ refer to the number of independent N-body simulations, and the
   number of pseudo-independent realizations created from these
   simulations, respectively.}
-%ZH: So each of these have N_r=1000, yes?  You should state this here. And also,
-%    Add the ensemble with N_s=1, N_r=10^5 to this table.
-%    Also: point the reader to this table in the text, up front, when the 
-%    ensembles are first discussed.
-%AP: done
-%ZH2: The first row was a bit confusing, so I separated it into two rows. Also added words to the caption
-%    (also, the N_r=10^5 one is the 17th ensemble, in addition to the 16 you listed here before, no? So 16 should have been 17?)
-%AP2: OK
 \label{simtable}
 \end{table*}
 
@@ -438,46 +420,22 @@ This is the result obtained by ref.~\citep{DodelsonSchneider13}.
 %
 The error degradation in each parameter $p$, at leading order, scales
 as $D/N_r$, where $D=N_b-N_p$, $N_p-N_b$, and $1+N_p$ for cases 1, 2,
-and 3, respectively.
-%ZH: It was not clear to me what the main point of the text below was. I paraphrased it slightly. OK?
-%This means that, when parameter errors are
-%estimated purely from simulations, and the same simulation set is used
-%to estimate both $\bbh{C},\bbh{\Psi}$, these errors tend to decrease
-%with $N_b$ (case 2), or at best remain constant (case 3), while the
-%distribution of $\bbh{p}$ has still a variance that increases with
-%$N_b$. This typically leads to underestimates in parameter errors. 
-%AP: Not exactly: my point was that the distribution of \bbh{p} has a true variance that increases with Nb, but the estimate of this variance (which we quote as the errorbar) does not increase with Nb. Hence we get the wrong parameter fit (i.e. which excludes the true value at high significance level)
-%ZH2: OK.  I think by `` the parameter estimate $\bbh{p}$ has a variance that grows linearly with $N_b$,'' you mean equation 10
-%   (i.e.  technically it is [variance-1] grows linearly with N_b.   I rephrased below to say ``whose noise'' grows linearly and
-% cite eq.10.    OK?
-%AP2: OK
-Note that in the last case, which is most relevant when fitting actual
-data, the estimated degradation turns out to be too optimistic: the
-parameter estimate $\bbh{p}$ has a variance whose noise grows linearly
-with $N_b$ (eq.~\ref{quarticdegradation}), whereas the degradation
-estimated via eq. (\ref{mockscalingcorrected}) is constant with
-$N_b$. This can lead to underestimation of error bars, which can be
-mistakenly interpreted as a parameter bias. We test scaling
-relations of the form
+and 3, respectively.  Note that in the last case, which is most
+relevant when fitting actual data, the estimated degradation turns out
+to be too optimistic: the parameter estimate $\bbh{p}$ has a variance
+whose noise grows linearly with $N_b$ (eq.~\ref{quarticdegradation}),
+whereas the degradation estimated via eq. (\ref{mockscalingcorrected})
+is constant with $N_b$. This can lead to underestimation of error
+bars, which can be mistakenly interpreted as a parameter bias. We test
+scaling relations of the form
 %
 \begin{equation}
 \label{ourscaling}
 \langle\h{\sigma}_p^2\rangle = \sigma^2_{p,\infty}(N_s)\left(1+\frac{D}{N_r}\right)
 \end{equation}
 %
-againts our simulations, in the limits of both high and low $N_r$.
-%ZH: It is still a little unclear here what is being tested.  Is it the Gaussianity assumption? I added that.
-%    But perhaps you had some other issue in mind.
-%AP: The noise in $\bbh{C}$ and $\bbh{\Psi}$ is not Gaussian: if the data vector from which $\bbh{C}$ and $\bbh{\Psi}$ are estimated in Gaussian, then these matrices are distibuted according to, respectively, the Wishart and inverse Wishart distributions. We are testing that the degradation effectively decreases as 1/Nr at leading order.  
-%ZH2: I am still confused.  What is it that could go wrong?   I.e. do you have something in mind that could cause a departure from this 1/N_r
-%     scaling?    That is what we are testing, then, but I am not sure what it is.   Are we testing whether the simulations could have a bug?  
-%     Or maybe you simply are testing the validity of truncating the expansion at second order in DeltaPsi ?   
-%     Or maybe what you have in mond is the possible importance of high-order terms in the expansion (beyond the quartic terms, 
-%     and beyond 1/N_r^2) could cause a deviation from 1/N_r that is different from the 1/N_r^2 term in eq.10 ?  In other words,
-%     then we're testing for the importance of the 1/N_r^3 and higher terms numerically...  is that your point?
-%
-%AP2: Technically the 1/Nr scaling has been obtained using the inverse Wishart distribution; if the data is non Gaussian, the covariance is not Wishart, but maybe one can say that for an arbitrary, not too crazy, distribution the leading term is still 1/Nr and the coefficient is not too different from Nb-Np... This is indeed what we find: the error degradation is basically the same should we use power spectra or peak counts which have different PDFs... I removed the mention to the Gaussianity, which is not what we test. What we test is eq. 10 in the low Nr limit and the (possible) deviations from 1/Nr when Nr is very large (due to the maps being pseudo independent). 
-We indicate the diagonal elements of $\h{\Sigma}_{\bb{p}}$ as
+against our simulations, in the limits of both high and low $N_r$.  We
+indicate the diagonal elements of $\h{\Sigma}_{\bb{p}}$ as
 $\h{\sigma}^2_p=\mathrm{diag}(\h{\Sigma}_{\bb{p}})$ and we indicate by
 $\sigma^2_{p,\infty}$ the expectation value of the variance of each
 parameter in the limit of an infinite number of realizations
@@ -572,8 +530,16 @@ next section, we present our main findings.
 \caption{Bias in the variance of $w$,
   $\langle\h{\sigma}^2_w\rangle-\sigma^2_{w,\infty}$, as a function of
   the number of realizations $N_r$ used to estimate the covariance
-  (eq.~\ref{covest}). The figure shows both the measured trends
-  (solid lines) and their theoretical behavior according to eq.~(\ref{ourscaling}) with $D=N_b-N_p$. The asymptotic variance $\sigma^2_{w,\infty}$ has been estimated with a linear regression of $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ with $500\leq N_r\leq 10000$ (black), with $\langle\h{\sigma}^2_w\rangle(N_r=50000)$ (red) and $\langle\h{\sigma}^2_w\rangle(N_r=100000)$ (green). No deviations from the expected $1/N_r$ behavior are observed until $N_r={\rm few}\times 10^4$.}
+  (eq.~\ref{covest}). The figure shows both the trend measured in the
+  simulations (solid lines) and their scaling expected from
+  Eq.~(\ref{ourscaling}) with $D=N_b-N_p$ (dashed line). The
+  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated with a
+  linear regression of $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ using
+  the range $500\leq N_r\leq 10000$ (black), or else simply assumed to
+  be equal to the value $\langle\h{\sigma}^2_w\rangle(N_r=50000)$
+  (red) or $\langle\h{\sigma}^2_w\rangle(N_r=100000)$ (green). No
+  deviations from the expected $1/N_r$ behavior are observed up to
+  $N_r={\rm few}\times 10^4$.}
 \label{wvar_nr}
 \end{figure}
 
@@ -739,8 +705,19 @@ fluctations.
 In Figure \ref{wvar_nr}, we examine how the degradation in the $w$
 constraint depends on the number of simulations used to estimate the
 covariance, in the limit of large $N_r$. We find excellent agreement
-with the expected scaling (eq.~\ref{ourscaling}) up to values
-comparable to $N_r\sim {\rm few}\times10^4$. We can see from the plot that around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve becomes noisy and reaches negative values. This is a clear indication that the $1/N_r$ behavior is broken and a plateau is reached. The negative values in the plot are a consequence of the noise in the estimation of the $\langle\hat{\sigma}^2_w\rangle$ plateau value. We therefore conclude that a single $N$--body simulation is sufficient to construct an ensemble of $O(10^4)$ mutually independent convergence power spectra, before realizations start repeating themselves. For $N_r\gg10^4$, the shear realizations cannot be considered all independent.
+with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm
+  few}\times10^4$. As the figure shows, around these values of $N_r$
+the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
+becomes noisy and reaches negative values. This is a clear indication
+that the $1/N_r$ behavior is broken and a plateau in
+$\langle\hat{\sigma}^2_w\rangle$ is reached. The negative values in
+the plot are a consequence of the noise in the estimation of this
+plateau value (or equivalently in the estimated value of
+$\sigma^2_{w,\infty}$).  We therefore conclude that a single $N$--body
+simulation is sufficient to construct an ensemble of up to a
+few$\times 10^4$ mutually independent convergence power spectra. For
+$N_r\gg10^4$, the shear realizations can no longer be considered
+independent.
 
 Figure \ref{wvar_ns} shows how the ``true'' $w$ constraint (in the
 limit $N_r\rightarrow \infty$; or equivalently the $w$ constraint with
@@ -761,14 +738,6 @@ be underestimated. A similar conclusion was reached by
 \citep{Hartlap07} (although their paper did not address the impact of
 using the same simulation set for $\bb{C}$ and $\bbh{\Psi}$).
 
-%ZH: reworded above.  OK?  Also, I am not sure if this point is new.
-%    Didn't Hartlap (and others) make this point? If so, we should cite them.
-%    Also, it would make the point more relevant if we could cite some 
-%    papers (including our own) which neglected this correction in the past
-%    and therefore under-forecasted the errors.
-%AP: yes, Hartlap et al. reached a similar conclusion. I think we are saying something more though: even if the bias in the Psi estimator is corrected, if the same simulation set for Psi and C is used, parameter errors are still underestimated because of the explanation we give in section II-B. I don't think this point appears in Hartlap et al. 
-%ZH2: OK I added this clarification above.  
-%AP2: OK: Hartlap focuses on the Psi distribution, translating it into a parameter distribution using a naive Fisher analysis; what he does is in fact use the same simulation set for Psi and C, but this kind of discussion is absent from his paper.  
 
 
 %%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -834,8 +803,6 @@ Sciences and Engineering at Columbia University (to Z.H.).
 \bibliography{ref}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% APPENDIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%ZH2: I went through the appendix, too, now, and made minor cosmetic changes.
-%AP2: OK     
 \section*{Appendix A: cubic and quartic covariance fluctuations}
 \label{appendixA}
 
@@ -849,12 +816,10 @@ distributions). Computing expectation values of
 eq. (\ref{estimatorcovariance}) over the inverse Wishart distribution
 is not possible analytically, and a perturbative expansion is
 necessary. Writing $\bbh{\Psi}=\bb{\Psi}+\delta\bbh{\Psi}$, we can
-expand eq.~(\ref{estimatorcovariance}) 
-%ZH2: you must mean eq.~(\ref{estimatorcovariance}) above, instead of eq.10 
-%AP2: yes
-in powers of $\delta\bbh{\Psi}$. The expectation value of each term in
-this expansion can be calculated in terms of moments of the inverse
-Wishart distribution. Ref.~\citep{MasumotoWishart} provides a general
+expand eq.~(\ref{estimatorcovariance}) in powers of
+$\delta\bbh{\Psi}$. The expectation value of each term in this
+expansion can be calculated in terms of moments of the inverse Wishart
+distribution. Ref.~\citep{MasumotoWishart} provides a general
 framework to compute these moments, and give exact expressions for
 moments up to quartic order. First, let us expand the inverse of the
 Fisher matrix estimator (eq.~\ref{estimatorfisher}) in powers of
