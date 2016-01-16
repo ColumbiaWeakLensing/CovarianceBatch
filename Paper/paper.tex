@@ -64,18 +64,15 @@ N_r$ of independent ray-tracing $N$--body simulations.  We study
 parameter confidence intervals as a function of ($N_s,N_r$) in the
 range $1\leq N_s\leq 200$ and $1\leq N_r\lesssim 10^5$.  Previous work
 \citep{DodelsonSchneider13} has shown that Gaussian noise in the
-feature covariance lead, at quadratic order, to an $O(1/N_r)$
+feature vectors (from which the covariance is estimated) lead, at quadratic order, to an $O(1/N_r)$
 degradation of the parameter confidence intervals. Using a variety of
 lensing features measured in our simulations, including shear-shear
 power spectra and peak counts, we show that cubic and quartic
 covariance fluctuations lead to additional $O(1/N_r^2)$ error
 degradation that is not negligible when $N_r$ is only a factor of few
 larger than $N_b$. We study the large $N_r$ limit, and find that a
-single $N$--body simulation ($N_s=1$) can be repeatedly recycled to
-produce as many as $N_r={\rm few}\times10^4$ mutually independent shear maps. As a
-result, a small number of simulations ($N_s=1$ or $2$) is sufficient
-to forecast parameter confidence intervals at percent
-accuracy. 
+single, 240Mpc$/h$ sized, $N$--body simulation ($N_s=1$) can be repeatedly recycled to
+produce as many as $N_r={\rm few}\times10^4$ shear maps whose power spectra can be treated as statistically independent. As a result, a small number of simulations ($N_s=1$ or $2$) is sufficient to forecast parameter confidence intervals at percent accuracy. 
 
 \end{abstract}
 
@@ -135,7 +132,7 @@ imperative to assess the statistical validity of this approach, and to
 ask how many times a single simulation can be fairly recycled.  In
 this paper, we address these questions with ensembles of up to
 $N_r=10^5$ random realizations, extracted from up to $N_s=200$
-independent ray-tracing N-body simulations. We focus in particular on
+independent ray-tracing $N$--body simulations. We focus in particular on
 the parameter $w$, and on two different statistics: the (convergence)
 power spectrum and the number counts of peaks.
 
@@ -181,8 +178,8 @@ three--dimensional density measured from \texttt{Gadget2}
 snapshots. We then apply the multi--lens--plane algorithm (see
 \citep{RayTracingHartlap,RayTracingJain} for example) to trace the
 deflections of $n_{\rm ray}^2=2048^2$ light rays arranged on a square grid
-of total size $\theta_{\rm box}$, from $z=0$ to $z_s$. Our
-implementation of this algorithm is part of the \texttt{LensTools}
+of total size $\theta_{\rm box}$, from $z=0$ to $z_s$. This corresponds to a pixel angular resolution of $0.1^\prime$. 
+Our implementation of this algorithm is part of the \texttt{LensTools}
 computing package we have been developing \citep{LensTools}, and have
 released under the \texttt{MIT} license. Many different realizations
 $r$ of the same shear field $\pmb{\gamma}_r(\pmb{\theta})$ can be
@@ -305,7 +302,7 @@ $\Omega_m$ &  $w$ & $\sigma_8$ & $(N_s,N_r)$ & Number of $\kappa$ ensembles \\ \
 \end{tabular}
 \end{center}
 \caption{Summary of the shear ensembles used in this work. $N_s$ and
-  $N_r$ refer to the number of independent N-body simulations, and the
+  $N_r$ refer to the number of independent $N$--body simulations, and the
   number of pseudo-independent realizations created from these
   simulations, respectively.}
 \label{simtable}
@@ -468,7 +465,7 @@ next section, we present our main findings.
   $\mathcal{L}(P_l^{\kappa\kappa})$ at four selected multipoles
   $\ell=115,344,1349,5283$, for different shear ensembles constructed
   from on $N_s=$1 (black), 2 (blue), 5 (green), 50 (red), and 100
-  (purple) independent N-body simulations. Each curve is based on
+  (purple) independent $N$--body simulations. Each curve is based on
   $N_r=1024$ realizations.  The dashed black curves correspond to
   ensembles generated with $N_s=1$ and $N_r=128000$. For $N_s\geq2$,
   the distributions appear similar to the eye; this similarity is
@@ -530,13 +527,7 @@ next section, we present our main findings.
   (eq.~\ref{covest}). The figure shows both the trend measured in the
   simulations (solid lines) and their scaling expected from
   Eq.~(\ref{ourscaling}) with $D=N_b-N_p$ (dashed line). The
-  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated with a
-  linear regression of $\langle\h{\sigma}^2_w\rangle$ vs $1/N_r$ using
-  the range $500\leq N_r\leq 10000$ (black), or else simply assumed to
-  be equal to the value $\langle\h{\sigma}^2_w\rangle(N_r=50000)$
-  (red) or $\langle\h{\sigma}^2_w\rangle(N_r=100000)$ (green). No
-  deviations from the expected $1/N_r$ behavior are observed up to
-  $N_r={\rm few}\times 10^4$.}
+  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated to be the value $\langle\h{\sigma}^2_w\rangle(N_r=10^5)$. Different features are considered: power spectra with logarithmically spaced $\ell\in[100,6000]$ (black), $\ell\in[100,250]$ (red) and peak counts of height $\kappa_0\in[0.44,0.48]$ (blue). No deviations from the expected $1/N_r$ behavior are observed up to $N_r\approx{\rm few}\times10^4$, except for the large scale power spectrum, in which case the deviations occur much earlier ($N_r\approx 10^3$).}
 \label{wvar_nr}
 \end{figure}
 
@@ -632,16 +623,16 @@ N(\ell)$.
 In Figures~\ref{curvingnb} and \ref{wvar_nr}, we show the dependence
 of the confidence range $\langle\h{\sigma}^2_w\rangle$ on $N_r$,
 derived from the features used in this work (see Table
-\ref{featuretable} for a comprehensive list). Figure \ref{wvar_nr}
-shows the $N_r$ trends of the $w$ constraint obtained with the power
-spectrum logarithmically binned with $\ell\in[100,6000], N_b=15$.
+\ref{featuretable} for a comprehensive list). 
+Figure~\ref{curvingnb} shows the
+behavior in the limit of a large number $N_r\gg500$ of realizations,
+and compares it with the scaling of the form in
+equation~(\ref{ourscaling}).
+Figure \ref{wvar_nr} shows the large $N_r$ trends of the $w$ constraint.
 Figure~\ref{curvingnb} illustrates the behavior at relatively low
 $N_r$, and compares $\langle\h{\sigma}^2_w\rangle$ measured directly
 from the simulations with the analytic expectations from
-equation~(\ref{quarticdegradation}).  Figure~\ref{curvingnb} shows the
-behavior in the limit of a large number $N_r\gg500$ of realizations,
-and compares it with the scaling of the form in
-equation~(\ref{ourscaling}). Finally, in Figure~\ref{wvar_ns}, we show
+equation~(\ref{quarticdegradation}). Finally, in Figure~\ref{wvar_ns}, we show
 how the $w$ confidence limit changes with $N_s$.
 
 %%%%%%%%%%%%%%%%%% DISCUSSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -679,7 +670,7 @@ expectation. We find that, even with $N_s=1$, we are able to recover
 the known result that non--Gaussian structures increase the variance
 significantly on small scales (see \citep{Sato12,TakadaSpergel14} for
 reference).  Our results are in fact in excellent quantitative
-agreement with \citep{Sato12}, which used $N_s=400$ independent N-body
+agreement with \citep{Sato12}, which used $N_s=400$ independent $N$--body
 simulations.  This result is highly encouraging, suggesting that
 individual $N$--body runs can be recycled repeatedly.  However, it is
 not sufficient by itself to conclude that $N_s$ does not impact the
@@ -702,19 +693,16 @@ fluctations.
 In Figure \ref{wvar_nr}, we examine how the degradation in the $w$
 constraint depends on the number of simulations used to estimate the
 covariance, in the limit of large $N_r$. We find excellent agreement
-with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm
-  few}\times10^4$. As the figure shows, around these values of $N_r$
-the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
-becomes noisy and reaches negative values. This is a clear indication
-that the $1/N_r$ behavior is broken and a plateau in
+with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm few}\times10^4$ when using the $\kappa$ power spectrum in the multipole range $\ell\in[100,6000]$. As the figure shows, around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
+becomes noisy and reaches negative values. This is a clear indication that the $1/N_r$ behavior is broken and a plateau in
 $\langle\hat{\sigma}^2_w\rangle$ is reached. The negative values in
 the plot are a consequence of the noise in the estimation of this
 plateau value (or equivalently in the estimated value of
-$\sigma^2_{w,\infty}$).  We therefore conclude that a single $N$--body
+$\sigma^2_{w,\infty}$). We therefore conclude that a single $N$--body
 simulation is sufficient to construct an ensemble of up to a
 few$\times 10^4$ mutually independent convergence power spectra. For
 $N_r\gg10^4$, the shear realizations can no longer be considered
-independent.
+independent. We should emphasize that the validity of this statement is conditional to the size of the simulation box (which in our case has been chosen to be 240Mpc$/h$) and the range of multipoles $\ell$ used to constrain the parameters. Figure \ref{wvar_nr} shows indeed that, when we try infer $w$ only from large scale modes, $\ell\lesssim250$, the plateau is reached at least an order of magnitude earlier in the number of realizations. In other words, the number of independent power spectra gets lower and lower as we increase the spatial scales of interest. This is due to the fact that, because of the finite box size, the number of independent lens plane shifts (as described in \S~\ref{shearsim}) decreases as the mode size approaches the size of the box.       
 
 Figure \ref{wvar_ns} shows how the ``true'' $w$ constraint (in the
 limit $N_r\rightarrow \infty$; or equivalently the $w$ constraint with
@@ -752,12 +740,11 @@ $N$--body simulations.  Our main results can be summarized as follows:
   larger than the $O(1/N_r)$ computed by \citep{DodelsonSchneider13}
   when the number of realizations $N_r$ is only a factor of few larger
   than the feature vector size $N_b$.
-\item We can recycle a single $N$--body simulation to produce an
-  ensemble of $O(10^4)$ independent maps. The mean feature measured
-  from a shear ensemble, though, could be inaccurate if only one
-  $N$--body simulation is used.
+\item We can recycle a single 240Mpc$/h$ $N$--body simulation to produce an
+  ensemble of $O(10^4)$ shear maps whose power spectra are statistically independent in the range $\ell\in[100,6000]$. The mean feature measured
+  from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.
 \item As few as one or two independent $N$--body simulations are
-  sufficient to forecast $w$ errorbars to 1\% accuracy, provided that
+  sufficient to forecast $w$ error bars to 1\% accuracy, provided that
   a sufficiently large number $N_r$ of realizations are used to
   measure feature covariances.  In particular, provided that biases
   in the inverse covariance are corrected, percent--level forecasts
@@ -775,11 +762,11 @@ to a larger set of cosmological parameters, and to more general
 feature spaces, such as the ones that characterize non--Gaussian
 statistics (e.g. including higher moments of the $\kappa$ field,
 Minkowski Functionals, and higher-order $\kappa$ correlators). While
-our results are highly encouraging, and suggest that a single N-body
-simulation can be recycled repeatedly, to produce as many as $10^5$
+our results are highly encouraging, and suggest that a single $N$--body
+simulation can be recycled repeatedly, to produce as many as $10^4$
 independent shear power spectra or peak count histograms. In order to
 scale our results to large future surveys, such as LSST, it will be
-necessary to determine if our findinds hold when challenged by larger
+necessary to determine if our findings hold when challenged by larger
 and higher-resolution $N$--body simulations \citep{Qcontinuum}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% ACKNOWLEDGMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

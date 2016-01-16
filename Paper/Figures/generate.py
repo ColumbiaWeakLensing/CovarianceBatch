@@ -61,6 +61,7 @@ labels = {
 "power_logb_large" : r"$\ell\in[100,800],N_b=8(\mathrm{log})$",
 "power_logb_small" : r"$\ell\in[1000,6000],N_b=7(\mathrm{log})$",
 "power_logb_all" : r"$\ell\in[100,6000],N_b=15(\mathrm{log})$",
+"power_logb_lowest_ell" : r"$\ell\in[100,250],N_b=4(\mathrm{log})$",
 "power_large" : r"$\ell\in[100,2000],N_b=15(\mathrm{lin})$",
 "power_small" : r"$\ell\in[2500,4500],N_b=15(\mathrm{lin})$",
 "power_large+small" : r"$\ell\in[100,4500],N_b=30(\mathrm{lin})$",
@@ -71,6 +72,7 @@ labels = {
 "peaks_low+intermediate" : r"$\kappa_0\in[-0.06,0.27],N_b=30$",
 "peaks_intermediate+high" : r"$\kappa_0\in[0.1,0.45],N_b=30$",
 "peaks_all" : r"$\kappa_0\in[-0.06,0.45],N_b=45$",
+"peaks_highest_kappa" : r"$\kappa_0\in[0.44,0.48],N_b=4$",
 } 
 
 #Plot order
@@ -182,7 +184,7 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parameter="w",fontsize=22):
+def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_logb_lowest_ell","peaks_highest_kappa"],colors=["black","red","blue"],nrmax=100000,parameter="w",fontsize=22):
 
 	#Plot panel
 	fig,ax = plt.subplots()
@@ -193,31 +195,23 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 
 	#Open the database and look for different nsim
 	with Database("data/variance_scaling_largeNr.sqlite") as db:
-		v = db.query("SELECT nsim,nreal,bins,{0} FROM power_logb_all".format(parameter))
 
-	#Number of bins
-	nb = v["bins"].iloc[0]
+		for n,feature in enumerate(features):
+			v = db.query("SELECT nsim,nreal,bins,{0} FROM {1}".format(parameter,feature))
 
-	#Fit with the Dodelson scaling in the range Nr=500-10000
-	vfit = algorithms.fit_nbins(v,parameter=parameter,kind="linear",vfilter=lambda db:db.query("nreal>=500 and nreal<=10000"))
-	v = Ensemble.merge(v,vfit,on="nsim")
-	v[parameter+"_subtracted"] = v.eval("{0}-s0".format(parameter))
-	nsim_group = v.groupby("nsim")
+			#Number of bins
+			nb = v["bins"].iloc[0]
 
-	for ns in [1]:
+			#Group by nsim
+			nsim_group = v.groupby("nsim")
 
-		vgroup = nsim_group.get_group(ns)
+			for ns in [1]:
+				vgroup = nsim_group.get_group(ns)
 
-		#Plot the intercept obtained with the linear fit
-		vgroup.plot(x="nreal",y=parameter+"_subtracted",linestyle="-",linewidth=1.5,color="black",ax=ax,label=r"$\sigma^2_{\infty}\rightarrow{\rm Fit}$ $500\leq N_r\leq 10000$")
-		ax.plot(vgroup["nreal"],vgroup["s0"]*(nb-3)/vgroup["nreal"],linestyle="--",color="black")
-
-		#Estimate the intercept using the variance at a high number of realizations
-		colors = ["red","green"]
-		for n,nr in enumerate([50000,100000]):
-			s0 = vgroup.query("nreal=={0}".format(nr))[parameter].iloc[0]
-			ax.plot(vgroup["nreal"],vgroup[parameter]-s0,linestyle="-",linewidth=1.5,color=colors[n],label=r"$\sigma^2_{\infty}"+r"=\sigma^2(N_r={0})$".format(nr))
-			ax.plot(vgroup["nreal"].values,s0*(nb-3)/vgroup["nreal"].values,linestyle="--",color=colors[n],label=None)
+				#Estimate the intercept using the variance at a high number of realizations
+				s0 = vgroup.query("nreal=={0}".format(nrmax))[parameter].iloc[0]
+				ax.plot(vgroup["nreal"],vgroup[parameter]-s0,linestyle="-",linewidth=1.5,color=colors[n],label=labels[feature])
+				ax.plot(vgroup["nreal"].values,s0*(nb-3)/vgroup["nreal"].values,linestyle="--",color=colors[n],label=None)
 
 
 	####################################################################################################################################
@@ -225,6 +219,10 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 	#Axes scale
 	ax.set_xscale("log")
 	ax.set_yscale("log")
+
+	#Axes limits
+	ax.set_xlim(100,110000)
+	ax.set_ylim(1.0e-7,4.0e2)
 
 	#Labels
 	ax.legend()
