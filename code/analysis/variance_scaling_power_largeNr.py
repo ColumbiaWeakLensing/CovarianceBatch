@@ -31,7 +31,7 @@ def main():
 
 	#Large and small scales
 	scales = {
-	"all" : list(emulator[emulator.feature_names[0]].columns),
+	"lowest_ell" : filter(lambda s:int(s.strip("l")) in range(4),emulator[emulator.feature_names[0]].columns)
 	}
 
 	#Fiducial cosmology

@@ -31,7 +31,7 @@ def main():
 
 	#Large and small scales
 	scales = {
-	"high" : filter(lambda s:int(s) in range(30,45),emulator[emulator.feature_names[0]].columns),
+	"highest_kappa" : filter(lambda s:int(s) in [45,46,47,48],emulator[emulator.feature_names[0]].columns),
 	}
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
