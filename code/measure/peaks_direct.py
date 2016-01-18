@@ -269,12 +269,16 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 			#Compute the convergence
 			convMap = ConvergenceMap(data=1.0-0.5*(jacobian[0]+jacobian[3]),angle=map_angle)
 
+			#Smooth if necessary
+			if settings.smoothing_scale>0.0:
+				convMap = convMap.smooth(settings.smoothing_scale*u.arcmin,kind="gaussianFFT")
+
 			#Count the peaks in the map
 			kappa,num_peaks = convMap.peakCount(settings.kappa_edges)
 
 			#Save the multipoles maybe
 			if r==0:
-				savename = os.path.join(map_batch.home_subdir,"kappa_peaks.npy")
+				savename = os.path.join(map_batch.home_subdir,"kappa_peaks_s{0}_nb{1}.npy".format(int(settings.smoothing_scale),len(kappa)))
 				logdriver.info("Saving peak heights to {0}".format(savename))
 				np.save(savename,kappa)
 
@@ -296,9 +300,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	#Save the local processor Ensemble to disk
 	if pool is not None:
-		savename = os.path.join(map_batch.home_subdir,"{0}_rank{1:03d}.npy".format(settings.ensemble_root,pool.rank))
+		savename = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}_rank{3:03d}.npy".format(settings.ensemble_root,int(settings.smoothing_scale),peaks_ensemble.shape[1],pool.rank))
 	else:
-		savename = os.path.join(map_batch.home_subdir,"{0}.npy".format(settings.ensemble_root))
+		savename = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}.npy".format(settings.ensemble_root,int(settings.smoothing_scale),peaks_ensemble.shape[1]))
 
 	logdriver.info("Saving peak count Ensemble to {0}".format(savename))
 	np.save(savename,peaks_ensemble)
@@ -338,6 +342,7 @@ class PeaksSettings(MapSettings):
 
 	def _read_peak_heights(self,options,section):
 		
+		self.smoothing_scale = options.getfloat(section,"smoothing_scale")
 		self.kappa_min = options.getfloat(section,"kappa_min")
 		self.kappa_max = options.getfloat(section,"kappa_max")
 		self.num_bins = options.getint(section,"num_bins")
