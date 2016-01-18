@@ -35,6 +35,28 @@ def convergence_power(fname,map_set,l_edges,smoothing_scale=0.0*u.arcmin):
 	except IOError:
 		return None
 
+##############################################################################
+##############Peak counts#####################################################
+##############################################################################
+
+def convergence_peaks(fname,map_set,kappa_edges,smoothing_scale=0.0*u.arcmin):
+	
+	try:
+		conv = ConvergenceMap.load(map_set.path(fname))
+
+		if "0001r" in fname:
+			np.save(os.path.join(map_set.home_subdir,"th_peaks_nb{0}.npy".format(len(kappa_edges)-1)),0.5*(kappa_edges[1:]+kappa_edges[:-1]))
+	
+		if smoothing_scale>0:
+			conv = conv.smooth(smoothing_scale,kind="gaussianFFT")
+
+		k,peaks = conv.peakCount(kappa_edges)
+		return peaks
+
+	except IOError:
+		return None
+
+
 #################################################################################
 ##############Main execution#####################################################
 #################################################################################
@@ -61,8 +83,8 @@ if __name__=="__main__":
 	redshift = 2.0
 
 	#What to measure
-	#l_edges = np.logspace(2.0,np.log10(6.0e3),16)
 	l_edges = np.arange(100,6000,150)
+	kappa_edges = np.linspace(-.08,.8,101)
 
 	#How many realizations
 	num_realizations = 1024
@@ -91,13 +113,14 @@ if __name__=="__main__":
 
 		#Measure the descriptors spreading calculations on a MPIPool
 		for c in range(chunks):
-			ensemble_all.append(Ensemble.compute([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(realizations_per_chunk*c,realizations_per_chunk*(c+1)) ],callback_loader=convergence_power,pool=pool,map_set=map_set,l_edges=l_edges))
+			#ensemble_all.append(Ensemble.compute([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(realizations_per_chunk*c,realizations_per_chunk*(c+1)) ],callback_loader=convergence_power,pool=pool,map_set=map_set,l_edges=l_edges))
+			ensemble_all.append(Ensemble.compute([ "WLconv_z{0:.2f}_{1:04d}r.fits".format(redshift,r+1) for r in range(realizations_per_chunk*c,realizations_per_chunk*(c+1)) ],callback_loader=convergence_peaks,pool=pool,map_set=map_set,kappa_edges=kappa_edges))
 
 		#Merge all the chunks
 		ensemble_all = Ensemble.concat(ensemble_all,axis=0,ignore_index=True)
 
 		#Save to disk
-		savename = os.path.join(map_set.home_subdir,"power_spectrum_s{0}_nb{1}.npy".format(0,ensemble_all.shape[1]))
+		savename = os.path.join(map_set.home_subdir,"peaks_s{0}_nb{1}.npy".format(0,ensemble_all.shape[1]))
 		logging.info("Writing {0}".format(savename))
 		np.save(savename,ensemble_all.values)
 
