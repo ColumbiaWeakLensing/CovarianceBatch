@@ -6,7 +6,7 @@ import logging
 
 from lenstools.image.convergence import ConvergenceMap
 from lenstools.statistics.ensemble import Ensemble
-from lenstools.pipeline import SimulationBatch
+from lenstools.pipeline.simulation import SimulationBatch
 
 import numpy as np
 import astropy.units as u
