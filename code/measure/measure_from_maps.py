@@ -39,7 +39,7 @@ def convergence_power(fname,map_set,l_edges,smoothing_scale=0.0*u.arcmin):
 ##############Peak counts#####################################################
 ##############################################################################
 
-def convergence_peaks(fname,map_set,kappa_edges,smoothing_scale=0.0*u.arcmin):
+def convergence_peaks(fname,map_set,kappa_edges,smoothing_scale=1.0*u.arcmin):
 	
 	try:
 		conv = ConvergenceMap.load(map_set.path(fname))
@@ -84,7 +84,7 @@ if __name__=="__main__":
 
 	#What to measure
 	l_edges = np.arange(100,6000,150)
-	kappa_edges = np.linspace(-.08,.8,101)
+	kappa_edges = np.linspace(-.07,.6,101)
 
 	#How many realizations
 	num_realizations = 1024
@@ -120,7 +120,7 @@ if __name__=="__main__":
 		ensemble_all = Ensemble.concat(ensemble_all,axis=0,ignore_index=True)
 
 		#Save to disk
-		savename = os.path.join(map_set.home_subdir,"peaks_s{0}_nb{1}.npy".format(0,ensemble_all.shape[1]))
+		savename = os.path.join(map_set.home_subdir,"peaks_s{0}_nb{1}.npy".format(1,ensemble_all.shape[1]))
 		logging.info("Writing {0}".format(savename))
 		np.save(savename,ensemble_all.values)
 
