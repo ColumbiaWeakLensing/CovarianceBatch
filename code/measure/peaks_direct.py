@@ -5,6 +5,7 @@ import logging
 import time
 import cPickle
 import resource
+import gc
 
 from distutils import config
 
@@ -35,6 +36,9 @@ def peaksExecution():
 ################################################
 
 def singleRedshift(pool,batch,settings,id,**kwargs):
+
+	#Enable garbage collection
+	gc.enable()
 
 	#Safety check
 	assert isinstance(pool,MPIWhirlPool) or (pool is None)
@@ -182,6 +186,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	#We need one of these for cycles for each map random realization
 	for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
+
+		#Collect garbage
+		gc.collect()
 
 		#Instantiate the RayTracer
 		tracer = RayTracer()
