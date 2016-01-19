@@ -84,7 +84,7 @@ if __name__=="__main__":
 
 	#What to measure
 	l_edges = np.arange(100,6000,150)
-	kappa_edges = np.linspace(-.07,.6,101)
+	kappa_edges = np.linspace(-.05,.2,101)
 
 	#How many realizations
 	num_realizations = 1024
