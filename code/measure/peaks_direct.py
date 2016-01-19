@@ -300,7 +300,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 		now = time.time()
 		logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
 		logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
-		logstderr.info("Progress: {0:.2f}%".format((rloc+1.)/realizations_per_task))
+
+		if (pool is None) or (pool.is_master()):
+			logstderr.info("Progress: {0:.2f}%".format((rloc+1.)/realizations_per_task))
 	
 	#Safety sync barrier
 	if pool is not None:
