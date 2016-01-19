@@ -10,7 +10,7 @@ import gc
 from distutils import config
 
 from lenstools.utils import MPIWhirlPool
-from lenstools.simulations.logs import logdriver
+from lenstools.simulations.logs import logdriver,logstderr
 
 from lenstools import ConvergenceMap
 
@@ -300,6 +300,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 		now = time.time()
 		logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
 		logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
+		logstderr.info("Progress: {0:.2f}%".format((rloc+1.)/realizations_per_task))
 	
 	#Safety sync barrier
 	if pool is not None:
