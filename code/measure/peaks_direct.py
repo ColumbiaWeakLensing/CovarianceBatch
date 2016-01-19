@@ -302,7 +302,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 		logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
 
 		if (pool is None) or (pool.is_master()):
-			logstderr.info("Progress: {0:.2f}%".format((rloc+1.)/realizations_per_task))
+			logstderr.info("Progress: {0:.2f}%".format(100*(rloc+1.)/realizations_per_task))
 	
 	#Safety sync barrier
 	if pool is not None:
