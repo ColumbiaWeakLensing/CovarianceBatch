@@ -104,6 +104,12 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 	source_redshift = settings.source_redshift
 	resolution = settings.map_resolution
 
+	#Compute, once and for all, the smoothing kernel in Fourier space
+	smoothing_scale_pixel = (settings.smoothing_scale*u.arcmin * resolution / map_angle).decompose().value
+	lx = np.fft.fftfreq(resolution)
+	ly = np.fft.rfftfreq(resolution) 
+	kernel = np.exp(-0.5*(lx[:,None]**2 + ly[None,:]**2)*(2*np.pi*smoothing_scale_pixel)**2)
+
 	if len(parts)==2:
 
 		#########################
@@ -287,7 +293,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 				#Smooth if necessary
 				if settings.smoothing_scale>0.0:
-					convMap = convMap.smooth(settings.smoothing_scale*u.arcmin,kind="gaussianFFT")
+					convMap.smooth(kernel,kind="kernelFFT",inplace=True)
 
 				#Count the peaks in the map
 				kappa,num_peaks = convMap.peakCount(settings.kappa_edges)
