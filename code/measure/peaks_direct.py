@@ -208,6 +208,10 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 	#Open the connection to the database
 	with Database(dbname) as db:
 
+		#Log initial memory load
+		if (pool is None) or (pool.is_master()):
+			logstderr.info("Initial memory usage (per task): {0:.3f}GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/to_gbyte))
+
 		#We need one of these for cycles for each map random realization
 		for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
 
