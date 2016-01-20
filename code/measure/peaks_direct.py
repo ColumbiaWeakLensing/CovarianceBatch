@@ -14,11 +14,14 @@ from lenstools.simulations.logs import logdriver,logstderr
 
 from lenstools import ConvergenceMap
 
+from lenstools.statistics.database import Database
+
 from lenstools.simulations.raytracing import RayTracer
 from lenstools.pipeline.simulation import SimulationBatch
 from lenstools.pipeline.settings import MapSettings
 
 import numpy as np
+import pandas as pd
 import astropy.units as u
 
 
@@ -181,141 +184,143 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 	begin = time.time()
 
-	#Allocate space for the peak count Ensemble
-	peaks_ensemble = np.zeros((realizations_per_task,settings.kappa_edges.shape[0]-1))
+	#Construct the name of the database
+	if pool is not None:
+		dbname = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}_rank{3:03d}.sqlite".format(settings.ensemble_root,int(settings.smoothing_scale),len(settings.kappa_edges)-1,pool.rank))
+	else:
+		dbname = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}.sqlite".format(settings.ensemble_root,int(settings.smoothing_scale),len(settings.kappa_edges)-1))
 
-	#We need one of these for cycles for each map random realization
-	for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
+	#Open the connection to the database
+	with Database(dbname) as db:
 
-		#Collect garbage
-		gc.collect()
+		#We need one of these for cycles for each map random realization
+		for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
 
-		#Instantiate the RayTracer
-		tracer = RayTracer()
+			#Collect garbage
+			gc.collect()
 
-		start = time.time()
-		last_timestamp = start
+			#Instantiate the RayTracer
+			tracer = RayTracer()
 
-		#############################################################
-		###############Add the lenses to the system##################
-		#############################################################
+			start = time.time()
+			last_timestamp = start
 
-		#Open the info file to read the lens specifications (assume the info file is the same for all nbody realizations)
-		infofile = open(info_filename,"r")
+			#############################################################
+			###############Add the lenses to the system##################
+			#############################################################
 
-		#Read the info file line by line, and decide if we should add the particular lens corresponding to that line or not
-		for s in range(num_snapshots):
+			#Open the info file to read the lens specifications (assume the info file is the same for all nbody realizations)
+			infofile = open(info_filename,"r")
 
-			#Read the line
-			line = infofile.readline().strip("\n")
+			#Read the info file line by line, and decide if we should add the particular lens corresponding to that line or not
+			for s in range(num_snapshots):
 
-			#Stop if there is nothing more to read
-			if line=="":
-				break
+				#Read the line
+				line = infofile.readline().strip("\n")
 
-			#Split the line in snapshot,distance,redshift
-			line = line.split(",")
+				#Stop if there is nothing more to read
+				if line=="":
+					break
 
-			snapshot_number = int(line[0].split("=")[1])
+				#Split the line in snapshot,distance,redshift
+				line = line.split(",")
+
+				snapshot_number = int(line[0].split("=")[1])
 		
-			distance,unit = line[1].split("=")[1].split(" ")
-			if unit=="Mpc/h":
-				distance = float(distance)*model.Mpc_over_h
+				distance,unit = line[1].split("=")[1].split(" ")
+				if unit=="Mpc/h":
+					distance = float(distance)*model.Mpc_over_h
+				else:
+					distance = float(distance)*getattr(u,"unit")
+
+				lens_redshift = float(line[2].split("=")[1])
+
+				#Select the right collection
+				for n,z in enumerate(cut_redshifts):
+					if lens_redshift>=z:
+						c = n
+
+				#Randomization of planes
+				nbody = np.random.randint(low=0,high=len(nbody_realizations[c]))
+				cut = np.random.randint(low=0,high=len(cut_points[c]))
+				normal = np.random.randint(low=0,high=len(normals[c]))
+
+				#Log to user
+				logdriver.debug("Realization,snapshot=({0},{1}) --> NbodyIC,cut_point,normal=({2},{3},{4})".format(r,s,nbody_realizations[c][nbody],cut_points[c][cut],normals[c][normal]))
+
+				#Add the lens to the system
+				logdriver.info("Adding lens at redshift {0}".format(lens_redshift))
+				plane_name = os.path.join(plane_path.format(collection[c].storage_subdir,nbody_realizations[c][nbody],plane_set[c]),"snap{0}_potentialPlane{1}_normal{2}.fits".format(snapshot_number,cut_points[c][cut],normals[c][normal]))
+				tracer.addLens((plane_name,distance,lens_redshift))
+
+			#Close the infofile
+			infofile.close()
+
+			now = time.time()
+			logdriver.info("Plane specification reading completed in {0:.3f}s".format(now-start))
+			last_timestamp = now
+
+			#Rearrange the lenses according to redshift and roll them randomly along the axes
+			tracer.reorderLenses()
+
+			now = time.time()
+			logdriver.info("Reordering completed in {0:.3f}s".format(now-last_timestamp))
+			last_timestamp = now
+
+			#Start a bucket of light rays from a regular grid of initial positions
+			b = np.linspace(0.0,map_angle.value,resolution)
+			xx,yy = np.meshgrid(b,b)
+			pos = np.array([xx,yy]) * map_angle.unit
+
+			#Trace the ray deflections
+			jacobian = tracer.shoot(pos,z=source_redshift,kind="jacobians")
+
+			now = time.time()
+			logdriver.info("Jacobian ray tracing for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
+			last_timestamp = now
+
+			#Compute shear,convergence and omega from the jacobians
+			if settings.convergence:
+			
+				#Compute the convergence
+				convMap = ConvergenceMap(data=1.0-0.5*(jacobian[0]+jacobian[3]),angle=map_angle)
+
+				#Smooth if necessary
+				if settings.smoothing_scale>0.0:
+					convMap = convMap.smooth(settings.smoothing_scale*u.arcmin,kind="gaussianFFT")
+
+				#Count the peaks in the map
+				kappa,num_peaks = convMap.peakCount(settings.kappa_edges)
+
+				#Save the peak heights
+				if r==0:
+					savename = os.path.join(map_batch.home_subdir,"kappa_peaks_s{0}_nb{1}.npy".format(int(settings.smoothing_scale),len(kappa)))
+					logdriver.info("Saving peak heights to {0}".format(savename))
+					np.save(savename,kappa)
+
+				#Insert the peak heights as a row in the database
+				if pool is not None:
+					pool.comm.Barrier()
+				db.insert(pd.DataFrame(num_peaks).T,"peak_counts")
+
 			else:
-				distance = float(distance)*getattr(u,"unit")
-
-			lens_redshift = float(line[2].split("=")[1])
-
-			#Select the right collection
-			for n,z in enumerate(cut_redshifts):
-				if lens_redshift>=z:
-					c = n
-
-			#Randomization of planes
-			nbody = np.random.randint(low=0,high=len(nbody_realizations[c]))
-			cut = np.random.randint(low=0,high=len(cut_points[c]))
-			normal = np.random.randint(low=0,high=len(normals[c]))
-
-			#Log to user
-			logdriver.debug("Realization,snapshot=({0},{1}) --> NbodyIC,cut_point,normal=({2},{3},{4})".format(r,s,nbody_realizations[c][nbody],cut_points[c][cut],normals[c][normal]))
-
-			#Add the lens to the system
-			logdriver.info("Adding lens at redshift {0}".format(lens_redshift))
-			plane_name = os.path.join(plane_path.format(collection[c].storage_subdir,nbody_realizations[c][nbody],plane_set[c]),"snap{0}_potentialPlane{1}_normal{2}.fits".format(snapshot_number,cut_points[c][cut],normals[c][normal]))
-			tracer.addLens((plane_name,distance,lens_redshift))
-
-		#Close the infofile
-		infofile.close()
-
-		now = time.time()
-		logdriver.info("Plane specification reading completed in {0:.3f}s".format(now-start))
-		last_timestamp = now
-
-		#Rearrange the lenses according to redshift and roll them randomly along the axes
-		tracer.reorderLenses()
-
-		now = time.time()
-		logdriver.info("Reordering completed in {0:.3f}s".format(now-last_timestamp))
-		last_timestamp = now
-
-		#Start a bucket of light rays from a regular grid of initial positions
-		b = np.linspace(0.0,map_angle.value,resolution)
-		xx,yy = np.meshgrid(b,b)
-		pos = np.array([xx,yy]) * map_angle.unit
-
-		#Trace the ray deflections
-		jacobian = tracer.shoot(pos,z=source_redshift,kind="jacobians")
-
-		now = time.time()
-		logdriver.info("Jacobian ray tracing for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
-		last_timestamp = now
-
-		#Compute shear,convergence and omega from the jacobians
-		if settings.convergence:
-			
-			#Compute the convergence
-			convMap = ConvergenceMap(data=1.0-0.5*(jacobian[0]+jacobian[3]),angle=map_angle)
-
-			#Smooth if necessary
-			if settings.smoothing_scale>0.0:
-				convMap = convMap.smooth(settings.smoothing_scale*u.arcmin,kind="gaussianFFT")
-
-			#Count the peaks in the map
-			kappa,num_peaks = convMap.peakCount(settings.kappa_edges)
-
-			#Save the multipoles maybe
-			if r==0:
-				savename = os.path.join(map_batch.home_subdir,"kappa_peaks_s{0}_nb{1}.npy".format(int(settings.smoothing_scale),len(kappa)))
-				logdriver.info("Saving peak heights to {0}".format(savename))
-				np.save(savename,kappa)
-
-			#Add the measured peak counts to the Ensemble
-			peaks_ensemble[rloc] = num_peaks
-
-		else:
-			logdriver.error("You need to enable the 'convergence' option!")
-			sys.exit(1)
+				logdriver.error("You need to enable the 'convergence' option!")
+				sys.exit(1)
 			
 
-		now = time.time()
-		logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
-		logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
+			now = time.time()
+			logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
+			logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
 
-		if (pool is None) or (pool.is_master()):
-			logstderr.info("Progress: {0:.2f}%".format(100*(rloc+1.)/realizations_per_task))
+			if (pool is None) or (pool.is_master()):
+				logstderr.info("Progress: {0:.2f}%".format(100*(rloc+1.)/realizations_per_task))
 	
+	
+	#######################################################################################################################################
+
 	#Safety sync barrier
 	if pool is not None:
 		pool.comm.Barrier()
-
-	#Save the local processor Ensemble to disk
-	if pool is not None:
-		savename = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}_rank{3:03d}.npy".format(settings.ensemble_root,int(settings.smoothing_scale),peaks_ensemble.shape[1],pool.rank))
-	else:
-		savename = os.path.join(map_batch.home_subdir,"{0}_s{1}_nb{2}.npy".format(settings.ensemble_root,int(settings.smoothing_scale),peaks_ensemble.shape[1]))
-
-	logdriver.info("Saving peak count Ensemble to {0}".format(savename))
-	np.save(savename,peaks_ensemble)
 
 	if (pool is None) or (pool.is_master()):	
 		now = time.time()
