@@ -1,11 +1,10 @@
 from __future__ import division,with_statement
 
-import sys,os
+import sys,os,platform
 import logging
 import time
 import cPickle
-import resource
-import gc
+import gc,resource
 
 from distutils import config
 
@@ -23,6 +22,16 @@ from lenstools.pipeline.settings import MapSettings
 import numpy as np
 import pandas as pd
 import astropy.units as u
+
+
+#Multiplicative factor to convert resource output into GB
+ostype = platform.system()
+if ostype in ["Darwin","darwin"]:
+	to_gbyte = 1024.**3
+elif ostype in ["Linux","linux"]:
+	to_gbyte = 1024.**2
+else:
+	to_gbyte = np.nan
 
 
 #Orchestra director of the execution
@@ -316,10 +325,9 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 			now = time.time()
 			logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
-			logdriver.info("Memory usage: {0:.3f} GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/(1024**3)))
 
 			if (pool is None) or (pool.is_master()):
-				logstderr.info("Progress: {0:.2f}%".format(100*(rloc+1.)/realizations_per_task))
+				logstderr.info("Progress: {0:.2f}%, peak memory usage (per task): {1:.3f}GB".format(100*(rloc+1.)/realizations_per_task,resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/to_gbyte))
 	
 	
 	#######################################################################################################################################
