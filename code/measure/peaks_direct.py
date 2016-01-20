@@ -196,11 +196,11 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 		#We need one of these for cycles for each map random realization
 		for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
 
-			#Collect garbage
-			gc.collect()
-
 			#Instantiate the RayTracer
 			tracer = RayTracer()
+
+			#Collect garbage
+			gc.collect()
 
 			start = time.time()
 			last_timestamp = start
