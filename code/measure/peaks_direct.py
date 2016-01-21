@@ -320,7 +320,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 			logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
 
 			if (pool is None) or (pool.is_master()):
-				logstderr.info("Progress: {0:.2f}%, peak memory usage (per task): {1:.3f}GB".format(100*(rloc+1.)/realizations_per_task,peakMemory()))
+				logstderr.info("Progress: {0:.2f}%, peak memory usage (per task): {1:.3f}".format(100*(rloc+1.)/realizations_per_task,peakMemory()))
 	
 	
 	#######################################################################################################################################
