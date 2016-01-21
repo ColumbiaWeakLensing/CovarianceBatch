@@ -1,15 +1,15 @@
 from __future__ import division,with_statement
 
-import sys,os,platform
+import sys,os
 import logging
 import time
 import cPickle
-import gc,resource
+import gc
 
 from distutils import config
 
 from lenstools.utils import MPIWhirlPool
-from lenstools.simulations.logs import logdriver,logstderr
+from lenstools.simulations.logs import logdriver,logstderr,peakMemory
 
 from lenstools import ConvergenceMap
 
@@ -22,17 +22,6 @@ from lenstools.pipeline.settings import MapSettings
 import numpy as np
 import pandas as pd
 import astropy.units as u
-
-
-#Multiplicative factor to convert resource output into GB
-ostype = platform.system()
-if ostype in ["Darwin","darwin"]:
-	to_gbyte = 1024.**3
-elif ostype in ["Linux","linux"]:
-	to_gbyte = 1024.**2
-else:
-	to_gbyte = np.nan
-
 
 #Orchestra director of the execution
 def peaksExecution():
@@ -210,7 +199,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 
 		#Log initial memory load
 		if (pool is None) or (pool.is_master()):
-			logstderr.info("Initial memory usage (per task): {0:.3f}GB".format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/to_gbyte))
+			logstderr.info("Initial memory usage (per task): {0:.3f}".format(peakMemory()))
 
 		#We need one of these for cycles for each map random realization
 		for rloc,r in enumerate(range(first_map_realization,last_map_realization)):
@@ -331,7 +320,7 @@ def singleRedshift(pool,batch,settings,id,**kwargs):
 			logdriver.info("Weak lensing calculations for realization {0} completed in {1:.3f}s".format(r+1,now-last_timestamp))
 
 			if (pool is None) or (pool.is_master()):
-				logstderr.info("Progress: {0:.2f}%, peak memory usage (per task): {1:.3f}GB".format(100*(rloc+1.)/realizations_per_task,resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/to_gbyte))
+				logstderr.info("Progress: {0:.2f}%, peak memory usage (per task): {1:.3f}GB".format(100*(rloc+1.)/realizations_per_task,peakMemory()))
 	
 	
 	#######################################################################################################################################
