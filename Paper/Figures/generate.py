@@ -73,6 +73,7 @@ labels = {
 "peaks_intermediate+high" : r"$\kappa_0\in[0.1,0.45],N_b=30$",
 "peaks_all" : r"$\kappa_0\in[-0.06,0.45],N_b=45$",
 "peaks_highest_kappa" : r"$\kappa_0\in[0.44,0.48],N_b=4$",
+"peaks_highest_kappa_s1" : r"$\kappa_0(\theta_G=1^\prime)>0.15,N_b=20$",
 } 
 
 #Plot order
@@ -184,7 +185,7 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_logb_lowest_ell","peaks_highest_kappa"],colors=["black","red","blue"],nrmax=100000,parameter="w",fontsize=22):
+def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_logb_lowest_ell","peaks_highest_kappa_s1"],colors=["black","red","blue"],nrmax=100000,parameter="w",fontsize=22):
 
 	#Plot panel
 	fig,ax = plt.subplots()
