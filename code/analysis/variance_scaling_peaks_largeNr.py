@@ -16,7 +16,7 @@ import algorithms
 
 #Number of simulations to test
 nsim = [1]
-nreal = range(100,1000,100) + range(1000,111000,1000)
+nreal = range(500,1000,100) + range(1000,111000,1000)
 resample = 100
 
 def main():
@@ -26,12 +26,12 @@ def main():
 	###########################################
 
 	#Load the emulator
-	emulator = FisherAnalysis.read("../../data/emulators/fisher_peaks.pkl")
+	emulator = FisherAnalysis.read("../../data/emulators/fisher_peaks_s1_nb100.pkl")
 	feature_columns = emulator[emulator.feature_names].columns
 
 	#Large and small scales
 	scales = {
-	"highest_kappa" : filter(lambda s:int(s) in [45,46,47,48],emulator[emulator.feature_names[0]].columns),
+	"highest_kappa_s1" : filter(lambda s:int(s)>=80,emulator[emulator.feature_names[0]].columns),
 	}
 
 	#Load in the feature Ensemble, and bootstrap the covariance using a different number of realizations
@@ -47,7 +47,7 @@ def main():
 			fisher_scale = emulator.features({emulator.feature_names[0]:scales[s]})
 
 			#This is the reference covariance matrix
-			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/GrandEnsemble/peaks_s0.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
+			true_covariance_ensemble = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/GrandEnsemble/peaks_s1_nb100.npy"),columns=emulator[emulator.feature_names[0]].columns)[scales[s]]
 			true_covariance_ensemble.add_name(emulator.feature_names[0])
 			true_covariance = true_covariance_ensemble.cov()
 			diagonal_covariance = Ensemble(np.diag(true_covariance.values.diagonal()),index=true_covariance.index,columns=true_covariance.columns)
@@ -55,7 +55,7 @@ def main():
 			for n in nsim:
 		
 				#Load the power spectrum Ensemble from the relevant map set
-				ensemble_nsim = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/MillionMapsPower/peaks_s0.npy"))[scales[s]]
+				ensemble_nsim = Ensemble(np.load("../../Om0.260_Ol0.740_w-1.000_ns0.960_si0.800/512b240/MillionMapsPower/peaks_s1_nb100.npy"))[scales[s]]
 				ensemble_nsim.add_name(emulator.feature_names[0])
 
 				#Bootstrap ensemble_sim and compute the parameter variance for each resample
