@@ -71,8 +71,8 @@ power spectra and peak counts, we show that cubic and quartic
 covariance fluctuations lead to additional $O(1/N_r^2)$ error
 degradation that is not negligible when $N_r$ is only a factor of few
 larger than $N_b$. We study the large $N_r$ limit, and find that a
-single, 240Mpc$/h$ sized, $N$--body simulation ($N_s=1$) can be repeatedly recycled to
-produce as many as $N_r={\rm few}\times10^4$ shear maps whose power spectra and high significance peak counts can be treated as statistically independent. As a result, a small number of simulations ($N_s=1$ or $2$) is sufficient to forecast parameter confidence intervals at percent accuracy. 
+single, 240Mpc$/h$ sized $512^3$-particle $N$--body simulation ($N_s=1$) can be repeatedly recycled to
+produce as many as $N_r={\rm few}\times10^4$ shear maps whose power spectra and high-significance peak counts can be treated as statistically independent. As a result, a small number of simulations ($N_s=1$ or $2$) is sufficient to forecast parameter confidence intervals at percent accuracy. 
 
 \end{abstract}
 
@@ -94,11 +94,11 @@ considered by a range of past (CFHTLens \citep{cfht1,cfht2}, COSMOS
 \citep{LSST}, Euclid \citep{Euclid}, WFIRST \citep{WFIRST})
 experiments. In an era where cosmology is data driven, accurate
 numerical simulations of shear fields are becoming important for
-several reasons, including the study of baryonic effects
+several reasons, including assessing baryonic effects
 \citep{BaryonXiuyuan,BaryonSemboloni,BaryonsWhite,BaryonsKnox,BaryonsZentner1,BaryonsZentner2},
-the computation of non--Gaussian statistics
+the utility of non--Gaussian statistics
 \citep{PeaksJan,MinkJan,MinkPetri,NG-Marian,NG-Jain1,NG-Jain2,NG-Jain3,NG-Refregier,NG-Dietrich}
-and the assessment of various systematics
+and various systematic effects
 \citep{MinkShirasaki,Sys-Bard,Sys-Chang,Sys-Huterer}.
 
 A fundamental issue with predictions from simulations is that the
@@ -109,9 +109,8 @@ shear power spectrum at a multipole $\ell$), measured from a finite
 set of simulations, will fluctuate, and can also suffer a bias.  While
 biases in the estimates of both the mean and the variance have been
 studied extensively, the impact of fluctuations in the variance has
-received comparatively less attention.  These fluctuations have,
-however, been shown to have non-negligible effects on estimates of
-features covariance matrices and hence on parameter constraints. In
+received less attention.  These fluctuations have been shown to have non-negligible effects on estimates of
+features covariances and hence on parameter constraints. In
 particular, in the limit of Gaussian fluctuations, the parameter
 confidence limits are degraged by a factor
 $1+O(1/N_r)$~\citep{DodelsonSchneider13,Taylor12}.
@@ -526,7 +525,7 @@ next section, we present our main findings.
   (eq.~\ref{covest}). The figure shows both the trend measured in the
   simulations (solid lines) and their scaling expected from
   Eq.~(\ref{ourscaling}) with $D=N_b-N_p$ (dashed line). The
-  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated to be the value $\langle\h{\sigma}^2_w\rangle(N_r=10^5)$. Different features are considered: power spectra with logarithmically spaced $\ell\in[100,6000]$ (black), $\ell\in[100,250]$ (red), peak counts in the unsmoothed maps with height $\kappa_0\in[0.44,0.48]$ (green) and peak counts in the smoothed maps (with a Gaussian kernel of size $\theta_G=1^\prime$) with height $\kappa_0>0.15$ (blue). No deviations from the expected $1/N_r$ behavior are observed up to $N_r\approx{\rm few}\times10^4$, except for the large scale power spectrum, in which case the deviations occur much earlier ($N_r\approx 10^3$).}
+  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated to be the value $\langle\h{\sigma}^2_w\rangle(N_r=10^5)$. Different features are considered: power spectra with logarithmically spaced $\ell\in[100,6000]$ (black), $\ell\in[100,250]$ (red), peak counts in the unsmoothed maps with height $\kappa_0\in[0.44,0.48]$ (green) and peak counts in the smoothed maps (with a Gaussian kernel of size $\theta_G=1^\prime$) with height $\kappa_0>0.15$ (blue). No deviations from the expected $1/N_r$ behavior are observed up to $N_r\approx{\rm few}\times10^4$, except for the large-scale power spectrum, in which case the deviations occur much earlier ($N_r\approx 10^3$).}
 \label{wvar_nr}
 \end{figure}
 
@@ -692,16 +691,19 @@ fluctations.
 In Figure \ref{wvar_nr}, we examine how the degradation in the $w$
 constraint depends on the number of simulations used to estimate the
 covariance, in the limit of large $N_r$. We find excellent agreement
-with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm few}\times10^4$ when using the $\kappa$ power spectrum in the multipole range $\ell\in[100,6000]$. The same behavior is observed when considering the high significance peak counts ($>10\sigma$ for unsmoothed maps and $>5\sigma$ for $1^\prime$ smoothed maps). As the figure shows, around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
+with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm few}\times10^4$ when using the $\kappa$ power spectrum in the multipole range $\ell\in[100,6000]$. The same behavior is observed when considering the high-significance peak counts ($>10\sigma$ for unsmoothed maps and $>5\sigma$ for $1^\prime$ smoothed maps). As the figure shows, around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
 becomes noisy and reaches negative values. This is a clear indication that the $1/N_r$ behavior is broken and a plateau in
 $\langle\hat{\sigma}^2_w\rangle$ is reached. The negative values in
 the plot are a consequence of the noise in the estimation of this
 plateau value (or equivalently in the estimated value of
-$\sigma^2_{w,\infty}$). We therefore conclude that a single $N$--body
+$\sigma^2_{w,\infty}$). 
+
+We conclude that a single $N$--body
 simulation is sufficient to construct an ensemble of up to a
 few$\times 10^4$ mutually independent convergence power spectra. For
 $N_r\gg10^4$, the shear realizations can no longer be considered
-independent. We should emphasize that the validity of this statement is conditional to the size of the simulation box (which in our case has been chosen to be 240Mpc$/h$) and the range of multipoles $\ell$ used to constrain the parameters. Figure \ref{wvar_nr} shows indeed that, when we try infer $w$ only from large scale modes, $\ell\lesssim250$, the plateau is reached at least an order of magnitude earlier in the number of realizations. In other words, the number of independent power spectra gets lower and lower as we increase the spatial scales of interest. This is due to the fact that, because of the finite box size, the number of independent lens plane shifts (as described in \S~\ref{shearsim}) decreases as the mode size approaches the size of the box.       
+independent. We emphasize that the precise value of this $N_r$ will depend on the size of the simulation box (which, in our case, is (240Mpc$/h$)$^3$, with $512^3$ particles) and also on the range of multipoles $\ell$ used to constrain the parameters. Figure \ref{wvar_nr} shows that when we infer $w$ only from large--scale modes, $\ell\lesssim250$, the plateau is reached at least an order of magnitude earlier in the number of realizations. In other words, the number of independent power spectra we can generate decreases as we increase the spatial scales of interest. This is due to the fact that, because of the finite box size, the number of independent lens plane shifts (as described in \S~\ref{shearsim}) decreases as the mode size approaches the size of the box.    Similarly, one may expect that the independence in the statistics of high-amplitude peaks, which are predominantly produced by single massive halos, may be compromised by these halos being present repeatedly, in many of the pseudo-independent realizations.  However, Figure \ref{wvar_nr} shows that this is not the case: the peak count statistics are shown at $\kappa$ thresholds corresponding to massive ($\approx 10^{15}~{\rm M_\odot}$) halos, yet there is no evidence that the independence of the maps breaks down until $N_r=$few$\times 10^4$.  Apparently, randomly projected structures, which vary from realization-to-realization, contribute significantly to the statistics of these high peaks.
+
 
 Figure \ref{wvar_ns} shows how the ``true'' $w$ constraint (in the
 limit $N_r\rightarrow \infty$; or equivalently the $w$ constraint with
@@ -740,7 +742,7 @@ $N$--body simulations.  Our main results can be summarized as follows:
   when the number of realizations $N_r$ is only a factor of few larger
   than the feature vector size $N_b$.
 \item We can recycle a single 240Mpc$/h$ $N$--body simulation to produce an
-  ensemble of $O(10^4)$ shear maps whose small scale power spectra and high significance peak counts are statistically independent. The mean feature measured from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.
+  ensemble of $O(10^4)$ shear maps whose small-scale power spectra and high-signficiance peak counts are statistically independent. The mean feature measured from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.
 \item As few as one or two independent $N$--body simulations are
   sufficient to forecast $w$ error bars to 1\% accuracy, provided that
   a sufficiently large number $N_r$ of realizations are used to
