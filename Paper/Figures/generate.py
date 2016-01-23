@@ -185,7 +185,7 @@ def ps_pdf(cmd_args,nell=[0,4,9,14],nsim=[1,2,5,50,100],colors=["black","blue","
 	fig.savefig("ps_pdf."+cmd_args.type)
 
 #Scaling of the variance with Nr
-def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_logb_lowest_ell","peaks_highest_kappa_s1"],colors=["black","red","blue"],nrmax=100000,parameter="w",fontsize=22):
+def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",features=["power_logb_all","power_logb_lowest_ell","peaks_highest_kappa","peaks_highest_kappa_s1"],colors=["black","red","green","blue"],nrmax=100000,parameter="w",fontsize=22):
 
 	#Plot panel
 	fig,ax = plt.subplots()
@@ -223,10 +223,10 @@ def scaling_nr(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",featur
 
 	#Axes limits
 	ax.set_xlim(100,110000)
-	ax.set_ylim(1.0e-7,4.0e2)
+	ax.set_ylim(1.0e-7,1.0e3)
 
 	#Labels
-	ax.legend()
+	ax.legend(loc="lower left")
 	ax.set_xlabel(r"$N_r$",fontsize=fontsize)
 	ax.set_ylabel(r"$\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$",fontsize=fontsize)
 

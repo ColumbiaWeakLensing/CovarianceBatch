@@ -72,12 +72,12 @@ covariance fluctuations lead to additional $O(1/N_r^2)$ error
 degradation that is not negligible when $N_r$ is only a factor of few
 larger than $N_b$. We study the large $N_r$ limit, and find that a
 single, 240Mpc$/h$ sized, $N$--body simulation ($N_s=1$) can be repeatedly recycled to
-produce as many as $N_r={\rm few}\times10^4$ shear maps whose power spectra can be treated as statistically independent. As a result, a small number of simulations ($N_s=1$ or $2$) is sufficient to forecast parameter confidence intervals at percent accuracy. 
+produce as many as $N_r={\rm few}\times10^4$ shear maps whose power spectra and high significance peak counts can be treated as statistically independent. As a result, a small number of simulations ($N_s=1$ or $2$) is sufficient to forecast parameter confidence intervals at percent accuracy. 
 
 \end{abstract}
 
 
-\keywords{Weak Gravitational Lensing --- Simulations --- Methods: numerical,statistical}
+\keywords{Weak Gravitational Lensing --- Simulations --- Methods: analytical, numerical, statistical}
 \pacs{98.80.-k, 95.36.+x, 95.30.Sf, 98.62.Sb}
 
 \maketitle
@@ -170,7 +170,7 @@ mass of $\approx 10^{10}M_\odot$.
 
 We assume a uniform galaxy distribution at a constant redshift $z_s=2$
 (at which the simulation box has an angular size of $\theta_{\rm
-  box}=3.5\mathrm{deg}$) and we discretize the mass distribution
+  box}=3.5^\circ$) and we discretize the mass distribution
 between $z_s$ and the observer at $z=0$ with a sequence of 46 two
 dimensional lenses of thickness $80\mathrm{Mpc}/h$. The surface
 density on each lens plane is computed by projecting the
@@ -342,8 +342,7 @@ the estimator of the observational scatter in $\bbh{p}$:
 Here we introduced the familiar Fisher matrix estimator $\bbh{F} =
 \bb{d}_0'^T\bbh{\Psi}\bb{d}_0'$ and, for simplicity, we assumed
 $\langle\bbh{d}_{\rm obs}\rangle_O=\bb{d}_0$, so that
-$\langle(\bbh{d}_{\rm obs}-\bb{d}_0)(\bbh{d}_{\rm
-  obs}-\bb{d}_0)^T\rangle_O=\bb{C}$.  When we perform an observation
+$\langle(\bbh{d}_{\rm obs}-\bb{d}_0)(\bbh{d}_{\rm obs}-\bb{d}_0)^T\rangle_O=\bb{C}$.  When we perform an observation
 $\bbh{d}_{\rm obs}$, the parameter estimate $\bbh{p}$ is a random draw
 from a probability distribution with variance $\h{\Sigma}_\bb{p}$,
 which inherits noise from the simulations. The noise in the covariance
@@ -527,7 +526,7 @@ next section, we present our main findings.
   (eq.~\ref{covest}). The figure shows both the trend measured in the
   simulations (solid lines) and their scaling expected from
   Eq.~(\ref{ourscaling}) with $D=N_b-N_p$ (dashed line). The
-  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated to be the value $\langle\h{\sigma}^2_w\rangle(N_r=10^5)$. Different features are considered: power spectra with logarithmically spaced $\ell\in[100,6000]$ (black), $\ell\in[100,250]$ (red) and peak counts of height $\kappa_0\in[0.44,0.48]$ (blue). No deviations from the expected $1/N_r$ behavior are observed up to $N_r\approx{\rm few}\times10^4$, except for the large scale power spectrum, in which case the deviations occur much earlier ($N_r\approx 10^3$).}
+  asymptotic variance $\sigma^2_{w,\infty}$ has been estimated to be the value $\langle\h{\sigma}^2_w\rangle(N_r=10^5)$. Different features are considered: power spectra with logarithmically spaced $\ell\in[100,6000]$ (black), $\ell\in[100,250]$ (red), peak counts in the unsmoothed maps with height $\kappa_0\in[0.44,0.48]$ (green) and peak counts in the smoothed maps (with a Gaussian kernel of size $\theta_G=1^\prime$) with height $\kappa_0>0.15$ (blue). No deviations from the expected $1/N_r$ behavior are observed up to $N_r\approx{\rm few}\times10^4$, except for the large scale power spectrum, in which case the deviations occur much earlier ($N_r\approx 10^3$).}
 \label{wvar_nr}
 \end{figure}
 
@@ -693,7 +692,7 @@ fluctations.
 In Figure \ref{wvar_nr}, we examine how the degradation in the $w$
 constraint depends on the number of simulations used to estimate the
 covariance, in the limit of large $N_r$. We find excellent agreement
-with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm few}\times10^4$ when using the $\kappa$ power spectrum in the multipole range $\ell\in[100,6000]$. As the figure shows, around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
+with the expected scaling (eq.~\ref{ourscaling}) up to $N_r\sim {\rm few}\times10^4$ when using the $\kappa$ power spectrum in the multipole range $\ell\in[100,6000]$. The same behavior is observed when considering the high significance peak counts ($>10\sigma$ for unsmoothed maps and $>5\sigma$ for $1^\prime$ smoothed maps). As the figure shows, around these values of $N_r$ the $\langle\hat{\sigma}^2_w\rangle - \sigma^2_{w,\infty}$ curve
 becomes noisy and reaches negative values. This is a clear indication that the $1/N_r$ behavior is broken and a plateau in
 $\langle\hat{\sigma}^2_w\rangle$ is reached. The negative values in
 the plot are a consequence of the noise in the estimation of this
@@ -741,8 +740,7 @@ $N$--body simulations.  Our main results can be summarized as follows:
   when the number of realizations $N_r$ is only a factor of few larger
   than the feature vector size $N_b$.
 \item We can recycle a single 240Mpc$/h$ $N$--body simulation to produce an
-  ensemble of $O(10^4)$ shear maps whose power spectra are statistically independent in the range $\ell\in[100,6000]$. The mean feature measured
-  from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.
+  ensemble of $O(10^4)$ shear maps whose small scale power spectra and high significance peak counts are statistically independent. The mean feature measured from a shear ensemble, though, could be inaccurate if only one $N$--body simulation is used.
 \item As few as one or two independent $N$--body simulations are
   sufficient to forecast $w$ error bars to 1\% accuracy, provided that
   a sufficiently large number $N_r$ of realizations are used to
