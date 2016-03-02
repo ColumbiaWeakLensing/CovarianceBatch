@@ -346,6 +346,7 @@ def curving_nb(cmd_args,db_filename="variance_scaling_nb_expected.sqlite",parame
 			x = 1./np.linspace(1000,65,100)
 			ax.plot(x,1+x*(Nb-Np),linestyle="--",color=colors[f])
 			ax.plot(x,1+(Nb-Np)*x+(Nb-Np)*(Nb-Np+2)*(x**2),linestyle="-",color=colors[f])
+			ax.plot(x,(1-2*x)/(1-(Nb-Np+2)*x),linestyle="-",linewidth=3,color=colors[f])
 
 
 	#Axis bounds
