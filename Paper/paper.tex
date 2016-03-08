@@ -276,7 +276,7 @@ of Eq.~\ref{posteriorbayes}):
 \bb{d}(\bb{p}) \approx \bb{d}_0 + \bb{d}_0^\prime(\bb{p}-\bb{p}_0).
 \end{equation}
 %
-\textbf{\textcolor{blue}{We chose $\bb{p}_0$ to be the triplet $(\Omega_m,w,\sigma_8)=(0.26,-1,0.8)$.}}
+We chose $\bb{p}_0$ to be the triplet $(\Omega_m,w,\sigma_8)=(0.26,-1,0.8)$.
 To measure the derivatives of the features $\bb{d}'_0$ with respect to
 the cosmological parameters, we make use of the public code
 \texttt{Nicaea} \citep{Nicaea} for the power spectrum, and we use an
@@ -353,8 +353,8 @@ refs.~\citep{DodelsonSchneider13,Taylor12,MasumotoWishart} we compute
 the expectation value of Eq.~(\ref{estimatorcovariance}) over
 simulations, $\langle\h{\Sigma}_\bb{p}\rangle$, up to $O(1/N_r^2)$ by
 expanding Eq.~(\ref{estimatorcovariance}) to quartic order in the
-statistical fluctuations of $\bbh{\Psi}$. Denoting the \textbf{\textcolor{blue}{true}}
-parameter covariance, i.e. the usual \textbf{\textcolor{blue}{inverse}} Fisher matrix, as
+statistical fluctuations of $\bbh{\Psi}$. Denoting the true
+parameter covariance, i.e. the usual inverse Fisher matrix, as
 $\Sigma_\bb{p}=\bb{F}^{-1}$, we find the result~\footnote{The details
   of the calculation are given in Appendix A.}:
 
@@ -365,13 +365,13 @@ $\Sigma_\bb{p}=\bb{F}^{-1}$, we find the result~\footnote{The details
 \end{equation}
 \end{widetext}
 %
-\textbf{\textcolor{blue}{Although we truncated the expansion to second order in $1/N_r$, an exact expression for $\langle\h{\Sigma}_\bb{p}\rangle$ has been proposed by \citep{Taylor14}}}
+Although we truncated the expansion to second order in $1/N_r$, an exact expression for $\langle\h{\Sigma}_\bb{p}\rangle$ has been proposed by \citep{Taylor14}
 \begin{equation}
 \label{empiricalexact}
-\textcolor{blue}{\langle\h{\Sigma}_\bb{p}\rangle_{\rm empirical} = \Sigma_\bb{p}\left(\frac{N_r-2}{N_r-N_b+N_p-2}\right)}
+\langle\h{\Sigma}_\bb{p}\rangle_{\rm empirical} = \Sigma_\bb{p}\left(\frac{N_r-2}{N_r-N_b+N_p-2}\right)
 \end{equation}
 %
-\textbf{\textcolor{blue}{This empirical expression reduces to equation (\ref{quarticdegradation}) when expanded at order $O(1/N_r^2)$ but, to our knowledge, no first principles proof of its correctness exists.}} 
+This empirical expression reduces to equation (\ref{quarticdegradation}) when expanded at order $O(1/N_r^2)$ but, to our knowledge, no first principles proof of its correctness exists. 
 Next, we restrict ourselves to the large $N_r$ limit, and we further
 investigate the behavior of the $O(1/N_r)$ term. We consider three
 cases \footnote{The details of these calculations are given in Appendix B}:
@@ -517,7 +517,7 @@ next section, we present our main findings.
   listed in Table~\ref{featuretable}.  The dashed and this solid curves
   show the analytic predictions from equation
   (\ref{quarticdegradation}) at orders $O(1/N_r)$ and $O(1/N_r^2)$,
-  respectively. \textbf{\textcolor{blue}{The thick solid curves show the empirical predictions from equation (\ref{empiricalexact})}}. 
+  respectively. The thick solid curves show the empirical predictions from equation (\ref{empiricalexact}). 
   The asymptotic variance $\sigma^2_{w,\infty}$ has been
   computed from a linear regression of $\langle\h{\sigma}^2_w\rangle$
   vs $1/N_r$ for $N_r>500$. The figure clearly shows that terms beyond
@@ -543,8 +543,8 @@ next section, we present our main findings.
   (measured from the intercept of the fit $\sigma^2_w$ vs $1/N_r$),
   varying the number of simulations $N_s$ used in the ensemble to
   estimate the covariance (eq.~\ref{covest}). We show the dependence
-  of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over the \textbf{\textcolor{blue}{union of}} 16
-  ensembles with different $N_s$ \textbf{\textcolor{blue}{and $N_r=1024$}}, for the power spectrum
+  of $\sigma_{w,\infty}^2(N_s)$ in units of the mean over the union of 16
+  ensembles with different $N_s$ and $N_r=1024$, for the power spectrum
   logarithmically binned (black, $N_b=15,\ell\in[100,6000]$), the
   power spectrum linearly binned (red,$N_b=39,\ell\in[100,6000]$) and
   the peak counts (green,$N_b=45,\kappa_0\in[-0.06,0.45]$).  No trend
@@ -668,7 +668,7 @@ a few ($N_s=1$ or 2) for the power spectrum at low multipoles
 larger multipoles ($\ell\gtrsim1000$) or peak counts above a high
 threshold ($\kappa_0\approx0.3$).  On the other hand, relaxing the
 required accuracy to 50\% of the statistical error, we find $N_s=2$ to
-be always sufficient. \textbf{\textcolor{blue}{As pointed out by \citep{NbodySample}, the box size used for the $N$--body simulations can also play an important role in the accuracy of the power spectrum ensemble means.}}
+be always sufficient. As pointed out by \citep{NbodySample}, the box size used for the $N$--body simulations can also play an important role in the accuracy of the power spectrum ensemble means.
 
 Figure \ref{ps_var} shows the variance of convergence power spectrum
 computed from different ensembles, in units of the Gaussian
